@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using Abnaki.Windows.GUI;
+
 namespace Abnaki.Albiruni
 {
     /// <summary>
@@ -26,14 +28,21 @@ namespace Abnaki.Albiruni
             InitializeComponent();
         }
 
-        Abnaki.Windows.GUI.IDockSystem Abnaki.Windows.GUI.IMainControl.DockingSystem
+        IDockSystem IMainControl.DockingSystem
         {
             get { return null; }
         }
 
-        void Abnaki.Windows.GUI.IMainControl.ConfigureMenu(Abnaki.Windows.GUI.IMainMenu menu)
+        void IMainControl.ConfigureMenu(IMainMenu menu)
         {
             
         }
+
+        void IMainControl.EmplacedInWindow()
+        {
+            MainTitle("Albiruni");
+        }
+
+        public event Action<string> MainTitle; // IMainControl
     }
 }
