@@ -30,7 +30,7 @@ namespace Abnaki.Albiruni
 
         IDockSystem IMainControl.DockingSystem
         {
-            get { return null; }
+            get { return new Abnaki.Windows.Software.Wpf.PreferredControls.Docking.AvalonDockSystem(this.Docky, 1); }
         }
 
         void IMainControl.ConfigureMenu(IMainMenu menu)
