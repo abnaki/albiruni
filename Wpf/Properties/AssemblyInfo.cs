@@ -1,17 +1,9 @@
 ﻿using System.Reflection;
 using System.Resources;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Windows;
 
 [assembly: AssemblyTitle("Albiruni for WPF")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Abnaki")]
-[assembly: AssemblyProduct("Albiruni WPF")]
-[assembly: AssemblyCopyright("Copyright © 2016 Abnaki Way Components")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
 
 //In order to begin building localizable applications, set 
 //<UICulture>CultureYouAreCodingWith</UICulture> in your .csproj file
@@ -32,5 +24,4 @@ using System.Windows;
     // app, or any theme specific resource dictionaries)
 )]
 
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+// see also AlbiruniAssemblyInfo.cs
