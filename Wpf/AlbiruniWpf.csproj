@@ -37,6 +37,18 @@
     <StartupObject>Abnaki.Albiruni.Starter</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FileDb">
+      <HintPath>packages\XAML.MapControl.2.9.0\lib\net45\FileDb.dll</HintPath>
+    </Reference>
+    <Reference Include="FileDbCache.WPF">
+      <HintPath>packages\XAML.MapControl.2.9.0\lib\net45\FileDbCache.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="ImageFileCache.WPF">
+      <HintPath>packages\XAML.MapControl.2.9.0\lib\net45\ImageFileCache.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="MapControl.WPF">
+      <HintPath>packages\XAML.MapControl.2.9.0\lib\net45\MapControl.WPF.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -50,8 +62,35 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=2.8.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Extended.Wpf.Toolkit.2.8\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=2.8.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Extended.Wpf.Toolkit.2.8\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=2.8.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Extended.Wpf.Toolkit.2.8\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=2.8.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Extended.Wpf.Toolkit.2.8\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.DataGrid, Version=2.8.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Extended.Wpf.Toolkit.2.8\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.8.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Extended.Wpf.Toolkit.2.8\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\AlbiruniAssemblyInfo.cs">
+      <Link>AlbiruniAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="MainControl.xaml.cs">
       <DependentUpon>MainControl.xaml</DependentUpon>
     </Compile>
@@ -73,6 +112,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -90,6 +130,10 @@
     <ProjectReference Include="..\..\windows\Library\Software\WpfApplication\WpfApplication.csproj">
       <Project>{3d6f0fbc-fcbb-4ea2-a139-cf0c86604cf4}</Project>
       <Name>WpfApplication</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\windows\Library\Software\WpfPreferredControls\WpfPreferredControls.csproj">
+      <Project>{c3c851a0-99cc-4295-b4f6-5085cfd5fd83}</Project>
+      <Name>WpfPreferredControls</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
