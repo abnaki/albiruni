@@ -102,6 +102,8 @@
             <!--<map:MapItemsControl ItemsSource="{Binding Pushpins}"
                                  ItemContainerStyle="{StaticResource PushpinItemStyle}"
                                  IsSynchronizedWithCurrentItem="True"/>-->
+            <map:MapItemsControl
+                ItemsSource="{Binding Rectangles}" />
         </map:Map>
         <Grid
             Grid.Column="1">
