@@ -35,7 +35,7 @@ namespace Abnaki.Albiruni
             r.West = MapCenter.Longitude;
             r.North = r.South + 0.1;
             r.East = r.West + 0.1;
-            r.Fill = new SolidColorBrush(Color.FromArgb((byte)32, (byte)0, (byte)255, (byte)0));
+            r.Fill = new SolidColorBrush(Color.FromArgb((byte)32, (byte)255, (byte)0, (byte)0));
             Rectangles.Add(r);
         }
 
