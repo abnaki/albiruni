@@ -31,7 +31,9 @@ namespace Abnaki.Albiruni
         {
             base.OnInitialized(e);
 
-            this.DataContext = new MapViewModel() { MapCenter = new Location(30, -100) };
+            MapViewModel vm = new MapViewModel();
+            vm.Testing();
+            this.DataContext = vm;
         }
 
         #region Originally from xamlmapcontrol/SampleApps/WpfApplication/MainWindow.xaml.cs
