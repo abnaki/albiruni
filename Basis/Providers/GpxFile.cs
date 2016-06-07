@@ -14,6 +14,9 @@ namespace Abnaki.Albiruni.Providers
     /// <summary>
     /// Reads gpx 1.0 or 1.1
     /// </summary>
+    /// <remarks>
+    /// Allowing public usage of Geo
+    /// </remarks>
     public class GpxFile
     {
         public static string Extension
@@ -30,15 +33,14 @@ namespace Abnaki.Albiruni.Providers
             using ( Stream str = fi.OpenRead() )
             using (StreamWrapper sw = new StreamWrapper(str))
             {
-                gdata = gser.DeSerialize(sw);
+                GeoGpsData = gser.DeSerialize(sw);
             }
         }
 
-        GpsData gdata;
+        public GpsData GeoGpsData { get; private set; }
 
         IGpsFileSerializer NewSerializer(FileInfo fi)
         {
-            //XmlDocument xdoc = new XmlDocument();
             using (Stream str = fi.OpenRead())
             using (XmlReader xr = XmlTextReader.Create(str) )
             {
