@@ -27,6 +27,13 @@ namespace Abnaki.Albiruni
             InitializeComponent();
         }
 
+        protected override void OnInitialized(EventArgs e)
+        {
+            base.OnInitialized(e);
+
+            this.DataContext = new MapViewModel() { MapCenter = new Location(30, -100) };
+        }
+
         #region Originally from xamlmapcontrol/SampleApps/WpfApplication/MainWindow.xaml.cs
 
         private void MapMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
