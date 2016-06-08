@@ -109,19 +109,19 @@ namespace Abnaki.Albiruni.Tree
         /// Grow tree to cover given data
         /// </summary>
         /// <param name="gpx"></param>
-        public void Populate(Providers.GpxFile gpx) // may want an interface
+        public void Populate(Source source) // may want an interface
         {
+            Geo.Gps.GpsData gdata = source.GpxFile.GeoGpsData;
+
             List<Coordinate> coordinates =
-            gpx.GeoGpsData.Tracks
+            gdata.Tracks
             .SelectMany(track => track.Segments)
             .SelectMany(seg => seg.Fixes)
             .Select(fix => fix.Coordinate)
             .ToList();
 
             coordinates.AddRange(
-                gpx.GeoGpsData.Waypoints.Select(w => w.Coordinate));
-
-            Source source = new Source(); // bare bones
+                gdata.Waypoints.Select(w => w.Coordinate));
 
             Grow(null, coordinates, source, minDelta: 0.1); // very coarse
 
