@@ -41,7 +41,7 @@ namespace ProviderTest1
 
             var g = GetGpxFile();
             root.Populate(g);
-
+            root.DebugPrint();
         }
     }
 }
