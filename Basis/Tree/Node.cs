@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 
 using Geo;
 using Geo.Abstractions.Interfaces;
@@ -17,7 +18,7 @@ namespace Abnaki.Albiruni.Tree
 
         public static Node NewGlobalRoot()
         {
-            return new Node() { Axis = Axis.NorthSouth, Delta = 90 };
+            return new Node() { Axis = Axis.NorthSouth, Degrees = -90, Delta = 180 };
         }
 
         public Axis Axis { get; private set; }
@@ -124,6 +125,36 @@ namespace Abnaki.Albiruni.Tree
 
             Grow(null, coordinates, source, minDelta: 0.1); // very coarse
 
+        }
+
+        public void DebugPrint()
+        {
+            Debug.WriteLine(this);
+
+            Debug.Indent();
+
+            foreach ( var key in mapSourcePositions.Value.Keys )
+            {
+                Debug.WriteLine(key);
+                Debug.Indent();
+                foreach ( IPosition pos in mapSourcePositions.Value[key] )
+                {
+                    Debug.WriteLine(pos.GetCoordinate());
+                }
+                Debug.Unindent();
+            }
+
+            foreach ( Node child in children )
+            {
+                child.DebugPrint();
+            }
+
+            Debug.Unindent();
+        }
+
+        public override string ToString()
+        {
+            return this.Axis + " " + this.Degrees + " +" + this.Delta + " " + (this.Degrees + this.Delta);
         }
 
     }
