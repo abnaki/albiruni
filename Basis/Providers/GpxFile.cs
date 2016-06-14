@@ -44,7 +44,12 @@ namespace Abnaki.Albiruni.Providers
             using (Stream str = fi.OpenRead())
             using (XmlReader xr = XmlTextReader.Create(str) )
             {
-                bool b = xr.Read();
+                for (int i = 0; i < 5 && xr.Name != "gpx"; i++)
+                {
+                    bool b = xr.Read();
+                }
+                if (xr.Name != "gpx")
+                    throw new ApplicationException("Failed to find gpx in " + fi.FullName);
 
                 string v = xr.GetAttribute("version");
 
@@ -57,7 +62,7 @@ namespace Abnaki.Albiruni.Providers
                         return new Geo.Gps.Serialization.Gpx11Serializer();
 
                     default:
-                        throw new ApplicationException("No support for gpx version " + v);
+                        throw new ApplicationException("No support for gpx version " + v + " of " + fi.FullName);
                 }
             }
             
