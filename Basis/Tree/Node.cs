@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
+using System.IO;
 
 using Geo;
 using Geo.Abstractions.Interfaces;
+
+using Abnaki.Albiruni.Tree.InputOutput;
 
 namespace Abnaki.Albiruni.Tree
 {
@@ -27,12 +30,12 @@ namespace Abnaki.Albiruni.Tree
 
         public double Delta { get; private set; }
 
-        public Source Source { get; set; }
+        //public Source Source { get; set; }
 
-        List<Node> children = new List<Node>();
+        System.Tuple<Node, Node> children = null;
 
-        // see Microsoft.Experimental.Collections
-        Lazy<MultiValueDictionary<Source, IPosition>> mapSourcePositions = new Lazy<MultiValueDictionary<Source, IPosition>>();
+        //Lazy<MultiValueDictionary<Source, IPosition>> mapSourcePositions = new Lazy<MultiValueDictionary<Source, IPosition>>(); // see Microsoft.Experimental.Collections
+        Lazy<SortedList<Source, SourceContentSummary>> mapSourceSummaries = new Lazy<SortedList<Source, SourceContentSummary>>();
 
         // find/add descendants, given point(s)
         void Grow(Node grandparent, IEnumerable<IPosition> positions, Source source, double minDelta = 0.0001)
@@ -48,12 +51,24 @@ namespace Abnaki.Albiruni.Tree
             if (newDelta < minDelta + double.Epsilon) // <= 
             {
                 // leaf node
+                //mapSourcePositions.Value.AddRange(source, validPositions);
 
-                mapSourcePositions.Value.AddRange(source, validPositions);
+                mapSourceSummaries.Value[source] = new SourceContentSummary() { Points = validPositions.Length };
 
             }
             else
             // recurse, halving the applicable Delta
+            {
+                EnsureChildrenExist(grandparent);
+
+                children.Item1.Grow(this, validPositions, source, minDelta);
+                children.Item2.Grow(this, validPositions, source, minDelta);
+            }
+        }
+
+        void EnsureChildrenExist(Node grandparent)
+        {
+            if ( children == null )
             {
                 Axis newAxis = this.Axis == Albiruni.Axis.EastWest ? Albiruni.Axis.NorthSouth : Albiruni.Axis.EastWest;
                 // i.e. same as grandparent if that exists
@@ -78,15 +93,11 @@ namespace Abnaki.Albiruni.Tree
                     xmax = xmin + grandparent.Delta;
                 }
 
-                Node lowChild = new Node() { Axis = newAxis, Degrees = xmin, Delta = (xmax - xmin) / 2, Source = source };
+                Node lowChild = new Node() { Axis = newAxis, Degrees = xmin, Delta = (xmax - xmin) / 2 };
 
-                Node highChild = new Node() { Axis = newAxis, Degrees = xmin + lowChild.Delta, Delta = lowChild.Delta, Source = source };
+                Node highChild = new Node() { Axis = newAxis, Degrees = xmin + lowChild.Delta, Delta = lowChild.Delta };
 
-                children.Add(lowChild);
-                children.Add(highChild);
-
-                lowChild.Grow(this, validPositions, source, minDelta);
-                highChild.Grow(this, validPositions, source, minDelta);
+                children = new Tuple<Node, Node>(lowChild, highChild);
             }
         }
 
@@ -123,7 +134,34 @@ namespace Abnaki.Albiruni.Tree
             coordinates.AddRange(
                 gdata.Waypoints.Select(w => w.Coordinate));
 
-            Grow(null, coordinates, source, minDelta: 0.1); // very coarse
+            Grow(null, coordinates, source, minDelta: 1); // very coarse
+
+        }
+
+        public void Graft(Node grandparent, Node branch)
+        {
+            if (this.Axis != branch.Axis)
+                throw new InvalidOperationException("Graft mismatch of Axis " + this.Axis + " vs " + branch.Axis);
+
+            if (Math.Abs(this.Delta - branch.Delta) > double.Epsilon)
+                throw new InvalidOperationException("Graft mismatch of Delta");
+
+            if (Math.Abs(this.Degrees - branch.Degrees) > double.Epsilon)
+                throw new InvalidOperationException("Graft mismatch of Degrees");
+
+            if (branch.children != null)
+            {
+                EnsureChildrenExist(grandparent);
+
+                children.Item1.Graft(this, branch.children.Item1);
+                children.Item2.Graft(this, branch.children.Item2);
+            }
+
+             // graft sources
+            foreach ( var pair in branch.mapSourceSummaries.Value )
+            {
+                this.mapSourceSummaries.Value.Add(pair.Key, pair.Value);
+            }
 
         }
 
@@ -133,23 +171,98 @@ namespace Abnaki.Albiruni.Tree
 
             Debug.Indent();
 
-            foreach ( var key in mapSourcePositions.Value.Keys )
+            foreach ( var pair in mapSourceSummaries.Value )
             {
-                Debug.WriteLine(key);
-                Debug.Indent();
-                foreach ( IPosition pos in mapSourcePositions.Value[key] )
-                {
-                    Debug.WriteLine(pos.GetCoordinate());
-                }
-                Debug.Unindent();
+                Debug.WriteLine(pair.Key + " " + pair.Value);
+
             }
 
-            foreach ( Node child in children )
+            if ( children != null )
             {
-                child.DebugPrint();
+                children.Item1.DebugPrint();
+                children.Item2.DebugPrint();
             }
 
             Debug.Unindent();
+        }
+
+        const int filever = 1;
+
+        public void Write(IBinaryWrite ibw)
+        {
+            BinaryWriter bw = ibw.Writer;
+            bw.Write(filever);
+            bw.Write((int)this.Axis);
+            bw.Write(this.Degrees);
+            bw.Write(this.Delta);
+
+            bw.Write(children != null);
+            if ( children != null )
+            {
+                children.Item1.Write(ibw);
+                children.Item2.Write(ibw);
+            }
+
+            bw.Write(mapSourceSummaries.IsValueCreated);
+            if ( mapSourceSummaries.IsValueCreated )
+            {
+                bw.Write(mapSourceSummaries.Value.Count);
+                foreach ( var pair in mapSourceSummaries.Value )
+                {
+                    ibw.ReferenceSource(pair.Key);
+                    pair.Value.Write(bw);
+                }
+            }
+        }
+
+        public void Read(IBinaryRead ibr)
+        {
+            BinaryReader br = ibr.Reader;
+            int v = br.ReadInt32();
+            this.Axis = (Axis)br.ReadInt32();
+            this.Degrees = br.ReadDouble();
+            this.Delta = br.ReadDouble();
+
+            bool exist = br.ReadBoolean();
+            if ( exist )
+            {
+                Node left = new Node();
+                left.Read(ibr);
+                Node right = new Node();
+                right.Read(ibr);
+                children = new Tuple<Node, Node>(left, right);
+            }
+
+            exist = br.ReadBoolean();
+            if ( exist )
+            {
+                int n = br.ReadInt32();
+                for ( int i = 0; i < n; i++ )
+                {
+                    Source source = ibr.ReadSource();
+                    SourceContentSummary summary = new SourceContentSummary();
+                    summary.Read(br);
+                    mapSourceSummaries.Value.Add(source, summary);
+                }
+            }
+        }
+
+        internal void GetSources(SortedList<string, Source> mapPathSources)
+        {
+            if (mapSourceSummaries.IsValueCreated)
+            {
+                foreach ( var pair in mapSourceSummaries.Value )
+                {
+                    Source s = pair.Key;
+                    mapPathSources[s.Path] = s;
+                }
+            }
+
+            if ( children != null )
+            {
+                children.Item1.GetSources(mapPathSources);
+                children.Item2.GetSources(mapPathSources);
+            }
         }
 
         public override string ToString()
