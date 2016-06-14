@@ -7,20 +7,27 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using Abnaki.Albiruni;
 using Abnaki.Albiruni.Providers;
+using Abnaki.Albiruni.Tree;
 
 namespace ProviderTest1
 {
     [TestClass]
     public class UnitTest1
     {
-        IEnumerable<FileInfo> TestingGpxFiles()
+        DirectoryInfo TestingGpxDir()
         {
             // Not only does Basis project reference Geo (geospatial library) by Nuget, but also
             // github.com/sibartlett/Geo is cloned into a sibling workspace;
             // and note test executes in CurrentDirectory equal to bin\debug under project.
             string ddir = @"..\..\..\..\..\Geo\reference\gpx";
 
-            DirectoryInfo di = new DirectoryInfo(Path.Combine(Environment.CurrentDirectory, ddir));
+            return new DirectoryInfo(Path.Combine(Environment.CurrentDirectory, ddir));
+        }
+
+        IEnumerable<FileInfo> TestingGpxFiles()
+        {
+            DirectoryInfo di = TestingGpxDir();
+
             return di.GetFiles("*" + GpxFile.Extension);
         }
 
@@ -44,14 +51,34 @@ namespace ProviderTest1
         {
             Debug.WriteLine(figpx.FullName);
 
-            var root = Abnaki.Albiruni.Tree.Node.NewGlobalRoot();
+            var root = Node.NewGlobalRoot();
 
-            Abnaki.Albiruni.Tree.Source source = new Abnaki.Albiruni.Tree.Source(figpx);
+            Source source = new Abnaki.Albiruni.Tree.Source(figpx);
 
             root.Populate(source);
 
             root.DebugPrint();
         }
 
+        [TestMethod]
+        public void TestNursery()
+        {
+            DirectoryInfo di = TestingGpxDir();
+            DirectoryInfo dicur = new DirectoryInfo(Environment.CurrentDirectory);
+            DirectoryInfo ditarget = dicur.CreateSubdirectory("albiruni");
+
+            Node root = Node.NewGlobalRoot();
+
+            string baseWildcard = "c*"; // sample of files
+
+            Nursery.GrowTree(root, di, ditarget, baseWildcard);
+
+            //root.DebugPrint();
+
+            Node checkRoot = Node.NewGlobalRoot();
+            Nursery.Read(checkRoot, ditarget, baseWildcard + Nursery.FileExt);
+
+            checkRoot.DebugPrint();
+        }
     }
 }
