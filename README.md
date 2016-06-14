@@ -15,6 +15,8 @@ Practical applications for visualization:
 - criminal investigation
 - search/rescue
 - military
+- political campaigns
+- energy utilities and exploration
 
 Some domains would require minor straightforward implementation.  Anything is possible, given a source of sample data, or file, and a documented specification/standard, better yet already coded in C#.
 
