@@ -106,6 +106,8 @@
                 ItemsSource="{Binding Rectangles}" />
             <map:MapItemsControl
                 ItemsSource="{Binding Symbols}" />
+            <map:MapItemsControl
+                ItemsSource="{Binding Tracks}" />
         </map:Map>
         <Grid
             Grid.Column="1">
