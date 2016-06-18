@@ -96,6 +96,7 @@
     <Compile Include="..\AlbiruniAssemblyInfo.cs">
       <Link>AlbiruniAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Graphic\Symbol\Diamond.cs" />
     <Compile Include="MainControl.xaml.cs">
       <DependentUpon>MainControl.xaml</DependentUpon>
     </Compile>
