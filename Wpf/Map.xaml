@@ -89,21 +89,23 @@
                 HorizontalAlignment="Left"
                 Background="Transparent" />
             <!-- use ItemTemplate or ItemContainerStyle alternatively -->
-            <map:MapItemsControl
+            <!--<map:MapItemsControl
                 ItemsSource="{Binding Polylines}"
-                ItemTemplate="{StaticResource PolylineItemTemplate}" />
+                ItemTemplate="{StaticResource PolylineItemTemplate}" />-->
             <!--<map:MapItemsControl ItemsSource="{Binding Polylines}"
                                  ItemContainerStyle="{StaticResource PolylineItemStyle}"/>-->
-            <map:MapItemsControl
+            <!--<map:MapItemsControl
                 ItemsSource="{Binding Points}"
                 ItemContainerStyle="{StaticResource PointItemStyle}"
                 IsSynchronizedWithCurrentItem="True"
-                SelectionMode="Extended" />
+                SelectionMode="Extended" />-->
             <!--<map:MapItemsControl ItemsSource="{Binding Pushpins}"
                                  ItemContainerStyle="{StaticResource PushpinItemStyle}"
                                  IsSynchronizedWithCurrentItem="True"/>-->
             <map:MapItemsControl
                 ItemsSource="{Binding Rectangles}" />
+            <map:MapItemsControl
+                ItemsSource="{Binding Symbols}" />
         </map:Map>
         <Grid
             Grid.Column="1">
