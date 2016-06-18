@@ -13,8 +13,10 @@ Practical applications for visualization:
 - government/regulatory
 - law enforcement
 - criminal investigation
-- search/rescue
-- military
+- disaster/search/rescue
+- miltary/defense
+- aviation
+- agriculture/forestry
 - political campaigns
 - energy utilities and exploration
 
@@ -22,6 +24,9 @@ Some domains would require minor straightforward implementation.  Anything is po
 
 OpenStreetMaps will be displayed, as they are free.   Some popular alternative maps require licensing, yet they are feasible for the future. 
 
-The display may vary with dimensions of interest, such as date/time or any given property of each point.  Color, shade, and hiding/filtering will help answer questions about these variables.
+The display may vary with dimensions of interest, such as date/time or any given property of the spatial points.  Color, shade, and hiding/filtering will help answer questions about these variables.  Users may want to know:
+- All regions covered in a range of dates
+- Dates when a region of interest was covered
+- Correlations/intersections between multiple specific tracks, or between a GPS track and other date/location information
 
 Named after the medieval Persian scientist Abū Rayḥān Muḥammad ibn Aḥmad Al-Bīrūnī.  Almost 1000 years ago, he accurately measured the Earth and tabulated coordinates of hundreds of locations.
