@@ -17,12 +17,14 @@ namespace Abnaki.Albiruni
         {
             Rectangles = new ObservableCollection<MapRectangle>();
             Symbols = new ObservableCollection<MapPath>();
+            Tracks = new ObservableCollection<MapPath>();
         }
 
         public Location MapCenter { get; set; }
 
         public ObservableCollection<MapRectangle> Rectangles { get; private set; }
-        public ObservableCollection<MapPath> Symbols { get; set; }
+        public ObservableCollection<MapPath> Symbols { get; private set; }
+        public ObservableCollection<MapPath> Tracks { get; private set; }
 
         //public ObservableCollection<Point> Points { get; set; }
         //public ObservableCollection<Polyline> Polylines { get; set; }
@@ -43,6 +45,16 @@ namespace Abnaki.Albiruni
             var diamond = new Abnaki.Albiruni.Graphic.Symbol.Diamond(MapCenter, 0.01, 0.015);
             diamond.Fill = new SolidColorBrush(Color.FromArgb((byte)64, (byte)0, (byte)0, (byte)255));
             this.Symbols.Add(diamond);
+
+            var track = new Abnaki.Albiruni.Graphic.Curve.Track();
+            track.Locations = new Location[]
+            {
+                MapCenter,
+                new Location(MapCenter.Latitude + 0.1, MapCenter.Longitude - 0.2)
+            };
+            track.Stroke = Brushes.Blue;
+            track.StrokeThickness = 2;
+            this.Tracks.Add(track);
         }
 
     }
