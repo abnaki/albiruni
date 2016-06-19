@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Abnaki.Albiruni.Tree
 {
-    class SourceContentSummary
+    public class SourceContentSummary
     {
         public int Points { get; set; }
         //public int Waypoints { get; set; }
@@ -41,5 +41,11 @@ namespace Abnaki.Albiruni.Tree
             Points = br.ReadInt32();
         }
 
+        public void AggregateWith(SourceContentSummary subset)
+        {
+            this.Points += subset.Points;
+
+            // etc
+        }
     }
 }
