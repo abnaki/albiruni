@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Diagnostics;
 using System.ComponentModel;
 using System.Windows.Media;
 
+using Abnaki.Albiruni.Tree;
+using Abnaki.Windows.Software.Wpf;
 using MapControl;
 using PropertyChanged;
 
@@ -18,6 +21,8 @@ namespace Abnaki.Albiruni
             Rectangles = new ObservableCollection<MapRectangle>();
             Symbols = new ObservableCollection<MapPath>();
             Tracks = new ObservableCollection<MapPath>();
+
+            MessageTube.Subscribe<Node>(HandleTree);
         }
 
         public Location MapCenter { get; set; }
@@ -29,6 +34,23 @@ namespace Abnaki.Albiruni
         //public ObservableCollection<Point> Points { get; set; }
         //public ObservableCollection<Polyline> Polylines { get; set; }
 
+        void HandleTree(Node root)
+        {
+            var stat = root.GetStatistic();
+            Debug.WriteLine(stat);
+
+            ClearAdornments();
+
+            // here is the whole motivation of Albiruni
+
+        }
+
+        void ClearAdornments()
+        {
+            Rectangles.Clear();
+            Symbols.Clear();
+            Tracks.Clear();
+        }
 
         public void Testing()
         {
