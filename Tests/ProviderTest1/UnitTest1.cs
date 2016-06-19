@@ -67,6 +67,8 @@ namespace ProviderTest1
             DirectoryInfo dicur = new DirectoryInfo(Environment.CurrentDirectory);
             DirectoryInfo ditarget = dicur.CreateSubdirectory("albiruni");
 
+            CleanDirectory(ditarget);
+            
             Node root = Node.NewGlobalRoot();
 
             string baseWildcard = "c*"; // sample of files
@@ -78,7 +80,21 @@ namespace ProviderTest1
             Node checkRoot = Node.NewGlobalRoot();
             Nursery.Read(checkRoot, ditarget, baseWildcard + Nursery.FileExt);
 
-            checkRoot.DebugPrint();
+            //checkRoot.DebugPrint();
+        }
+
+        static void CleanDirectory(DirectoryInfo di)
+        {
+            foreach ( FileInfo fidat in di.GetFiles("*" + Nursery.FileExt) )
+            {
+                fidat.Delete();
+            }
+
+            foreach (DirectoryInfo disub in di.EnumerateDirectories() )
+            {
+                CleanDirectory(disub);
+                disub.Delete();
+            }
         }
     }
 }
