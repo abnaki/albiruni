@@ -14,11 +14,12 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 using Abnaki.Windows.GUI;
+using Abnaki.Windows.Software.Wpf.Ultimate;
 
 namespace Abnaki.Albiruni
 {
     /// <summary>
-    /// Interaction logic for MainControl.xaml
+    /// 
     /// </summary>
     public partial class MainControl : UserControl,
         Abnaki.Windows.GUI.IMainControl
@@ -28,6 +29,8 @@ namespace Abnaki.Albiruni
             InitializeComponent();
         }
 
+        FileMenuBus fmbus;
+
         IDockSystem IMainControl.DockingSystem
         {
             get { return new Abnaki.Windows.Software.Wpf.PreferredControls.Docking.AvalonDockSystem(this.Docky, 1); }
@@ -35,7 +38,7 @@ namespace Abnaki.Albiruni
 
         void IMainControl.ConfigureMenu(IMainMenu menu)
         {
-            
+            fmbus = new FileMenuBus(menu);
         }
 
         void IMainControl.EmplacedInWindow()
@@ -44,5 +47,6 @@ namespace Abnaki.Albiruni
         }
 
         public event Action<string> MainTitle; // IMainControl
+
     }
 }
