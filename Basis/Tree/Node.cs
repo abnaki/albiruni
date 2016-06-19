@@ -31,9 +31,7 @@ namespace Abnaki.Albiruni.Tree
 
         public double Delta { get; private set; }
 
-        //public Source Source { get; set; }
-
-        System.Tuple<Node, Node> children = null;
+        public System.Tuple<Node, Node> Children { get; private set; }
 
         //Lazy<MultiValueDictionary<Source, IPosition>> mapSourcePositions = new Lazy<MultiValueDictionary<Source, IPosition>>(); // see Microsoft.Experimental.Collections
         Lazy<SortedList<Source, SourceContentSummary>> mapSourceSummaries = new Lazy<SortedList<Source, SourceContentSummary>>();
@@ -54,7 +52,7 @@ namespace Abnaki.Albiruni.Tree
                 // leaf node
                 //mapSourcePositions.Value.AddRange(source, validPositions);
 
-                mapSourceSummaries.Value[source] = new SourceContentSummary() { Points = validPositions.Length };
+                mapSourceSummaries.Value[source] = new SourceContentSummary(validPositions);
 
             }
             else
@@ -62,14 +60,14 @@ namespace Abnaki.Albiruni.Tree
             {
                 EnsureChildrenExist(grandparent);
 
-                children.Item1.Grow(this, validPositions, source, minDelta);
-                children.Item2.Grow(this, validPositions, source, minDelta);
+                Children.Item1.Grow(this, validPositions, source, minDelta);
+                Children.Item2.Grow(this, validPositions, source, minDelta);
             }
         }
 
         void EnsureChildrenExist(Node grandparent)
         {
-            if ( children == null )
+            if ( Children == null )
             {
                 Axis newAxis = this.Axis == Albiruni.Axis.EastWest ? Albiruni.Axis.NorthSouth : Albiruni.Axis.EastWest;
                 // i.e. same as grandparent if that exists
@@ -98,7 +96,7 @@ namespace Abnaki.Albiruni.Tree
 
                 Node highChild = new Node() { Axis = newAxis, Degrees = xmin + lowChild.Delta, Delta = lowChild.Delta };
 
-                children = new Tuple<Node, Node>(lowChild, highChild);
+                Children = new Tuple<Node, Node>(lowChild, highChild);
             }
         }
 
@@ -150,12 +148,12 @@ namespace Abnaki.Albiruni.Tree
             if (Math.Abs(this.Degrees - branch.Degrees) > double.Epsilon)
                 throw new InvalidOperationException("Graft mismatch of Degrees");
 
-            if (branch.children != null)
+            if (branch.Children != null)
             {
                 EnsureChildrenExist(grandparent);
 
-                children.Item1.Graft(this, branch.children.Item1);
-                children.Item2.Graft(this, branch.children.Item2);
+                Children.Item1.Graft(this, branch.Children.Item1);
+                Children.Item2.Graft(this, branch.Children.Item2);
             }
 
              // graft sources
@@ -178,10 +176,10 @@ namespace Abnaki.Albiruni.Tree
 
             }
 
-            if ( children != null )
+            if ( Children != null )
             {
-                children.Item1.DebugPrint();
-                children.Item2.DebugPrint();
+                Children.Item1.DebugPrint();
+                Children.Item2.DebugPrint();
             }
 
             Debug.Unindent();
@@ -197,11 +195,11 @@ namespace Abnaki.Albiruni.Tree
             bw.Write(this.Degrees);
             bw.Write(this.Delta);
 
-            bw.Write(children != null);
-            if ( children != null )
+            bw.Write(Children != null);
+            if ( Children != null )
             {
-                children.Item1.Write(ibw);
-                children.Item2.Write(ibw);
+                Children.Item1.Write(ibw);
+                Children.Item2.Write(ibw);
             }
 
             bw.Write(mapSourceSummaries.IsValueCreated);
@@ -231,7 +229,7 @@ namespace Abnaki.Albiruni.Tree
                 left.Read(ibr);
                 Node right = new Node();
                 right.Read(ibr);
-                children = new Tuple<Node, Node>(left, right);
+                Children = new Tuple<Node, Node>(left, right);
             }
 
             exist = br.ReadBoolean();
@@ -259,10 +257,10 @@ namespace Abnaki.Albiruni.Tree
                 }
             }
 
-            if ( children != null )
+            if ( Children != null )
             {
-                children.Item1.GetSources(mapPathSources);
-                children.Item2.GetSources(mapPathSources);
+                Children.Item1.GetSources(mapPathSources);
+                Children.Item2.GetSources(mapPathSources);
             }
         }
 
@@ -280,7 +278,7 @@ namespace Abnaki.Albiruni.Tree
 
         void AccumulateStatistic(Statistic stat)
         {
-            stat.Nodes += 1;
+            stat.Nodes ++;
 
             if ( mapSourceSummaries.IsValueCreated)
             {
@@ -289,10 +287,10 @@ namespace Abnaki.Albiruni.Tree
                     stat.ContentSummary.AggregateWith(pair.Value);
                 }
             }
-            if ( children != null )
+            if ( Children != null )
             {
-                children.Item1.AccumulateStatistic(stat);
-                children.Item2.AccumulateStatistic(stat);
+                Children.Item1.AccumulateStatistic(stat);
+                Children.Item2.AccumulateStatistic(stat);
             }
         }
 
