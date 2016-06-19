@@ -14,13 +14,15 @@ using PropertyChanged;
 namespace Abnaki.Albiruni
 {
     [ImplementPropertyChanged]
-    class MapViewModel 
+    public class MapViewModel 
     {
         public MapViewModel()
         {
             Rectangles = new ObservableCollection<MapRectangle>();
             Symbols = new ObservableCollection<MapPath>();
             Tracks = new ObservableCollection<MapPath>();
+            ViewPortRect = new MapRectangle(); // unspecified
+            MinimumPrecision = 1;
 
             MessageTube.Subscribe<Node>(HandleTree);
         }
@@ -31,18 +33,106 @@ namespace Abnaki.Albiruni
         public ObservableCollection<MapPath> Symbols { get; private set; }
         public ObservableCollection<MapPath> Tracks { get; private set; }
 
+        public double MinimumPrecision { get; set; }
+
+        public MapRectangle ViewPortRect { get; set; }
+
         //public ObservableCollection<Point> Points { get; set; }
         //public ObservableCollection<Polyline> Polylines { get; set; }
 
         void HandleTree(Node root)
         {
-            var stat = root.GetStatistic();
-            Debug.WriteLine(stat);
-
             ClearAdornments();
 
-            // here is the whole motivation of Albiruni
+            root.DebugPrint();
 
+            Node.Statistic stat = root.GetStatistic();
+            Debug.WriteLine(stat);
+            if (stat.ContentSummary.Points > 0)
+            {
+                double midLat = (stat.ContentSummary.MinLatitude.Value + stat.ContentSummary.MaxLatitude.Value)/2;
+                double midLon = (stat.ContentSummary.MinLongitude.Value + stat.ContentSummary.MaxLongitude.Value)/2;
+                MapCenter = new Location(midLat, midLon);
+
+		// wish to be able to predict proper ViewPortRect
+                //double viewWidth = ViewPortRect.East - ViewPortRect.West;
+                //double viewHeight = ViewPortRect.North - ViewPortRect.South;
+                //ViewPortRect = new MapRectangle()
+                //{
+                //    West = MapCenter.Longitude - viewWidth / 2,
+                //    East = MapCenter.Longitude + viewWidth / 2,
+                //    North = MapCenter.Latitude + viewHeight / 2,
+                //    South = MapCenter.Latitude - viewHeight / 2
+                //};
+
+		// not expected to work without knowing how MapCenter affects ViewPortRect
+                AddDescendantRectangles(root, null);
+            }
+        }
+
+        /// <summary>
+        /// Here is the principal motivation for Albiruni.
+        /// Add a Rectangle for every Node in tree that intersects ViewPortRect,
+        /// not descending to any Nodes having Delta < MinimumPrecision.
+        /// </summary>
+        /// <returns>true if anything added</returns>
+        bool AddDescendantRectangles(Node node, Node parent)
+        {
+            if (node.Delta < MinimumPrecision)
+                return false;
+
+            switch (node.Axis)
+            {
+                case Axis.NorthSouth:
+                    if (node.Degrees > ViewPortRect.North)
+                        return false;
+                    if (node.Degrees + node.Delta < ViewPortRect.South)
+                        return false;
+                    break;
+                case Axis.EastWest:
+                    if (node.Degrees > ViewPortRect.East)
+                        return false;
+                    if (node.Degrees + node.Delta < ViewPortRect.West)
+                        return false;
+                    break;
+            }
+
+            bool childRectanglesAdded = false;
+            if ( node.Children != null )
+            {
+                childRectanglesAdded |= AddDescendantRectangles(node.Children.Item1, node);
+                childRectanglesAdded |= AddDescendantRectangles(node.Children.Item2, node);
+            }
+
+            if (childRectanglesAdded)
+                return true;
+
+            if ( node.Children != null && parent != null && parent.Delta >= MinimumPrecision )
+            {
+                // any descendants exist, and node has not been excluded for view or precision reasons (above)
+                MapRectangle r;
+                switch ( node.Axis )
+                {
+                    case Axis.NorthSouth:
+                        r = new MapRectangle() { 
+                            South = node.Degrees, North = node.Degrees + node.Delta, 
+                            West = parent.Degrees, East = parent.Degrees + parent.Delta
+                        };
+                        break;
+                    case Axis.EastWest:
+                        r = new MapRectangle()
+                        {
+                            South = parent.Degrees, North = parent.Degrees + parent.Delta,
+                            West = node.Degrees, East = node.Degrees + node.Delta
+                        };
+                        break;
+                    default:
+                        throw new NotSupportedException("No support for axis " + node.Axis);
+                }
+                this.Rectangles.Add(r); // efficient ?
+                return true;
+            }
+            return false;
         }
 
         void ClearAdornments()
