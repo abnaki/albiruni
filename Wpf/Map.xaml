@@ -80,7 +80,8 @@
             TileLayer="{StaticResource OpenStreetMap}"
             MouseLeftButtonDown="MapMouseLeftButtonDown"
             MouseRightButtonDown="MapMouseRightButtonDown"
-            ManipulationInertiaStarting="MapManipulationInertiaStarting">
+            ManipulationInertiaStarting="MapManipulationInertiaStarting"
+            ViewportChanged="map_ViewportChanged">
             <map:MapGraticule
                 Opacity="0.6" />
             <map:MapScale
