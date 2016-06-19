@@ -14,7 +14,8 @@ namespace Abnaki.Albiruni.Tree
 
     public class Node
     {
-        protected Node()
+        /// <summary>usually only for deserialization</summary>
+        public Node()
         {
 
         }
@@ -270,5 +271,52 @@ namespace Abnaki.Albiruni.Tree
             return this.Axis + " " + this.Degrees + " +" + this.Delta + " " + (this.Degrees + this.Delta);
         }
 
+        public Statistic GetStatistic()
+        {
+            Statistic stat = new Statistic();
+            AccumulateStatistic(stat);
+            return stat;
+        }
+
+        void AccumulateStatistic(Statistic stat)
+        {
+            stat.Nodes += 1;
+
+            if ( mapSourceSummaries.IsValueCreated)
+            {
+                foreach ( var pair in mapSourceSummaries.Value )
+                {
+                    stat.ContentSummary.AggregateWith(pair.Value);
+                }
+            }
+            if ( children != null )
+            {
+                children.Item1.AccumulateStatistic(stat);
+                children.Item2.AccumulateStatistic(stat);
+            }
+        }
+
+        public class Statistic
+        {
+            public Statistic()
+            {
+                this.ContentSummary = new SourceContentSummary();
+            }
+
+            /// <summary>
+            /// Count of self and descendants
+            /// </summary>
+            public int Nodes { get; set; }
+
+            /// <summary>
+            /// Totals and extremes of self and all descendants
+            /// </summary>
+            public SourceContentSummary ContentSummary { get; private set; }
+
+            public override string ToString()
+            {
+                return Nodes + " nodes, " + ContentSummary;
+            }
+        }
     }
 }
