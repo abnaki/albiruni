@@ -67,6 +67,9 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WPFFolderBrowser">
+      <HintPath>..\packages\WPFFolderBrowser.1.0.2\lib\WPFFolderBrowser.dll</HintPath>
+    </Reference>
     <Reference Include="Xceed.Wpf.AvalonDock, Version=2.8.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>packages\Extended.Wpf.Toolkit.2.8\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
@@ -96,6 +99,7 @@
     <Compile Include="..\AlbiruniAssemblyInfo.cs">
       <Link>AlbiruniAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="FileMenuBus.cs" />
     <Compile Include="Graphic\Curve\Track.cs" />
     <Compile Include="Graphic\Symbol\Diamond.cs" />
     <Compile Include="MainControl.xaml.cs">
@@ -145,6 +149,10 @@
     <ProjectReference Include="..\..\windows\Library\Software\WpfPreferredControls\WpfPreferredControls.csproj">
       <Project>{c3c851a0-99cc-4295-b4f6-5085cfd5fd83}</Project>
       <Name>WpfPreferredControls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Basis\Basis.csproj">
+      <Project>{e29d1521-0f4e-49f7-8c4d-cd2753a24aa6}</Project>
+      <Name>Basis</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
