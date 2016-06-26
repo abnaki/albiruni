@@ -9,7 +9,7 @@ using Abnaki.Albiruni;
 using Abnaki.Albiruni.Providers;
 using Abnaki.Albiruni.Tree;
 
-namespace ProviderTest1
+namespace Abnaki.Albiruni.Tests.Provider
 {
     [TestClass]
     public class UnitTest1
@@ -19,7 +19,9 @@ namespace ProviderTest1
             // Not only does Basis project reference Geo (geospatial library) by Nuget, but also
             // github.com/sibartlett/Geo is cloned into a sibling workspace;
             // and note test executes in CurrentDirectory equal to bin\debug under project.
-            string ddir = @"..\..\..\..\..\Geo\reference\gpx";
+            // string ddir = @"..\..\..\..\..\Geo\reference\gpx";
+
+            string ddir = @"..\..\..\..\Sample";
 
             return new DirectoryInfo(Path.Combine(Environment.CurrentDirectory, ddir));
         }
@@ -61,17 +63,17 @@ namespace ProviderTest1
         }
 
         [TestMethod]
-        public void TestNursery()
+        public Node TestNursery()
         {
             DirectoryInfo di = TestingGpxDir();
             DirectoryInfo dicur = new DirectoryInfo(Environment.CurrentDirectory);
             DirectoryInfo ditarget = dicur.CreateSubdirectory("albiruni");
 
             CleanDirectory(ditarget);
-            
+
             Node root = Node.NewGlobalRoot();
 
-            string baseWildcard = "c*"; // sample of files
+            string baseWildcard = "*"; // sample of files
 
             Nursery.GrowTree(root, di, ditarget, baseWildcard);
 
@@ -81,6 +83,8 @@ namespace ProviderTest1
             Nursery.Read(checkRoot, ditarget, baseWildcard + Nursery.FileExt);
 
             //checkRoot.DebugPrint();
+
+            return root;
         }
 
         static void CleanDirectory(DirectoryInfo di)
