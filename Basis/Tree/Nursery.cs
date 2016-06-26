@@ -16,19 +16,26 @@ namespace Abnaki.Albiruni.Tree
     {
         public const string FileExt = ".abt";
 
-        //SortedSet<Source> sources = new SortedSet<Source>();
+        public class Guidance
+        {
+            /// <summary>start of filenames</summary>
+            public string Wildcard = "*";
+
+            /// <summary>minimum threshold, in degrees; no nodes will have Delta below this</summary>
+            public double MinimumPrecision = 1;
+        }
 
         /// <summary>
         /// Descend to find source files and populate tree starting at root.
         /// </summary>
-        public static void GrowTree(Node root, DirectoryInfo disource, DirectoryInfo ditarget, string wildcard = "*")
+        public static void GrowTree(Node root, DirectoryInfo disource, DirectoryInfo ditarget, Guidance guidance)
         {
-            GrowSub(root, disource, disource, ditarget, wildcard);
+            GrowSub(root, disource, disource, ditarget, guidance);
         }
 
-        static void GrowSub(Node root, DirectoryInfo disource, DirectoryInfo di, DirectoryInfo ditarget, string wildcard)
+        static void GrowSub(Node root, DirectoryInfo disource, DirectoryInfo di, DirectoryInfo ditarget, Guidance guidance)
         {
-            foreach ( FileInfo fi in di.GetFiles(wildcard + GpxFile.Extension) )
+            foreach ( FileInfo fi in di.GetFiles(guidance.Wildcard + GpxFile.Extension) )
             {
                 string relpath = AbnakiFile.RelativePath(di, disource);
                 FileInfo outfile = AbnakiFile.CombinedFilePath(ditarget, relpath, Path.ChangeExtension(fi.Name, FileExt));
@@ -45,7 +52,7 @@ namespace Abnaki.Albiruni.Tree
                     //sources.Add(source);
 
                     firoot = Node.NewGlobalRoot();
-                    firoot.Populate(source);
+                    firoot.Populate(source, guidance.MinimumPrecision);
 
                     // write firoot to a relative file under ditarget
                     foreach (DirectoryInfo disub in AbnakiFile.DirectorySequence(outfile))
@@ -73,7 +80,7 @@ namespace Abnaki.Albiruni.Tree
 
             foreach ( DirectoryInfo disub in di.GetDirectories())
             {
-                GrowSub(root, disource, disub, ditarget, wildcard);
+                GrowSub(root, disource, disub, ditarget, guidance);
             }
         }
 
