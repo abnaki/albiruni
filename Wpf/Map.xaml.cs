@@ -83,13 +83,13 @@ namespace Abnaki.Albiruni
             Location locNorthWest = map.ViewportPointToLocation(pNorthWest);
             Location locSouthEast = map.ViewportPointToLocation(pSouthEast);
 
-            this.DataContext.ViewPortRect = new MapRectangle()
+            this.DataContext.SetViewPort(new MapRectangle()
             {
                 North = locNorthWest.Latitude,
                 South = locSouthEast.Latitude,
                 West = locNorthWest.Longitude,
                 East = locSouthEast.Longitude
-            };
+            });
         }
 
         System.Windows.Threading.DispatcherTimer vptimer 
