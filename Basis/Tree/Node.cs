@@ -36,8 +36,19 @@ namespace Abnaki.Albiruni.Tree
         //Lazy<MultiValueDictionary<Source, IPosition>> mapSourcePositions = new Lazy<MultiValueDictionary<Source, IPosition>>(); // see Microsoft.Experimental.Collections
         Lazy<SortedList<Source, SourceContentSummary>> mapSourceSummaries = new Lazy<SortedList<Source, SourceContentSummary>>();
 
+        public int SourceCount
+        {
+            get
+            {
+                if (mapSourceSummaries.IsValueCreated)
+                    return mapSourceSummaries.Value.Count;
+                else
+                    return 0;
+            }
+        }
+
         // find/add descendants, given point(s)
-        void Grow(Node grandparent, IEnumerable<IPosition> positions, Source source, double minDelta = 0.0001)
+        void Grow(Node grandparent, IEnumerable<IPosition> positions, Source source, double minDelta)
         {
             double newDelta = this.Delta / 2;
             if (grandparent != null)
@@ -119,7 +130,7 @@ namespace Abnaki.Albiruni.Tree
         /// Grow tree to cover given data
         /// </summary>
         /// <param name="gpx"></param>
-        public void Populate(Source source) // may want an interface
+        public void Populate(Source source, double minDelta) // may want an interface
         {
             Geo.Gps.GpsData gdata = source.GpxFile.GeoGpsData;
 
@@ -133,7 +144,7 @@ namespace Abnaki.Albiruni.Tree
             coordinates.AddRange(
                 gdata.Waypoints.Select(w => w.Coordinate));
 
-            Grow(null, coordinates, source, minDelta: 1); // very coarse
+            Grow(null, coordinates, source, minDelta: minDelta);
 
         }
 
