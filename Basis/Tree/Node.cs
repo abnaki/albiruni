@@ -166,23 +166,27 @@ namespace Abnaki.Albiruni.Tree
 
         public void DebugPrint()
         {
-            Debug.WriteLine(this);
-
-            Debug.Indent();
-
-            foreach ( var pair in mapSourceSummaries.Value )
+            // not interested in dead-end nodes in entire tree
+            if (mapSourceSummaries.IsValueCreated || Children != null)
             {
-                Debug.WriteLine(pair.Key + " " + pair.Value);
+                Debug.WriteLine(this);
 
+                Debug.Indent();
+
+                foreach (var pair in mapSourceSummaries.Value)
+                {
+                    Debug.WriteLine(pair.Key + " " + pair.Value);
+
+                }
+
+                if (Children != null)
+                {
+                    Children.Item1.DebugPrint();
+                    Children.Item2.DebugPrint();
+                }
+
+                Debug.Unindent();
             }
-
-            if ( Children != null )
-            {
-                Children.Item1.DebugPrint();
-                Children.Item2.DebugPrint();
-            }
-
-            Debug.Unindent();
         }
 
         const int filever = 1;
