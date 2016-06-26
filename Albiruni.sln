@@ -1,4 +1,3 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Express 2013 for Windows Desktop
 VisualStudioVersion = 12.0.31101.0
@@ -22,6 +21,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProviderTest1", "Tests\ProviderTest1\ProviderTest1.csproj", "{EBD4B6F8-505E-44E1-87B6-305588444E0F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfPreferredControls", "..\windows\Library\Software\WpfPreferredControls\WpfPreferredControls.csproj", "{C3C851A0-99CC-4295-B4F6-5085CFD5FD83}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapTest1", "Tests\MapTest1\MapTest1.csproj", "{3EB857DE-EA66-4FAD-A276-0BF59D9683B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +54,10 @@ Global
 		{C3C851A0-99CC-4295-B4F6-5085CFD5FD83}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3C851A0-99CC-4295-B4F6-5085CFD5FD83}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3C851A0-99CC-4295-B4F6-5085CFD5FD83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EB857DE-EA66-4FAD-A276-0BF59D9683B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EB857DE-EA66-4FAD-A276-0BF59D9683B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EB857DE-EA66-4FAD-A276-0BF59D9683B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EB857DE-EA66-4FAD-A276-0BF59D9683B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -64,5 +69,6 @@ Global
 		{3D6F0FBC-FCBB-4EA2-A139-CF0C86604CF4} = {FB2A540B-96A6-434C-8C77-0B331333DEE4}
 		{EBD4B6F8-505E-44E1-87B6-305588444E0F} = {46DD0C71-8F8F-47A8-953D-90315E5125C1}
 		{C3C851A0-99CC-4295-B4F6-5085CFD5FD83} = {FB2A540B-96A6-434C-8C77-0B331333DEE4}
+		{3EB857DE-EA66-4FAD-A276-0BF59D9683B1} = {46DD0C71-8F8F-47A8-953D-90315E5125C1}
 	EndGlobalSection
 EndGlobal
