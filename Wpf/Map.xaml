@@ -74,7 +74,7 @@
         </Grid.ColumnDefinitions>
         <map:Map
             x:Name="map"
-            ZoomLevel="11"
+            ZoomLevel="5"
             MaxZoomLevel="20"
             Center="{Binding MapCenter}"
             TileLayer="{StaticResource OpenStreetMap}"
