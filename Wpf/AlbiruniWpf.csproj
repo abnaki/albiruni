@@ -101,6 +101,7 @@
     </Compile>
     <Compile Include="FileMenuBus.cs" />
     <Compile Include="Graphic\Curve\Track.cs" />
+    <Compile Include="Graphic\MapExtensions.cs" />
     <Compile Include="Graphic\Symbol\Diamond.cs" />
     <Compile Include="MainControl.xaml.cs">
       <DependentUpon>MainControl.xaml</DependentUpon>
