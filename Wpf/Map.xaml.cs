@@ -36,7 +36,7 @@ namespace Abnaki.Albiruni
             base.OnInitialized(e);
 
             this.DataContext = new MapViewModel();
-            this.DataContext.Testing();
+            //this.DataContext.Testing();
         }
 
         #region Originally from xamlmapcontrol/SampleApps/WpfApplication/MainWindow.xaml.cs
