@@ -35,38 +35,41 @@ namespace Abnaki.Albiruni
 
         public double MinimumPrecision { get; set; }
 
+        /// <summary>Last known rectangle; not bound to control.  i.e. set{} does not affect the map.
+        /// </summary>
         public MapRectangle ViewPortRect { get; set; }
 
         //public ObservableCollection<Point> Points { get; set; }
         //public ObservableCollection<Polyline> Polylines { get; set; }
 
-        void HandleTree(Node root)
+        public void HandleTree(Node root)
         {
             ClearAdornments();
 
-            root.DebugPrint();
+            //root.DebugPrint();
 
             Node.Statistic stat = root.GetStatistic();
             Debug.WriteLine(stat);
             if (stat.ContentSummary.Points > 0)
             {
-                double midLat = (stat.ContentSummary.MinLatitude.Value + stat.ContentSummary.MaxLatitude.Value)/2;
-                double midLon = (stat.ContentSummary.MinLongitude.Value + stat.ContentSummary.MaxLongitude.Value)/2;
+                double midLat = (stat.ContentSummary.MinLatitude.Value + stat.ContentSummary.MaxLatitude.Value) / 2;
+                double midLon = (stat.ContentSummary.MinLongitude.Value + stat.ContentSummary.MaxLongitude.Value) / 2;
+
+                // predicting bounds from last known view
+                double viewWidth = ViewPortRect.East - ViewPortRect.West;
+                double viewHeight = ViewPortRect.North - ViewPortRect.South;
+
                 MapCenter = new Location(midLat, midLon);
 
-		// wish to be able to predict proper ViewPortRect
-                //double viewWidth = ViewPortRect.East - ViewPortRect.West;
-                //double viewHeight = ViewPortRect.North - ViewPortRect.South;
-                //ViewPortRect = new MapRectangle()
-                //{
-                //    West = MapCenter.Longitude - viewWidth / 2,
-                //    East = MapCenter.Longitude + viewWidth / 2,
-                //    North = MapCenter.Latitude + viewHeight / 2,
-                //    South = MapCenter.Latitude - viewHeight / 2
-                //};
+                MapRectangle logicalBound = new MapRectangle()
+                {
+                    West = midLon - viewWidth / 2,
+                    East = midLon + viewWidth / 2,
+                    North = midLat + viewHeight / 2,
+                    South = midLat - viewHeight / 2
+                };
 
-		// not expected to work without knowing how MapCenter affects ViewPortRect
-                AddDescendantRectangles(root, null);
+                AddDescendantRectangles(root, null, logicalBound);
             }
         }
 
@@ -76,7 +79,7 @@ namespace Abnaki.Albiruni
         /// not descending to any Nodes having Delta < MinimumPrecision.
         /// </summary>
         /// <returns>true if anything added</returns>
-        bool AddDescendantRectangles(Node node, Node parent)
+        bool AddDescendantRectangles(Node node, Node parent, MapRectangle logicalBound)
         {
             if (node.Delta < MinimumPrecision)
                 return false;
@@ -84,15 +87,15 @@ namespace Abnaki.Albiruni
             switch (node.Axis)
             {
                 case Axis.NorthSouth:
-                    if (node.Degrees > ViewPortRect.North)
+                    if (node.Degrees > logicalBound.North)
                         return false;
-                    if (node.Degrees + node.Delta < ViewPortRect.South)
+                    if (node.Degrees + node.Delta < logicalBound.South)
                         return false;
                     break;
                 case Axis.EastWest:
-                    if (node.Degrees > ViewPortRect.East)
+                    if (node.Degrees > logicalBound.East)
                         return false;
-                    if (node.Degrees + node.Delta < ViewPortRect.West)
+                    if (node.Degrees + node.Delta < logicalBound.West)
                         return false;
                     break;
             }
@@ -100,8 +103,8 @@ namespace Abnaki.Albiruni
             bool childRectanglesAdded = false;
             if ( node.Children != null )
             {
-                childRectanglesAdded |= AddDescendantRectangles(node.Children.Item1, node);
-                childRectanglesAdded |= AddDescendantRectangles(node.Children.Item2, node);
+                childRectanglesAdded |= AddDescendantRectangles(node.Children.Item1, node, logicalBound);
+                childRectanglesAdded |= AddDescendantRectangles(node.Children.Item2, node, logicalBound);
             }
 
             if (childRectanglesAdded)
@@ -129,11 +132,15 @@ namespace Abnaki.Albiruni
                     default:
                         throw new NotSupportedException("No support for axis " + node.Axis);
                 }
+                r.Fill = m_defaultFillBrush;
                 this.Rectangles.Add(r); // efficient ?
                 return true;
             }
             return false;
         }
+
+        System.Windows.Media.Brush m_defaultFillBrush = new SolidColorBrush(Color.FromArgb((byte)32, (byte)255, (byte)0, (byte)0));
+
 
         void ClearAdornments()
         {
@@ -144,14 +151,14 @@ namespace Abnaki.Albiruni
 
         public void Testing()
         {
-            MapCenter = new Location(30, -100);
+            MapCenter = new Location(30, -100); // Texas
 
             MapRectangle r = new MapRectangle();
             r.South = MapCenter.Latitude;
             r.West = MapCenter.Longitude;
             r.North = r.South + 0.1;
             r.East = r.West + 0.1;
-            r.Fill = new SolidColorBrush(Color.FromArgb((byte)32, (byte)255, (byte)0, (byte)0));
+            r.Fill = m_defaultFillBrush;
             Rectangles.Add(r);
 
             var diamond = new Abnaki.Albiruni.Graphic.Symbol.Diamond(MapCenter, 0.01, 0.015);
