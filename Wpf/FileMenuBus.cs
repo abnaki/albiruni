@@ -8,6 +8,7 @@ using Abnaki.Windows.GUI;
 using Abnaki.Windows.Software.Wpf;
 using Abnaki.Windows.Software.Wpf.Menu;
 using Abnaki.Windows.Software.Wpf.Ultimate;
+using Abnaki.Albiruni.Tree;
 
 
 namespace Abnaki.Albiruni
@@ -45,7 +46,9 @@ namespace Abnaki.Albiruni
                     DirectoryInfo ditarget = di.CreateSubdirectory("albiruni");
 
                     var root = Abnaki.Albiruni.Tree.Node.NewGlobalRoot();
-                    Abnaki.Albiruni.Tree.Nursery.GrowTree(root, di, ditarget);
+                    Nursery.Guidance guidance = new Nursery.Guidance();
+                    guidance.MinimumPrecision = 0.2; // will have UI
+                    Nursery.GrowTree(root, di, ditarget, guidance);
 
                     MessageTube.Publish(root);
                 }
