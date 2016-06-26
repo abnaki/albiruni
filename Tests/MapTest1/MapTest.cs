@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using Abnaki.Albiruni;
+using Abnaki.Albiruni.Graphic;
 using Abnaki.Albiruni.Tree;
 
 namespace Abnaki.Albiruni.Tests.Map
@@ -18,10 +19,15 @@ namespace Abnaki.Albiruni.Tests.Map
             var provTest = new Abnaki.Albiruni.Tests.Provider.UnitTest1();
             Node root = provTest.TestNursery();
 
-            vm.ViewPortRect = new MapControl.MapRectangle()
+            root.DebugPrint();
+
+            vm.SetViewPort(new MapControl.MapRectangle()
             {
-                West = -100, East = 60, North = 50, South = -40
-            };
+                West = -100,
+                East = 60,
+                North = 50,
+                South = -40
+            });
 
             vm.HandleTree(root);
 
@@ -29,7 +35,7 @@ namespace Abnaki.Albiruni.Tests.Map
             Debug.Indent();
             foreach ( var r in vm.Rectangles )
             {
-                Debug.WriteLine("W=" + r.West + ", E=" + r.East + ", S="  + r.South + ", N=" + r.North + ", " + r.Fill);
+                Debug.WriteLine(r.ToStringUseful() + ", " + r.Fill);
             }
             Debug.Unindent();
         }
