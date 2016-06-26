@@ -14,29 +14,33 @@ namespace Abnaki.Albiruni.Tests.Provider
     [TestClass]
     public class UnitTest1
     {
-        DirectoryInfo TestingGpxDir()
+        DirectoryInfo GeoGpxDir()
         {
             // Not only does Basis project reference Geo (geospatial library) by Nuget, but also
             // github.com/sibartlett/Geo is cloned into a sibling workspace;
             // and note test executes in CurrentDirectory equal to bin\debug under project.
-            // string ddir = @"..\..\..\..\..\Geo\reference\gpx";
-
-            string ddir = @"..\..\..\..\Sample";
+            string ddir = @"..\..\..\..\..\Geo\reference\gpx";
 
             return new DirectoryInfo(Path.Combine(Environment.CurrentDirectory, ddir));
         }
 
-        IEnumerable<FileInfo> TestingGpxFiles()
+        DirectoryInfo SampleGpxDir()
         {
-            DirectoryInfo di = TestingGpxDir();
+            string ddir = @"..\..\..\..\Sample\Flight";
 
+            return new DirectoryInfo(Path.Combine(Environment.CurrentDirectory, ddir));
+        }
+
+        IEnumerable<FileInfo> GeoGpxFiles()
+        {
+            DirectoryInfo di = GeoGpxDir();
             return di.GetFiles("*" + GpxFile.Extension);
         }
 
         [TestMethod]
         public void TestTree()
         {
-            FileInfo fi = TestingGpxFiles().OrderBy(f => f.Length).First();
+            FileInfo fi = GeoGpxFiles().OrderBy(f => f.Length).First();
 
             CompleteTest(fi);
         }
@@ -44,11 +48,12 @@ namespace Abnaki.Albiruni.Tests.Provider
         [TestMethod]
         public void TestTreeMedium()
         {
-            FileInfo fi = TestingGpxFiles().Where(f => f.Length < 15000).OrderBy(f => f.Length).Last();
+            FileInfo fi = GeoGpxFiles().Where(f => f.Length < 15000).OrderBy(f => f.Length).Last();
 
             CompleteTest(fi);
         }
 
+        // becoming archaic
         void CompleteTest(FileInfo figpx)
         {
             Debug.WriteLine(figpx.FullName);
@@ -57,7 +62,7 @@ namespace Abnaki.Albiruni.Tests.Provider
 
             Source source = new Abnaki.Albiruni.Tree.Source(figpx);
 
-            root.Populate(source);
+            root.Populate(source, minDelta: 1);
 
             root.DebugPrint();
         }
@@ -65,7 +70,7 @@ namespace Abnaki.Albiruni.Tests.Provider
         [TestMethod]
         public Node TestNursery()
         {
-            DirectoryInfo di = TestingGpxDir();
+            DirectoryInfo di = SampleGpxDir();
             DirectoryInfo dicur = new DirectoryInfo(Environment.CurrentDirectory);
             DirectoryInfo ditarget = dicur.CreateSubdirectory("albiruni");
 
@@ -73,14 +78,13 @@ namespace Abnaki.Albiruni.Tests.Provider
 
             Node root = Node.NewGlobalRoot();
 
-            string baseWildcard = "*"; // sample of files
-
-            Nursery.GrowTree(root, di, ditarget, baseWildcard);
+            Nursery.Guidance guidance = new Nursery.Guidance();
+            Nursery.GrowTree(root, di, ditarget, guidance);
 
             //root.DebugPrint();
 
             Node checkRoot = Node.NewGlobalRoot();
-            Nursery.Read(checkRoot, ditarget, baseWildcard + Nursery.FileExt);
+            Nursery.Read(checkRoot, ditarget, guidance.Wildcard + Nursery.FileExt);
 
             //checkRoot.DebugPrint();
 
