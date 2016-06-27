@@ -60,7 +60,9 @@ namespace Abnaki.Albiruni.Tests.Provider
 
             var root = Node.NewGlobalRoot();
 
-            Source source = new Abnaki.Albiruni.Tree.Source(figpx);
+            DirectoryInfo dicur = new DirectoryInfo(Environment.CurrentDirectory);
+
+            Source source = new Abnaki.Albiruni.Tree.Source(figpx, dicur);
 
             root.Populate(source, minDelta: 1);
 
