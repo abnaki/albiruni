@@ -14,8 +14,9 @@ namespace Abnaki.Albiruni.Tree
 
         public Source ReadSource()
         {
-            string path = this.Reader.ReadString();
-            return mapPathSources[path];
+            //string path = this.Reader.ReadString();
+            int ser = this.Reader.ReadInt32();
+            return mapNumberSources[ser];
         }
 
         public void Dispose()
@@ -31,10 +32,9 @@ namespace Abnaki.Albiruni.Tree
 
             for ( int i = 0; i < n; i++ )
             {
-                string path = Reader.ReadString();
                 Source source = new Source();
-                source.Read(Reader);
-                mapPathSources[path] = source;
+                source.Read(this.Reader);
+                mapNumberSources[source.SerialNumber] = source;
             }
         }
 
@@ -43,6 +43,6 @@ namespace Abnaki.Albiruni.Tree
             Reader = new System.IO.BinaryReader(stream);
         }
 
-        SortedList<string, Source> mapPathSources = new SortedList<string, Source>();
+        SortedList<int, Source> mapNumberSources = new SortedList<int, Source>();
     }
 }
