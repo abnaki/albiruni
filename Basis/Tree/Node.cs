@@ -200,7 +200,7 @@ namespace Abnaki.Albiruni.Tree
             }
         }
 
-        const int filever = 1;
+        const int filever = 2;
 
         public void Write(IBinaryWrite ibw)
         {
@@ -233,6 +233,9 @@ namespace Abnaki.Albiruni.Tree
         {
             BinaryReader br = ibr.Reader;
             int v = br.ReadInt32();
+            if (v < 2)
+                throw new NotSupportedException("Old version");
+
             this.Axis = (Axis)br.ReadInt32();
             this.Degrees = br.ReadDouble();
             this.Delta = br.ReadDouble();
@@ -261,21 +264,17 @@ namespace Abnaki.Albiruni.Tree
             }
         }
 
-        internal void GetSources(SortedList<string, Source> mapPathSources)
+        internal void GetSources(List<Source> sources)
         {
             if (mapSourceSummaries.IsValueCreated)
             {
-                foreach ( var pair in mapSourceSummaries.Value )
-                {
-                    Source s = pair.Key;
-                    mapPathSources[s.Path] = s;
-                }
+                sources.AddRange(mapSourceSummaries.Value.Keys);
             }
 
             if ( Children != null )
             {
-                Children.Item1.GetSources(mapPathSources);
-                Children.Item2.GetSources(mapPathSources);
+                Children.Item1.GetSources(sources);
+                Children.Item2.GetSources(sources);
             }
         }
 
