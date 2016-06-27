@@ -22,6 +22,8 @@ namespace Abnaki.Albiruni.Tree
             public string Wildcard = "*";
 
             /// <summary>minimum threshold, in degrees; no nodes will have Delta below this</summary>
+            /// <remarks>90 * 2^-12 is about 2.4 km at equator, and -15 would be 300 meters.
+            /// </remarks>
             public double MinimumPrecision = 1;
         }
 
