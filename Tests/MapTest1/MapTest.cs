@@ -21,6 +21,8 @@ namespace Abnaki.Albiruni.Tests.Map
 
             root.DebugPrint();
 
+            vm.PrecisionPower = 6;
+
             vm.SetViewPort(new MapControl.MapRectangle()
             {
                 West = -100,
