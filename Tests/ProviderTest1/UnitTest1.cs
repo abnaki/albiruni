@@ -68,7 +68,12 @@ namespace Abnaki.Albiruni.Tests.Provider
         }
 
         [TestMethod]
-        public Node TestNursery()
+        public void TestNursery()
+        {
+            Node root = TestNurseryRoot();
+        }
+
+        public Node TestNurseryRoot()
         {
             DirectoryInfo di = SampleGpxDir();
             DirectoryInfo dicur = new DirectoryInfo(Environment.CurrentDirectory);
