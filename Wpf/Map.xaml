@@ -134,6 +134,21 @@
                         Maximum="{Binding MaxZoomLevel, ElementName=map}"
                         Value="{Binding TargetZoomLevel, ElementName=map}" />
                 </StackPanel>
+                <StackPanel>
+                    <TextBlock
+                        Text="Precision"
+                        HorizontalAlignment="Center" />
+                    <Slider 
+                        Orientation="Vertical"
+                        HorizontalAlignment="Center"
+                        Height="70"
+                        Minimum="6"
+                        Maximum="12"
+                        Value="{Binding PrecisionPower}"
+                        Name="slprecision"
+                        SmallChange="1"
+                        ValueChanged="slprecision_ValueChanged"></Slider>
+                </StackPanel>
             </StackPanel>
         </Grid>
     </Grid>
