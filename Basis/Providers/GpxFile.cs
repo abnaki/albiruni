@@ -29,43 +29,49 @@ namespace Abnaki.Albiruni.Providers
             if (false == fi.Exists)
                 throw new FileNotFoundException("Nonexistent " + fi.FullName);
 
-            var gser = NewSerializer(fi);
-            using ( Stream str = fi.OpenRead() )
-            using (StreamWrapper sw = new StreamWrapper(str))
+            //var gser = NewSerializer(fi);
+
+            using (Stream str = fi.OpenRead())
             {
-                GeoGpsData = gser.DeSerialize(sw);
+                GeoGpsData = GpsData.Parse(str);
+
+                //using (StreamWrapper sw = new StreamWrapper(str))
+                //{
+                //    GeoGpsData = gser.DeSerialize(sw);
+                //}
             }
         }
 
         public GpsData GeoGpsData { get; private set; }
 
-        IGpsFileSerializer NewSerializer(FileInfo fi)
-        {
-            using (Stream str = fi.OpenRead())
-            using (XmlReader xr = XmlTextReader.Create(str) )
-            {
-                for (int i = 0; i < 5 && xr.Name != "gpx"; i++)
-                {
-                    bool b = xr.Read();
-                }
-                if (xr.Name != "gpx")
-                    throw new ApplicationException("Failed to find gpx in " + fi.FullName);
+        // unnecessary
+        //IGpsFileSerializer NewSerializer(FileInfo fi)
+        //{
+        //    using (Stream str = fi.OpenRead())
+        //    using (XmlReader xr = XmlTextReader.Create(str) )
+        //    {
+        //        for (int i = 0; i < 5 && xr.Name != "gpx"; i++)
+        //        {
+        //            bool b = xr.Read();
+        //        }
+        //        if (xr.Name != "gpx")
+        //            throw new ApplicationException("Failed to find gpx in " + fi.FullName);
 
-                string v = xr.GetAttribute("version");
+        //        string v = xr.GetAttribute("version");
 
-                switch ( v )
-                {
-                    case "1.0":
-                        return new Geo.Gps.Serialization.Gpx10Serializer();
+        //        switch ( v )
+        //        {
+        //            case "1.0":
+        //                return new Geo.Gps.Serialization.Gpx10Serializer();
 
-                    case "1.1":
-                        return new Geo.Gps.Serialization.Gpx11Serializer();
+        //            case "1.1":
+        //                return new Geo.Gps.Serialization.Gpx11Serializer();
 
-                    default:
-                        throw new ApplicationException("No support for gpx version " + v + " of " + fi.FullName);
-                }
-            }
+        //            default:
+        //                throw new ApplicationException("No support for gpx version " + v + " of " + fi.FullName);
+        //        }
+        //    }
             
-        }
+        //}
     }
 }

@@ -23,19 +23,21 @@ namespace Abnaki.Albiruni
             Symbols = new ObservableCollection<MapPath>();
             Tracks = new ObservableCollection<MapPath>();
             ViewPortRect = new MapRectangle(); // unspecified
-            MinimumPrecision = 0.2;
 
-            MessageTube.Subscribe<Node>(HandleTree);
+            MessageTube.SubscribeCostly<Node>(HandleTree);
         }
 
         public Location MapCenter { get; set; }
+
+        /// <summary>
+        /// 90 / 2^PrecisionPower will be minimum limit on Delta of a Node to show individually as a MapRectangle
+        /// </summary>
+        public int PrecisionPower { get; set; }
 
         // want to use BulkObservableCollection or similar
         public ObservableCollection<MapRectangle> Rectangles { get; private set; }
         public ObservableCollection<MapPath> Symbols { get; private set; }
         public ObservableCollection<MapPath> Tracks { get; private set; }
-
-        public double MinimumPrecision { get; set; }
 
         /// <summary>Last known rectangle; not bound to control.  i.e. set{} does not affect the map.
         /// </summary>
@@ -50,8 +52,13 @@ namespace Abnaki.Albiruni
             else
             {
                 this.ViewPortRect = rect;
-                UpdateRectangles(newRoot: false);
+                UpdateAdornments();
             }
+        }
+
+        public void UpdateAdornments()
+        {
+            UpdateRectangles(newRoot: false);
         }
 
         Node RootNode { get; set; }
@@ -99,7 +106,8 @@ namespace Abnaki.Albiruni
                 // such as two rectangles abutting longitude +- 180; 
                 // and easily check for its intersection with a Node.
 
-                MapRectangle logicalBound = MapExtensions.NewMapRectangle(
+                DescentLimits limits = new DescentLimits();
+                limits.LogicalBound = MapExtensions.NewMapRectangle(
 
                     west: MapCenter.Longitude - viewWidth / 2,
                     east: MapCenter.Longitude + viewWidth / 2,
@@ -107,9 +115,11 @@ namespace Abnaki.Albiruni
                     south: MapCenter.Latitude - viewHeight / 2
                 );
 
-                Debug.WriteLine("logicalBound " + logicalBound.ToStringUseful());
+                limits.MinimumDelta = 90 / Math.Pow(2d, PrecisionPower);
 
-                AddDescendantRectangles(RootNode, null, logicalBound);
+                Debug.WriteLine("limits " + limits);
+
+                AddDescendantRectangles(RootNode, null, limits);
 
                 if (Rectangles.Count > 0)
                 {
@@ -118,6 +128,17 @@ namespace Abnaki.Albiruni
                     Debug.WriteLine("Southernmost rectangle " + Rectangles.Min(r => r.South));
                     Debug.WriteLine("Northernmost rectangle " + Rectangles.Max(r => r.North));
                 }
+            }
+        }
+
+        class DescentLimits
+        {
+            public MapRectangle LogicalBound { get; set; }
+            public double MinimumDelta { get; set; }
+
+            public override string ToString()
+            {
+                return LogicalBound.ToStringUseful() + ", MinimumDelta=" + MinimumDelta;
             }
         }
 
@@ -137,20 +158,20 @@ namespace Abnaki.Albiruni
         /// not descending to any Nodes having Delta < MinimumPrecision.
         /// </summary>
         /// <returns>true if anything added</returns>
-        DescentResult AddDescendantRectangles(Node node, Node parent, MapRectangle logicalBound)
+        DescentResult AddDescendantRectangles(Node node, Node parent, DescentLimits limits)
         {
             switch (node.Axis)
             {
                 case Axis.NorthSouth:
-                    if (node.Degrees > logicalBound.North)
+                    if (node.Degrees > limits.LogicalBound.North)
                         return DescentResult.None;
-                    if (node.Degrees + node.Delta < logicalBound.South)
+                    if (node.Degrees + node.Delta < limits.LogicalBound.South)
                         return DescentResult.None;
                     break;
                 case Axis.EastWest:
-                    if (node.Degrees > logicalBound.East)
+                    if (node.Degrees > limits.LogicalBound.East)
                         return DescentResult.None;
-                    if (node.Degrees + node.Delta < logicalBound.West)
+                    if (node.Degrees + node.Delta < limits.LogicalBound.West)
                         return DescentResult.None;
                     break;
             }
@@ -167,8 +188,8 @@ namespace Abnaki.Albiruni
             //DescentResult rchild1 = DescentResult.None, rchild2 = DescentResult.None;
             if ( node.Children != null )
             {
-                results.Add(AddDescendantRectangles(node.Children.Item1, node, logicalBound));
-                results.Add(AddDescendantRectangles(node.Children.Item2, node, logicalBound));
+                results.Add(AddDescendantRectangles(node.Children.Item1, node, limits));
+                results.Add(AddDescendantRectangles(node.Children.Item2, node, limits));
             }
 
             if ( node.SourceCount > 0)
@@ -177,7 +198,7 @@ namespace Abnaki.Albiruni
             }
 
             if ( results.Any(r => r == DescentResult.PointsCovered) 
-                && parent != null && parent.Delta >= MinimumPrecision )
+                && parent != null && parent.Delta >= limits.MinimumDelta )
             {
                 // any descendants exist, and node has not been excluded for view or precision reasons (above)
                 MapRectangle r;
