@@ -14,19 +14,25 @@ namespace Abnaki.Albiruni.Tree
     {
         public Source()
         {
-            
+            lock (m_serlock)
+            {
+                this.SerialNumber = m_serialNumbers++;
+            }
         }
 
-        public Source(FileInfo fi)
+        public Source(FileInfo fi, DirectoryInfo dibase) : this()
         {
             this.GpxFile = new Providers.GpxFile();
             this.GpxFile.Deserialize(fi);
 
-            DirectoryInfo dicur = new DirectoryInfo(Environment.CurrentDirectory); // may want to pass in
-
-            this.Path = AbnakiFile.RelativePath(fi, dicur);
+            this.Path = AbnakiFile.RelativePath(fi, dibase);
             
         }
+
+        public int SerialNumber { get; private set; }
+
+        static object m_serlock = new object();
+        static int m_serialNumbers = 0;
 
         public string Path { get; private set; }
 
@@ -42,18 +48,29 @@ namespace Abnaki.Albiruni.Tree
             return this.Path.CompareTo(other.Path);
         }
 
-        const int filever = 1;
+        const int filever = 2;
 
         public void Write(IBinaryWrite ibw)
         {
             ibw.Writer.Write(filever);
+            ibw.Writer.Write(this.SerialNumber);
             ibw.Writer.Write(this.Path);
         }
 
         public void Read(BinaryReader br)
         {
             int v = br.ReadInt32();
+            if (v < 2)
+                throw new NotSupportedException("Old version");
+
+            this.SerialNumber = br.ReadInt32();
             this.Path = br.ReadString();
+
+            lock ( m_serlock )
+            {
+                m_serialNumbers = Math.Max(this.SerialNumber, m_serialNumbers);
+            }
+
             // leaving GpxFile uninitialized; not desired.
         }
     }
