@@ -46,8 +46,10 @@ namespace Abnaki.Albiruni
                     DirectoryInfo ditarget = di.CreateSubdirectory("albiruni");
 
                     var root = Abnaki.Albiruni.Tree.Node.NewGlobalRoot();
+
                     Nursery.Guidance guidance = new Nursery.Guidance();
-                    guidance.MinimumPrecision = 0.2; // will have UI
+                    guidance.MinimumPrecision = 90 / System.Math.Pow(2, 12); // may eventually have UI
+
                     Nursery.GrowTree(root, di, ditarget, guidance);
 
                     MessageTube.Publish(root);
