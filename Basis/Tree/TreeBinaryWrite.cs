@@ -16,16 +16,16 @@ namespace Abnaki.Albiruni.Tree
 
         public void WriteSources(Node root)
         {
-            SortedList<string, Source> mapPathSources = new SortedList<string, Source>();
+            List<Source> sources = new List<Source>();
             
-            root.GetSources(mapPathSources);
+            root.GetSources(sources);
 
-            this.Writer.Write(mapPathSources.Count);
+            this.Writer.Write(sources.Count);
 
-            foreach ( var pair in mapPathSources )
+            foreach ( Source source in sources )
             {
-                Writer.Write(pair.Key);
-                pair.Value.Write(this);
+                //Writer.Write(source.SerialNumber);
+                source.Write(this);
             }
         }
 
@@ -42,7 +42,8 @@ namespace Abnaki.Albiruni.Tree
 
         public void ReferenceSource(Source source)
         {
-            this.Writer.Write(source.Path);
+            // this.Writer.Write(source.Path); // bad to write for every Node
+            this.Writer.Write(source.SerialNumber);
         }
     }
 }
