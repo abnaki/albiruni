@@ -50,7 +50,7 @@ namespace Abnaki.Albiruni.Tree
                 }
                 else
                 {
-                    Source source = new Source(fi);
+                    Source source = new Source(fi, disource);
                     //sources.Add(source);
 
                     firoot = Node.NewGlobalRoot();
