@@ -37,12 +37,12 @@ The display may vary with dimensions of interest, such as date/time or any given
 
 ## Acknowledgments
 
-### Much harder if not for
+Much harder if not for:
 
 - [XAML Map Control](http://xamlmapcontrol.codeplex.com)
 - [Geospatial Library](https://github.com/sibartlett/Geo.git)
 
-### Strongly appreciated
+Strongly appreciated:
 
 - [gpsbabel](https://github.com/gpsbabel/gpsbabel)
 - WPFFolderBrowser
