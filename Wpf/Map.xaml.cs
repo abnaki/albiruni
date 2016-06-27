@@ -36,6 +36,7 @@ namespace Abnaki.Albiruni
             base.OnInitialized(e);
 
             this.DataContext = new MapViewModel();
+            this.DataContext.PrecisionPower = (int)slprecision.Value; // but for this, why not initialized ?
             //this.DataContext.Testing();
         }
 
@@ -102,6 +103,12 @@ namespace Abnaki.Albiruni
 
 
         #endregion
+
+        private void slprecision_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if ( this.DataContext != null )
+                this.DataContext.UpdateAdornments(); // depends on slprecision via PrecisionPower
+        }
 
     }
 }
