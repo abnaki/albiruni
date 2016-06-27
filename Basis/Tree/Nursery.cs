@@ -25,6 +25,8 @@ namespace Abnaki.Albiruni.Tree
             /// <remarks>90 * 2^-12 is about 2.4 km at equator, and -15 would be 300 meters.
             /// </remarks>
             public double MinimumPrecision = 1;
+
+            public SortedDictionary<string, Exception> FilesExceptions = new SortedDictionary<string, Exception>();
         }
 
         /// <summary>
@@ -42,41 +44,51 @@ namespace Abnaki.Albiruni.Tree
                 string relpath = AbnakiFile.RelativePath(di, disource);
                 FileInfo outfile = AbnakiFile.CombinedFilePath(ditarget, relpath, Path.ChangeExtension(fi.Name, FileExt));
 
-                Node firoot;
+                Node firoot = null;
 
-                if (outfile.Exists && outfile.LastWriteTimeUtc > fi.LastWriteTimeUtc) // outfile from valid previously created Node
+                try
                 {
-                    firoot = ReadNodeFile(outfile);
+                    if (outfile.Exists && outfile.LastWriteTimeUtc > fi.LastWriteTimeUtc) // outfile from valid previously created Node
+                    {
+                        firoot = ReadNodeFile(outfile);
+                    }
+                    else
+                    {
+                        Source source = new Source(fi, disource);
+                        //sources.Add(source);
+
+                        firoot = Node.NewGlobalRoot();
+                        firoot.Populate(source, guidance.MinimumPrecision);
+
+                        // write firoot to a relative file under ditarget
+                        foreach (DirectoryInfo disub in AbnakiFile.DirectorySequence(outfile))
+                        {
+                            if (false == disub.Exists)
+                                disub.Create();
+                        }
+
+                        using (Stream outstream = outfile.OpenWrite())
+                        using (InputOutput.IBinaryWrite tbw = new TreeBinaryWrite())
+                        {
+                            tbw.Init(outstream);
+
+                            tbw.WriteSources(firoot);
+
+                            firoot.Write(tbw);
+
+                            Debug.WriteLine("Wrote " + outfile + ", size " + outstream.Position);
+                        }
+                    }
                 }
-                else
+                catch ( Exception ex )
                 {
-                    Source source = new Source(fi, disource);
-                    //sources.Add(source);
-
-                    firoot = Node.NewGlobalRoot();
-                    firoot.Populate(source, guidance.MinimumPrecision);
-
-                    // write firoot to a relative file under ditarget
-                    foreach (DirectoryInfo disub in AbnakiFile.DirectorySequence(outfile))
-                    {
-                        if (false == disub.Exists)
-                            disub.Create();
-                    }
-
-                    using (Stream outstream = outfile.OpenWrite())
-                    using (InputOutput.IBinaryWrite tbw = new TreeBinaryWrite())
-                    {
-                        tbw.Init(outstream);
-
-                        tbw.WriteSources(firoot);
-
-                        firoot.Write(tbw);
-
-                        Debug.WriteLine("Wrote " + outfile + ", size " + outstream.Position);
-                    }
+                    // expected to be a sporadic bad file, not a systematic Albiruni bug.
+                    // AbnakiLog.Exception(ex, "Error due to " + fi.FullName);
+                    guidance.FilesExceptions[fi.FullName] = ex;
                 }
 
-                root.Graft(null, firoot);
+                if (firoot != null)
+                    root.Graft(null, firoot);
 
             }
 
