@@ -53,6 +53,17 @@ namespace Abnaki.Albiruni
                     Nursery.GrowTree(root, di, ditarget, guidance);
 
                     MessageTube.Publish(root);
+
+                    if ( guidance.FilesExceptions.Count > 0 )
+                    {
+                        foreach ( var pair in guidance.FilesExceptions )
+                        {
+                            Abnaki.Windows.AbnakiLog.Exception(pair.Value, "Error due to " + pair.Key);
+                        }
+                        string msg = guidance.FilesExceptions.Count + " error(s)";
+                        Abnaki.Windows.Software.Wpf.Diplomat.Notifier.Error(msg);
+
+                    }
                 }
             }
         }
