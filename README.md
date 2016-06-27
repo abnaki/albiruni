@@ -1,6 +1,6 @@
 # Albiruni
 
-Windows desktop software to map large sets of GPS data such as tracks and waypoints, displayed in an efficient summarized style rarely found in other open source software.
+Windows desktop software to map large sets of GPS data, such as tracks and waypoints, in an efficient summarized style, rarely found in other open source software.
 
 Named after the medieval Persian scientist Abū Rayḥān Muḥammad ibn Aḥmad Al-Bīrūnī.  Almost 1000 years ago, he accurately measured the Earth and tabulated coordinates of hundreds of locations.
 
@@ -33,6 +33,7 @@ OpenStreetMaps will be displayed, as they are free.   Some popular alternative m
 The display may vary with dimensions of interest, such as date/time or any given property of the spatial points.  Color, shade, and hiding/filtering will help answer questions about these variables.  Users may want to know:
 - All regions covered in a range of dates
 - Dates when a region of interest was covered
+- Regions that were never covered
 - Correlations/intersections between multiple specific tracks, or between a GPS track and other date/location information
 
 ## Acknowledgments
