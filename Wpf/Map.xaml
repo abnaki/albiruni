@@ -137,6 +137,7 @@
                 <StackPanel>
                     <TextBlock
                         Text="Precision"
+                        Foreground="Gray"
                         HorizontalAlignment="Center" />
                     <Slider 
                         Orientation="Vertical"
