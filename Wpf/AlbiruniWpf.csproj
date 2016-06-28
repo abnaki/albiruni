@@ -37,6 +37,9 @@
   <PropertyGroup>
     <StartupObject>Abnaki.Albiruni.Starter</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>albiruni.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="FileDb">
       <HintPath>packages\XAML.MapControl.2.9.0\lib\net45\FileDb.dll</HintPath>
@@ -168,6 +171,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="FodyWeavers.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="albiruni.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.1.29.2\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('..\packages\Fody.1.29.2\build\portable-net+sl+win+wpa+wp\Fody.targets')" />
