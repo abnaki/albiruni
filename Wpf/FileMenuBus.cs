@@ -17,7 +17,11 @@ namespace Abnaki.Albiruni
     {
         public FileMenuBus(IMainMenu menu)
         {
-            menu.AddCommandChild(TopMenuKey.File, FileMenuKey.Open, "_Open...");
+            menu.AddCommand(new MenuSeed<FileMenuKey>(FileMenuKey.Open, "_Open...")
+            {
+                ParentKey = TopMenuKey.File,
+                Tooltip = "Open a top-level folder containing files or other folders to search."
+            });
         }
 
         WPFFolderBrowser.WPFFolderBrowserDialog folderDialog = new WPFFolderBrowser.WPFFolderBrowserDialog("Open Folder");
@@ -36,33 +40,50 @@ namespace Abnaki.Albiruni
 
         void FileOpen()
         {
-            if ( true == folderDialog.ShowDialog(Application.Current.MainWindow) )
+            if (true == folderDialog.ShowDialog(Application.Current.MainWindow))
             {
-                using (new WaitCursor())
+                DirectoryInfo di = new DirectoryInfo(folderDialog.FileName);
+
+                Nursery.Guidance guidance = new Nursery.Guidance();
+                guidance.MinimumPrecision = 90 / System.Math.Pow(2, 12); // may eventually have UI
+
+                List<FileInfo> potentialFiles = new List<FileInfo>();
+                Nursery.SearchForFiles(di, guidance, potentialFiles);
+
+                if (potentialFiles.Count == 0)
                 {
-                    // want to move to a worker thread, provide dialog for progress and interrupt button.
+                    Abnaki.Windows.Software.Wpf.Diplomat.Notifier.Error("No compatible files exist under " + di.FullName);
+                }
+                else
+                {
+                    string question = string.Format("Read {0} possible file(s) totaling {1:N0} bytes ?", potentialFiles.Count, potentialFiles.Sum(f => f.Length));
 
-                    DirectoryInfo di = new DirectoryInfo(folderDialog.FileName);
-                    DirectoryInfo ditarget = di.CreateSubdirectory("albiruni");
-
-                    var root = Abnaki.Albiruni.Tree.Node.NewGlobalRoot();
-
-                    Nursery.Guidance guidance = new Nursery.Guidance();
-                    guidance.MinimumPrecision = 90 / System.Math.Pow(2, 12); // may eventually have UI
-
-                    Nursery.GrowTree(root, di, ditarget, guidance);
-
-                    MessageTube.Publish(root);
-
-                    if ( guidance.FilesExceptions.Count > 0 )
+                    if (MessageBoxResult.OK ==
+                        MessageBox.Show(Application.Current.MainWindow, question, "Confirm", MessageBoxButton.OKCancel, MessageBoxImage.Question)
+                        )
                     {
-                        foreach ( var pair in guidance.FilesExceptions )
+                        // want to move to a worker thread, provide dialog for progress and interrupt button.
+                        using (new WaitCursor())
                         {
-                            Abnaki.Windows.AbnakiLog.Exception(pair.Value, "Error due to " + pair.Key);
-                        }
-                        string msg = guidance.FilesExceptions.Count + " error(s)";
-                        Abnaki.Windows.Software.Wpf.Diplomat.Notifier.Error(msg);
+                            DirectoryInfo ditarget = di.CreateSubdirectory("albiruni");
 
+                            var root = Abnaki.Albiruni.Tree.Node.NewGlobalRoot();
+
+                            Nursery.GrowTree(root, di, ditarget, guidance);
+
+                            MessageTube.Publish(root);
+                        }
+
+                        if (guidance.FilesExceptions.Count > 0)
+                        {
+                            foreach (var pair in guidance.FilesExceptions)
+                            {
+                                Abnaki.Windows.AbnakiLog.Exception(pair.Value, "Error due to " + pair.Key);
+                            }
+                            string msg = guidance.FilesExceptions.Count + " error(s)";
+                            Abnaki.Windows.Software.Wpf.Diplomat.Notifier.Error(msg);
+
+                        }
                     }
                 }
             }
