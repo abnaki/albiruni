@@ -10,6 +10,8 @@ Release scheduled for Summer 2016.  Albiruni is under [GPL](./LICENSE).
 
 Practical applications for visualization:
 - personal travel records
+-- macroscopic view
+-- finding detail buried in many files 
 - drone flight logs
 - scientific research
 - business/sales
@@ -35,6 +37,10 @@ The display may vary with dimensions of interest, such as date/time or any given
 - Dates when a region of interest was covered
 - Regions that were never covered
 - Correlations/intersections between multiple specific tracks, or between a GPS track and other date/location information
+
+It will be useful to select waypoints or tracks, combining different or redundant data from several original files, and save to a new file for use in a GPS.
+
+Albiruni would bridge gaps in other applications.  After you seek answers and find/create a file, open the file in a [preferred application](./Documents/OtherApplications.md).
 
 ## Acknowledgments
 
