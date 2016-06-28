@@ -29,6 +29,21 @@ namespace Abnaki.Albiruni.Tree
             public SortedDictionary<string, Exception> FilesExceptions = new SortedDictionary<string, Exception>();
         }
 
+        public static void SearchForFiles(DirectoryInfo disource, Guidance guidance, List<FileInfo> resultingFiles)
+        {
+            resultingFiles.AddRange(FindLocalFiles(disource, guidance));
+
+            foreach ( DirectoryInfo disub in disource.GetDirectories())
+            {
+                SearchForFiles(disub, guidance, resultingFiles);
+            }
+        }
+
+        static IEnumerable<FileInfo> FindLocalFiles(DirectoryInfo di, Guidance guidance)
+        {
+            return di.GetFiles(guidance.Wildcard + GpxFile.Extension);
+        }
+
         /// <summary>
         /// Descend to find source files and populate tree starting at root.
         /// </summary>
@@ -39,7 +54,7 @@ namespace Abnaki.Albiruni.Tree
 
         static void GrowSub(Node root, DirectoryInfo disource, DirectoryInfo di, DirectoryInfo ditarget, Guidance guidance)
         {
-            foreach ( FileInfo fi in di.GetFiles(guidance.Wildcard + GpxFile.Extension) )
+            foreach ( FileInfo fi in FindLocalFiles(di, guidance) )
             {
                 string relpath = AbnakiFile.RelativePath(di, disource);
                 FileInfo outfile = AbnakiFile.CombinedFilePath(ditarget, relpath, Path.ChangeExtension(fi.Name, FileExt));
@@ -50,10 +65,13 @@ namespace Abnaki.Albiruni.Tree
                 {
                     if (outfile.Exists && outfile.LastWriteTimeUtc > fi.LastWriteTimeUtc) // outfile from valid previously created Node
                     {
+                        Debug.WriteLine("Existing " + outfile.FullName);
                         firoot = ReadNodeFile(outfile);
                     }
                     else
                     {
+                        Debug.WriteLine("Reading " + fi.FullName);
+
                         Source source = new Source(fi, disource);
                         //sources.Add(source);
 
