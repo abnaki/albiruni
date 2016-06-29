@@ -88,13 +88,14 @@ namespace Abnaki.Albiruni
 
             Node.Statistic stat = RootNode.GetStatistic();
             Debug.WriteLine(stat);
-            if (stat.ContentSummary.Points > 0)
+            PointSummary pointSummary = stat.ContentSummary.FinalSummary();
+            if (pointSummary.Points > 0)
             {
                 if (newRoot)
                 {
-                    double midLat = (stat.ContentSummary.MinLatitude.Value + stat.ContentSummary.MaxLatitude.Value) / 2;
-                    double midLon = (stat.ContentSummary.MinLongitude.Value + stat.ContentSummary.MaxLongitude.Value) / 2;
-                    MapCenter = new Location(midLat, midLon);
+                    decimal midLat = (pointSummary.MinLatitude.Value + pointSummary.MaxLatitude.Value) / 2;
+                    decimal midLon = (pointSummary.MinLongitude.Value + pointSummary.MaxLongitude.Value) / 2;
+                    MapCenter = new Location((double)midLat, (double)midLon);
                     // note that the view may still remain zoomed in far enough to not intersect any points in the tree.  ergo, user must zoom out.
                 }
 
@@ -115,7 +116,7 @@ namespace Abnaki.Albiruni
                     south: MapCenter.Latitude - viewHeight / 2
                 );
 
-                limits.MinimumDelta = 90 / Math.Pow(2d, PrecisionPower);
+                limits.MinimumDelta = 90 / (decimal)Math.Pow(2d, PrecisionPower);
 
                 Debug.WriteLine("limits " + limits);
 
@@ -134,7 +135,7 @@ namespace Abnaki.Albiruni
         class DescentLimits
         {
             public MapRectangle LogicalBound { get; set; }
-            public double MinimumDelta { get; set; }
+            public decimal MinimumDelta { get; set; }
 
             public override string ToString()
             {
@@ -163,26 +164,18 @@ namespace Abnaki.Albiruni
             switch (node.Axis)
             {
                 case Axis.NorthSouth:
-                    if (node.Degrees > limits.LogicalBound.North)
+                    if (node.Degrees > (decimal)limits.LogicalBound.North)
                         return DescentResult.None;
-                    if (node.Degrees + node.Delta < limits.LogicalBound.South)
+                    if (node.Degrees + node.Delta < (decimal)limits.LogicalBound.South)
                         return DescentResult.None;
                     break;
                 case Axis.EastWest:
-                    if (node.Degrees > limits.LogicalBound.East)
+                    if (node.Degrees > (decimal)limits.LogicalBound.East)
                         return DescentResult.None;
-                    if (node.Degrees + node.Delta < limits.LogicalBound.West)
+                    if (node.Degrees + node.Delta < (decimal)limits.LogicalBound.West)
                         return DescentResult.None;
                     break;
             }
-
-            //if (node.Delta < MinimumPrecision)
-            //{
-            //    if (node.SourceCount > 0)
-            //        return DescentResult.PointsCovered;
-            //    else
-            //        return DescentResult.None;
-            //}
 
             List<DescentResult> results = new List<DescentResult>();
             //DescentResult rchild1 = DescentResult.None, rchild2 = DescentResult.None;
@@ -202,19 +195,24 @@ namespace Abnaki.Albiruni
             {
                 // any descendants exist, and node has not been excluded for view or precision reasons (above)
                 MapRectangle r;
-                switch ( node.Axis )
+                switch (node.Axis)
                 {
                     case Axis.NorthSouth:
-                        r = new MapRectangle() { 
-                            South = node.Degrees, North = node.Degrees + node.Delta, 
-                            West = parent.Degrees, East = parent.Degrees + parent.Delta
+                        r = new MapRectangle()
+                        {
+                            South = (double)node.Degrees,
+                            North = (double)(node.Degrees + node.Delta),
+                            West = (double)parent.Degrees,
+                            East = (double)(parent.Degrees + parent.Delta)
                         };
                         break;
                     case Axis.EastWest:
                         r = new MapRectangle()
                         {
-                            South = parent.Degrees, North = parent.Degrees + parent.Delta,
-                            West = node.Degrees, East = node.Degrees + node.Delta
+                            South = (double)parent.Degrees,
+                            North = (double)(parent.Degrees + parent.Delta),
+                            West = (double)node.Degrees,
+                            East = (double)(node.Degrees + node.Delta)
                         };
                         break;
                     default:
