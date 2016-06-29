@@ -16,6 +16,11 @@ namespace Abnaki.Albiruni.Tree
     {
         public const string FileExt = ".abt";
 
+        /// <summary>
+        /// A hierarchy of files is created under this subdirectory
+        /// </summary>
+        public const string CacheDir = ".albiruni";
+
         public class Guidance
         {
             /// <summary>start of filenames</summary>
@@ -24,7 +29,7 @@ namespace Abnaki.Albiruni.Tree
             /// <summary>minimum threshold, in degrees; no nodes will have Delta below this</summary>
             /// <remarks>90 * 2^-12 is about 2.4 km at equator, and -15 would be 300 meters.
             /// </remarks>
-            public double MinimumPrecision = 1;
+            public decimal MinimumPrecision = 1;
 
             public SortedDictionary<string, Exception> FilesExceptions = new SortedDictionary<string, Exception>();
         }
@@ -73,7 +78,6 @@ namespace Abnaki.Albiruni.Tree
                         Debug.WriteLine("Reading " + fi.FullName);
 
                         Source source = new Source(fi, disource);
-                        //sources.Add(source);
 
                         firoot = Node.NewGlobalRoot();
                         firoot.Populate(source, guidance.MinimumPrecision);
