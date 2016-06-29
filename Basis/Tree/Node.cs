@@ -4,9 +4,9 @@ using System.Linq;
 using System.Diagnostics;
 using System.IO;
 
-using Geo;
-using Geo.Abstractions.Interfaces;
-
+//using Geo;
+//using Geo.Abstractions.Interfaces;
+using Abnaki.Albiruni.Providers;
 using Abnaki.Albiruni.Tree.InputOutput;
 
 namespace Abnaki.Albiruni.Tree
@@ -27,9 +27,9 @@ namespace Abnaki.Albiruni.Tree
 
         public Axis Axis { get; private set; }
 
-        public double Degrees { get; private set; }
+        public decimal Degrees { get; private set; }
 
-        public double Delta { get; private set; }
+        public decimal Delta { get; private set; }
 
         public System.Tuple<Node, Node> Children { get; private set; }
 
@@ -48,22 +48,23 @@ namespace Abnaki.Albiruni.Tree
         }
 
         // find/add descendants, given point(s)
-        void Grow(Node grandparent, IEnumerable<IPosition> positions, Source source, double minDelta)
+        void Grow(Node grandparent, PointDump positions, Source source, decimal minDelta)
         {
-            double newDelta = this.Delta / 2;
+            decimal newDelta = this.Delta / 2;
             if (grandparent != null)
                 newDelta = grandparent.Delta / 2;
 
-            var validPositions = positions.Where(p => this.ContainPosition(p)).ToArray();
-            if ( false == validPositions.Any() )
+            PointDump validPoints = positions.SuchThat(this.ContainPosition);
+            //var validPositions = source.GpxFile.AllPoints.Where(p => this.ContainPosition(p)).ToArray();
+            if (false == validPoints.Any())
                 return;
 
-            if (newDelta < minDelta + double.Epsilon) // <= 
+            if (newDelta < minDelta )
             {
                 // leaf node
                 //mapSourcePositions.Value.AddRange(source, validPositions);
 
-                mapSourceSummaries.Value[source] = new SourceContentSummary(validPositions);
+                mapSourceSummaries.Value[source] = new SourceContentSummary(validPoints);
 
             }
             else
@@ -71,8 +72,8 @@ namespace Abnaki.Albiruni.Tree
             {
                 EnsureChildrenExist(grandparent);
 
-                Children.Item1.Grow(this, validPositions, source, minDelta);
-                Children.Item2.Grow(this, validPositions, source, minDelta);
+                Children.Item1.Grow(this, validPoints, source, minDelta);
+                Children.Item2.Grow(this, validPoints, source, minDelta);
             }
         }
 
@@ -83,7 +84,7 @@ namespace Abnaki.Albiruni.Tree
                 Axis newAxis = this.Axis == Albiruni.Axis.EastWest ? Albiruni.Axis.NorthSouth : Albiruni.Axis.EastWest;
                 // i.e. same as grandparent if that exists
 
-                double xmin, xmax;
+                decimal xmin, xmax;
                 switch (newAxis)
                 {
                     case Albiruni.Axis.NorthSouth:
@@ -111,41 +112,26 @@ namespace Abnaki.Albiruni.Tree
             }
         }
 
-        bool ContainPosition(IPosition pos)
+        bool ContainPosition(IPoint p)
         {
-            Coordinate c = pos.GetCoordinate();
-            double xc;
+            decimal xc;
             switch (this.Axis)
             {
-                case Albiruni.Axis.NorthSouth: xc = c.Latitude; break;
-                case Albiruni.Axis.EastWest: xc = c.Longitude; break;
+                case Albiruni.Axis.NorthSouth: xc = p.Latitude; break;
+                case Albiruni.Axis.EastWest: xc = p.Longitude; break;
                 default:
                     throw new NotSupportedException("No support for Axis " + this.Axis);
             }
 
-            return ((this.Degrees - double.Epsilon < xc) && (xc < this.Degrees + this.Delta + double.Epsilon));
+            return ((this.Degrees  < xc) && (xc < this.Degrees + this.Delta ));
         }
 
         /// <summary>
         /// Grow tree to cover given data
         /// </summary>
-        /// <param name="gpx"></param>
-        public void Populate(Source source, double minDelta) // may want an interface
+        public void Populate(Source source, decimal minDelta) 
         {
-            Geo.Gps.GpsData gdata = source.GpxFile.GeoGpsData;
-
-            List<Coordinate> coordinates =
-            gdata.Tracks
-            .SelectMany(track => track.Segments)
-            .SelectMany(seg => seg.Fixes)
-            .Select(fix => fix.Coordinate)
-            .ToList();
-
-            coordinates.AddRange(
-                gdata.Waypoints.Select(w => w.Coordinate));
-
-            Grow(null, coordinates, source, minDelta: minDelta);
-
+            Grow(null, source.GpxFile.Points, source, minDelta: minDelta);
         }
 
         public void Graft(Node grandparent, Node branch)
@@ -153,10 +139,10 @@ namespace Abnaki.Albiruni.Tree
             if (this.Axis != branch.Axis)
                 throw new InvalidOperationException("Graft mismatch of Axis " + this.Axis + " vs " + branch.Axis);
 
-            if (Math.Abs(this.Delta - branch.Delta) > double.Epsilon)
+            if (this.Delta != branch.Delta)
                 throw new InvalidOperationException("Graft mismatch of Delta");
 
-            if (Math.Abs(this.Degrees - branch.Degrees) > double.Epsilon)
+            if (this.Degrees != branch.Degrees)
                 throw new InvalidOperationException("Graft mismatch of Degrees");
 
             if (branch.Children != null)
@@ -200,7 +186,7 @@ namespace Abnaki.Albiruni.Tree
             }
         }
 
-        const int filever = 2;
+        const int filever = 3;
 
         public void Write(IBinaryWrite ibw)
         {
@@ -233,12 +219,12 @@ namespace Abnaki.Albiruni.Tree
         {
             BinaryReader br = ibr.Reader;
             int v = br.ReadInt32();
-            if (v < 2)
+            if (v < 3)
                 throw new NotSupportedException("Old version");
 
             this.Axis = (Axis)br.ReadInt32();
-            this.Degrees = br.ReadDouble();
-            this.Delta = br.ReadDouble();
+            this.Degrees = br.ReadDecimal();
+            this.Delta = br.ReadDecimal();
 
             bool exist = br.ReadBoolean();
             if ( exist )
