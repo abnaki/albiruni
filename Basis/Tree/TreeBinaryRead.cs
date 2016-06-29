@@ -12,6 +12,8 @@ namespace Abnaki.Albiruni.Tree
             private set;
         }
 
+        int? ReadVersion { get; set; }
+
         public Source ReadSource()
         {
             //string path = this.Reader.ReadString();
@@ -41,6 +43,7 @@ namespace Abnaki.Albiruni.Tree
         public void Init(System.IO.Stream stream)
         {
             Reader = new System.IO.BinaryReader(stream);
+            ReadVersion = Reader.ReadInt32(); // written first in TreeBinaryWrite.Init()
         }
 
         SortedList<int, Source> mapNumberSources = new SortedList<int, Source>();
