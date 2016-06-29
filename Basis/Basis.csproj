@@ -33,6 +33,9 @@
     <Reference Include="Geo">
       <HintPath>..\packages\Geo.0.14.1\lib\portable-net4+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\Geo.dll</HintPath>
     </Reference>
+    <Reference Include="ImpromptuInterface">
+      <HintPath>..\packages\ImpromptuInterface.6.2.2\lib\net40\ImpromptuInterface.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Experimental.Collections">
       <HintPath>..\packages\Microsoft.Experimental.Collections.1.0.3-alpha\lib\portable-net45+win8+wp8\Microsoft.Experimental.Collections.dll</HintPath>
     </Reference>
@@ -46,6 +49,12 @@
     <Compile Include="..\AlbiruniAssemblyInfo.cs">
       <Link>AlbiruniAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Providers\Geo\Gpx\PointDuck.cs" />
+    <Compile Include="Providers\Geo\Gpx\V10\FileDuck.cs" />
+    <Compile Include="Providers\Geo\Gpx\V11\FileDuck.cs" />
+    <Compile Include="Providers\IFile.cs" />
+    <Compile Include="Providers\IPoint.cs" />
+    <Compile Include="Providers\PointDump.cs" />
     <Compile Include="Tree\InputOutput\IBinaryRead.cs" />
     <Compile Include="Tree\InputOutput\IBinaryWrite.cs" />
     <Compile Include="Tree\Enums.cs" />
@@ -53,6 +62,7 @@
     <Compile Include="Providers\GpxFile.cs" />
     <Compile Include="Tree\Node.cs" />
     <Compile Include="Tree\Nursery.cs" />
+    <Compile Include="Tree\PointSummary.cs" />
     <Compile Include="Tree\Source.cs" />
     <Compile Include="Tree\SourceContentSummary.cs" />
     <Compile Include="Tree\TreeBinaryRead.cs" />
@@ -67,6 +77,7 @@
       <Name>Commonality</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
