@@ -45,7 +45,7 @@ namespace Abnaki.Albiruni
                 DirectoryInfo di = new DirectoryInfo(folderDialog.FileName);
 
                 Nursery.Guidance guidance = new Nursery.Guidance();
-                guidance.MinimumPrecision = 90 / System.Math.Pow(2, 12); // may eventually have UI
+                guidance.MinimumPrecision = 90 / (decimal)System.Math.Pow(2, 12); // may eventually have UI
 
                 List<FileInfo> potentialFiles = new List<FileInfo>();
                 Nursery.SearchForFiles(di, guidance, potentialFiles);
@@ -65,7 +65,7 @@ namespace Abnaki.Albiruni
                         // want to move to a worker thread, provide dialog for progress and interrupt button.
                         using (new WaitCursor())
                         {
-                            DirectoryInfo ditarget = di.CreateSubdirectory("albiruni");
+                            DirectoryInfo ditarget = di.CreateSubdirectory(Nursery.CacheDir);
 
                             var root = Abnaki.Albiruni.Tree.Node.NewGlobalRoot();
 
