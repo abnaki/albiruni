@@ -53,6 +53,14 @@ namespace Abnaki.Albiruni.Tests.Provider
             CompleteTest(fi);
         }
 
+        [TestMethod]
+        public void TestTreeHard()
+        {
+            FileInfo fi = GeoGpxFiles().Where(f => f.Name.StartsWith("Bergamo")).First();
+
+            CompleteTest(fi);
+        }
+
         // becoming archaic
         void CompleteTest(FileInfo figpx)
         {
@@ -79,7 +87,7 @@ namespace Abnaki.Albiruni.Tests.Provider
         {
             DirectoryInfo di = SampleGpxDir();
             DirectoryInfo dicur = new DirectoryInfo(Environment.CurrentDirectory);
-            DirectoryInfo ditarget = dicur.CreateSubdirectory("albiruni");
+            DirectoryInfo ditarget = dicur.CreateSubdirectory(Nursery.CacheDir);
 
             CleanDirectory(ditarget);
 
