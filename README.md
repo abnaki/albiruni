@@ -1,6 +1,6 @@
 # Albiruni
 
-Windows desktop software to map large sets of GPS data, such as tracks and waypoints, in an efficient summarized style, rarely found in other open source software.
+Windows desktop software to map large sets of GPS data, such as tracks and waypoints, in an efficient summarized style, rarely found in other open source software.   Painting the map with subtle-colored polygons rather than solid lines and icons, the map and essential facts remain readable as scale is zoomed.
 
 Named after the medieval Persian scientist [Abū Rayḥān Muḥammad ibn Aḥmad Al-Bīrūnī](https://en.wikipedia.org/wiki/Al-Biruni).  Almost 1000 years ago, he accurately measured the Earth and tabulated coordinates of hundreds of locations.
 
@@ -10,8 +10,8 @@ Release scheduled for Summer 2016.  Albiruni is under [GNU Public License](./LIC
 
 Practical applications for visualization:
 - personal travel records
--- macroscopic view
--- finding detail buried in many files 
+ - macroscopic view
+ - finding detail buried in many files 
 - drone flight logs
 - scientific research
 - business/sales
