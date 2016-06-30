@@ -25,11 +25,19 @@ namespace Abnaki.Albiruni.Providers.Geo.Gpx
             dynamic temp = Build<ExpandoObject>.NewObject(
                 Latitude: wpt.lat,
                 Longitude: wpt.lon,
-                Time: wpt.timeSpecified ? (DateTime?)wpt.time : (DateTime?)null,
+                Time: DateTimeOfWpt(wpt),
                 Elevation: wpt.eleSpecified ? (decimal?)wpt.ele : (decimal?)null);
 
             return Impromptu.ActLike<IPoint>(temp); // duck typing
         }
 
+        static DateTime? DateTimeOfWpt(GpxWaypointBase wpt)
+        {
+            if (wpt.timeSpecified)
+                return new DateTime(wpt.time.Ticks, DateTimeKind.Utc);
+            // got undesired DateTimeKind.Unspecified from xml serializer
+
+            return null;
+        }
     }
 }
