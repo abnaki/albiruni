@@ -11,40 +11,42 @@ Release scheduled for Summer 2016.  Albiruni is under [GNU Public License](./LIC
 Practical applications for visualization:
 - personal travel records
  - macroscopic view
- - finding detail buried in many files 
+ - finding detail buried in many files
 - drone flight logs
+ - geotagged photos, videos
 - scientific research
-- business/sales
-- real estate
-- government/regulatory
-- law enforcement
-- criminal investigation
-- disaster/search/rescue
-- miltary/defense
-- aviation
-- agriculture/forestry
+- business
+ - sales, real estate
+ - agriculture/forestry
+ - energy utilities and exploration
+ - aviation
+- government, regulatory
+ - disaster, search, rescue
+ - law enforcement
+ - criminal investigation
+ - miltary, defense
+ - black boxes, event data recorders 
 - political campaigns
-- energy utilities and exploration
 
-Some of these domains would require minor straightforward implementation.  Anything is possible, given a source of sample data, or file, and a documented specification/standard, better yet already coded in C#.
+Some of these domains would require minor straightforward implementation.  Anything is possible, given a source of sample data, or file, and a documented specification/standard, better yet already coded in C#.    
 
 OpenStreetMaps will be displayed, as they are free.   Some popular alternative maps require licensing, yet they are feasible for a derivative work. 
 
 ## Ideas on the drawing board
 
+New kinds of data emerge with new technology, leading to endless possible features for Albiruni.
+
 The display may vary with dimensions of interest, such as date/time or any given property of the spatial points.  Color, shade, and hiding/filtering will help answer questions about these variables.  Users may want to know:
 - All regions covered in a range of dates
 - Dates when a region of interest was covered
-- Regions that were never covered
+- Regions that were never covered in a period
 - Correlations/intersections between multiple specific tracks, or between a GPS track and other date/location information
 
-It will be useful to select waypoints or tracks, combining different or redundant data from several original files, and save to a new file for use in a GPS.
-
-Albiruni would bridge gaps in other applications.  After you seek answers and find/create a file, open the file in a [preferred application](./Documents/OtherApplications.md).
+Albiruni would bridge gaps in other applications.  After you seek answers and find/create a file, open the file in a [preferred application](./Documents/OtherApplications.md).   It will be useful to select waypoints or tracks, combining different or redundant data from several original files, and save a new file for use in a GPS.
 
 ## Acknowledgments
 
-Much harder if not for:
+Gold medal contributions to open source mapping:
 
 - [XAML Map Control](http://xamlmapcontrol.codeplex.com)
 - [Geospatial Library](https://github.com/sibartlett/Geo.git)
@@ -52,8 +54,8 @@ Much harder if not for:
 
 Strongly appreciated:
 
+- Extended WPF Toolkit Community Edition
+- Prism for WPF
+- Fody PropertyChanged
 - WPFFolderBrowser
 - WpfScreenHelper
-- Fody PropertyChanged
-- Prism for WPF
-- Extended WPF Toolkit Community Edition
