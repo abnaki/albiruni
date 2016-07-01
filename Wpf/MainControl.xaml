@@ -24,6 +24,13 @@
                             <Albiruni:Map />
                         </xcad:LayoutAnchorable>
                     </xcad:LayoutAnchorGroup>
+                    <xcad:LayoutAnchorGroup>
+                        <xcad:LayoutAnchorable
+                            ContentId="sourcedetail"
+                            Title="Details">
+                            <!-- stick control here -->
+                        </xcad:LayoutAnchorable>
+                    </xcad:LayoutAnchorGroup>
                 </xcad:LayoutAnchorSide>
             </xcad:LayoutRoot.LeftSide>
         </xcad:LayoutRoot>
