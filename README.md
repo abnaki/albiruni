@@ -8,7 +8,8 @@ Builds with Visual Studio 2013 and targets .NET Framework 4.5 in Windows.
 
 Release scheduled for Summer 2016.  Albiruni is under [GNU Public License](./LICENSE).
 
-Practical applications for visualization:
+## Practical applications for visualization
+
 - personal travel records
  - macroscopic view
  - finding detail buried in many files
