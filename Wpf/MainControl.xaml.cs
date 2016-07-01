@@ -29,16 +29,16 @@ namespace Abnaki.Albiruni
             InitializeComponent();
         }
 
-        FileMenuBus fmbus;
+        Menu.FileMenuBus fmbus;
 
         IDockSystem IMainControl.DockingSystem
         {
-            get { return new Abnaki.Windows.Software.Wpf.PreferredControls.Docking.AvalonDockSystem(this.Docky, 1); }
+            get { return new Abnaki.Windows.Software.Wpf.PreferredControls.Docking.AvalonDockSystem(this.Docky, 2); }
         }
 
         void IMainControl.ConfigureMenu(IMainMenu menu)
         {
-            fmbus = new FileMenuBus(menu);
+            fmbus = new Menu.FileMenuBus(menu);
         }
 
         void IMainControl.EmplacedInWindow()
