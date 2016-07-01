@@ -1,0 +1,19 @@
+﻿<?xml version="1.0"?>
+<LayoutRoot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" PanelVersion="2">
+  <RootPanel Orientation="Horizontal">
+    <LayoutDocumentPane Id="856f675a-275e-4f82-a679-d66fc24d9beb">
+      <LayoutAnchorable CanHide="False" AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Map" IsSelected="True" IsLastFocusedDocument="True" ContentId="map" CanClose="False" LastActivationTimeStamp="07/01/2016 12:24:28" />
+    </LayoutDocumentPane>
+    <LayoutAnchorablePaneGroup Orientation="Horizontal" DockWidth="164" FloatingWidth="864" FloatingHeight="574.4" FloatingLeft="368.8" FloatingTop="-433.6">
+      <LayoutAnchorablePane FloatingWidth="864" FloatingHeight="574.4" FloatingLeft="368.8" FloatingTop="-433.6">
+        <LayoutAnchorable CanHide="False" AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Details" IsSelected="True" ContentId="sourcedetail" FloatingLeft="368.8" FloatingTop="-433.6" FloatingWidth="864" FloatingHeight="574.4" CanClose="False" LastActivationTimeStamp="07/01/2016 12:24:16" PreviousContainerId="856f675a-275e-4f82-a679-d66fc24d9beb" PreviousContainerIndex="0" />
+      </LayoutAnchorablePane>
+    </LayoutAnchorablePaneGroup>
+  </RootPanel>
+  <TopSide />
+  <RightSide />
+  <LeftSide />
+  <BottomSide />
+  <FloatingWindows />
+  <Hidden />
+</LayoutRoot>
