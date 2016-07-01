@@ -11,7 +11,7 @@ using Abnaki.Windows.Software.Wpf.Ultimate;
 using Abnaki.Albiruni.Tree;
 
 
-namespace Abnaki.Albiruni
+namespace Abnaki.Albiruni.Menu
 {
     class FileMenuBus : ButtonBus<FileMenuKey>
     {
