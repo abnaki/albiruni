@@ -1,12 +1,12 @@
 # Albiruni
 
-Windows desktop software to map large sets of GPS data, such as tracks and waypoints, in an efficient summarized style, rarely found in other open source software.   Painting the map with subtle-colored polygons rather than solid lines and icons, the map and essential facts remain readable as scale is zoomed.
+Windows desktop software to map large sets of GPS data, such as tracks and waypoints, in an efficient summarized style, rarely found in other open source software.   Painting it with subtle-colored polygons rather than solid lines and icons, the map and essential facts are readable, even as scale is zoomed, no matter the quantity of data.
 
 Named after the medieval Persian scientist [Abū Rayḥān Muḥammad ibn Aḥmad Al-Bīrūnī](https://en.wikipedia.org/wiki/Al-Biruni).  Almost 1000 years ago, he accurately measured the Earth and tabulated coordinates of hundreds of locations.
 
 Builds with Visual Studio 2013 and targets .NET Framework 4.5 in Windows.
 
-Release scheduled for Summer 2016.  Albiruni is under [GNU Public License](./LICENSE).
+Release scheduled for Summer 2016.  Albiruni's code is under [GNU Public License](./LICENSE).
 
 ## Practical applications for visualization
 
@@ -31,7 +31,7 @@ Release scheduled for Summer 2016.  Albiruni is under [GNU Public License](./LIC
 
 Some of these domains would require minor straightforward implementation.  Anything is possible, given a source of sample data, or file, and a documented specification/standard, better yet already coded in C#.    
 
-OpenStreetMaps will be displayed, as they are free.   Some popular alternative maps require licensing, yet they are feasible for a derivative work. 
+OpenStreetMaps are displayed, as they are free.   Some popular alternative maps require licensing, yet they are feasible for a derivative work. 
 
 ## Ideas on the drawing board
 
