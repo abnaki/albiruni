@@ -8,6 +8,11 @@ Builds with Visual Studio 2013 and targets .NET Framework 4.5 in Windows.
 
 Release scheduled for Summer 2016.  Albiruni's code is under [GNU Public License](./LICENSE).
 
+## Sample
+
+![Mediterranean Sea](./Documents/img/sample-med.png)
+[From Geo gpx examples.](https://github.com/sibartlett/Geo/tree/master/reference/gpx)
+
 ## Practical applications for visualization
 
 - personal travel records
@@ -26,7 +31,7 @@ Release scheduled for Summer 2016.  Albiruni's code is under [GNU Public License
  - law enforcement
  - criminal investigation
  - miltary, defense
- - black boxes, event data recorders 
+- black boxes, event data recorders, smartphones
 - political campaigns
 
 Some of these domains would require minor straightforward implementation.  Anything is possible, given a source of sample data, or file, and a documented specification/standard, better yet already coded in C#.    
