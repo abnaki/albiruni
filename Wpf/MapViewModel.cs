@@ -43,15 +43,20 @@ namespace Abnaki.Albiruni
         /// </summary>
         MapRectangle ViewPortRect { get; set; }
 
-        public void SetViewPort(MapRectangle rect)
+        /// <summary>1 by 1 display units translated onto map</summary>
+        MapRectangle DisplayUnitRect { get; set; }
+
+        public void SetViewPort(MapRectangle viewRect, MapRectangle unitRect)
         {
-            if (this.ViewPortRect.EqualCoordinates(rect))
+            DisplayUnitRect = unitRect;
+
+            if (this.ViewPortRect.EqualCoordinates(viewRect))
             {
                 // skip
             }
             else
             {
-                this.ViewPortRect = rect;
+                this.ViewPortRect = viewRect;
                 UpdateAdornments();
             }
         }
@@ -194,10 +199,14 @@ namespace Abnaki.Albiruni
                 && parent != null && parent.Delta >= limits.MinimumDelta )
             {
                 // any descendants exist, and node has not been excluded for view or precision reasons (above)
-                MapRectangle r;
+
+                MapRectangle r = null;
                 switch (node.Axis)
                 {
                     case Axis.NorthSouth:
+                        if ( (double)node.Delta < this.DisplayUnitRect.North - DisplayUnitRect.South)
+                            break; //  not displayed
+
                         r = new MapRectangle()
                         {
                             South = (double)node.Degrees,
@@ -207,6 +216,9 @@ namespace Abnaki.Albiruni
                         };
                         break;
                     case Axis.EastWest:
+                        if ( (double)node.Delta < this.DisplayUnitRect.East - DisplayUnitRect.West)
+                            break; //  not displayed
+
                         r = new MapRectangle()
                         {
                             South = (double)parent.Degrees,
@@ -218,10 +230,14 @@ namespace Abnaki.Albiruni
                     default:
                         throw new NotSupportedException("No support for axis " + node.Axis);
                 }
-                r.Fill = m_defaultFillBrush;
-                this.Rectangles.Add(r); // efficient ?
-                
-                results.Add(DescentResult.NewRectangles);
+
+                if (r != null)
+                {
+                    r.Fill = m_defaultFillBrush;
+                    this.Rectangles.Add(r); // efficient ?
+
+                    results.Add(DescentResult.NewRectangles);
+                }
             }
 
             if (results.Count > 0)
