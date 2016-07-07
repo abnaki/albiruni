@@ -46,7 +46,7 @@ namespace Abnaki.Albiruni.Providers.Geo.Gpx.V10
             if (points == null)
                 return Enumerable.Empty<IPoint>();
 
-            return points.Select(PointFromGpx);
+            return points.Select(PointFromGpx).ToArray();
         }
 
         static IEnumerable<IPoint> PointsFromTracks(IEnumerable<GpxTrack> tracks)
@@ -54,8 +54,14 @@ namespace Abnaki.Albiruni.Providers.Geo.Gpx.V10
             if (tracks == null)
                 return Enumerable.Empty<IPoint>();
 
-            IEnumerable<GpxTrackSegment> segs = tracks.SelectMany(t => t.trkseg);
-            return segs.SelectMany(seg => seg.trkpt).Select(PointFromTrackPoint);
+            IEnumerable<GpxTrackSegment> segs = tracks.Where(t => t.trkseg != null)
+                .SelectMany(t => t.trkseg)
+                .Where(seg => seg != null);
+
+            return segs.Where(seg => seg.trkpt != null)
+                .SelectMany(seg => seg.trkpt)
+                .Where(p => p != null)
+                .Select(PointFromTrackPoint).ToArray();
         }
 
         static IEnumerable<IPoint> PointsFromRoutes(IEnumerable<GpxRoute> routes)
@@ -63,7 +69,10 @@ namespace Abnaki.Albiruni.Providers.Geo.Gpx.V10
             if (routes == null)
                 return Enumerable.Empty<IPoint>();
 
-            return routes.SelectMany(r => r.rtept).Select(PointFromGpx);
+            return routes.Where(r => r.rtept != null)
+                .SelectMany(r => r.rtept)
+                .Where(p => p != null)
+                .Select(PointFromGpx).ToArray();
         }
     }
 }
