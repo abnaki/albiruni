@@ -23,13 +23,23 @@ namespace Abnaki.Albiruni.Tests.Map
 
             vm.PrecisionPower = 6;
 
-            vm.SetViewPort(new MapControl.MapRectangle()
+            var viewRect = new MapControl.MapRectangle()
             {
                 West = -100,
                 East = 60,
                 North = 50,
                 South = -40
-            });
+            };
+
+            var unitRect = new MapControl.MapRectangle()
+            {
+                North = viewRect.North,
+                West = viewRect.West,
+                South = viewRect.North - 0.01,
+                East = viewRect.West + 0.01
+            };
+
+            vm.SetViewPort(viewRect, unitRect);
 
             vm.HandleTree(root);
 
