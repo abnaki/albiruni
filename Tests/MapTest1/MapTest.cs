@@ -21,7 +21,7 @@ namespace Abnaki.Albiruni.Tests.Map
 
             root.DebugPrint();
 
-            vm.PrecisionPower = 6;
+            vm.MinimumMesh = new Mesh(6);
 
             var viewRect = new MapControl.MapRectangle()
             {
@@ -41,7 +41,9 @@ namespace Abnaki.Albiruni.Tests.Map
 
             vm.SetViewPort(viewRect, unitRect);
 
-            vm.HandleTree(root);
+            var msg = new Message.RootNodeMessage(root);
+
+            vm.HandleTree(msg);
 
             Debug.WriteLine(vm.Rectangles.Count + " Rectangles of " + vm);
             Debug.Indent();
