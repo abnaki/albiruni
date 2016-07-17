@@ -68,10 +68,11 @@ namespace Abnaki.Albiruni.Menu
                             DirectoryInfo ditarget = di.CreateSubdirectory(Nursery.CacheDir);
 
                             var root = Abnaki.Albiruni.Tree.Node.NewGlobalRoot();
+                            Message.RootNodeMessage msg = new Message.RootNodeMessage(root);
 
                             Nursery.GrowTree(root, di, ditarget, guidance);
 
-                            MessageTube.Publish(root);
+                            MessageTube.Publish(msg);
                         }
 
                         if (guidance.FilesExceptions.Count > 0)
