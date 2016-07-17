@@ -1,0 +1,19 @@
+﻿<UserControl xmlns:Grid="clr-namespace:Abnaki.Windows.Software.Wpf.PreferredControls.Grid;assembly=Abnaki.Windows.Software.Wpf.PreferredControls"  x:Class="Abnaki.Albiruni.SourceDetailer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <StackPanel
+            VerticalAlignment="Stretch"
+            Height="auto"
+            Orientation="Vertical">
+            <Grid:GridControl
+                Name="grid"
+                VerticalAlignment="Stretch"
+                Height="255" />
+        </StackPanel>
+    </Grid>
+</UserControl>
