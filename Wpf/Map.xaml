@@ -81,7 +81,9 @@
             MouseLeftButtonDown="MapMouseLeftButtonDown"
             MouseRightButtonDown="MapMouseRightButtonDown"
             ManipulationInertiaStarting="MapManipulationInertiaStarting"
-            ViewportChanged="map_ViewportChanged">
+            ViewportChanged="map_ViewportChanged"
+            MouseLeave="map_MouseLeave"
+            MouseMove="map_MouseMove">
             <map:MapGraticule
                 Opacity="0.6" />
             <map:MapScale
@@ -145,10 +147,11 @@
                         Height="70"
                         Minimum="6"
                         Maximum="12"
-                        Value="{Binding PrecisionPower}"
                         Name="slprecision"
                         SmallChange="1"
-                        ValueChanged="slprecision_ValueChanged"></Slider>
+                        ValueChanged="slprecision_ValueChanged">
+                        <!-- no Binding because of excess difficulty binding Slider to Mesh.Power -->
+                    </Slider>
                 </StackPanel>
             </StackPanel>
         </Grid>
