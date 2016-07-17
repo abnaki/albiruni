@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Input;
 using System.Windows.Shapes;
 using System.Diagnostics;
+using System.Windows.Threading;
 
 using MapControl;
 
@@ -23,6 +24,7 @@ namespace Abnaki.Albiruni
             InitializeComponent();
 
             vptimer.Tick += vptimer_Tick;
+            hovtimer.Tick += hovtimer_Tick;
         }
 
         public new MapViewModel DataContext
@@ -36,7 +38,7 @@ namespace Abnaki.Albiruni
             base.OnInitialized(e);
 
             this.DataContext = new MapViewModel();
-            this.DataContext.PrecisionPower = (int)slprecision.Value; // but for this, why not initialized ?
+            this.DataContext.MinimumMesh = new Mesh((int)slprecision.Value);
             //this.DataContext.Testing();
         }
 
@@ -105,8 +107,7 @@ namespace Abnaki.Albiruni
             this.DataContext.SetViewPort(viewRect, unitRect);
         }
 
-        System.Windows.Threading.DispatcherTimer vptimer 
-            = new System.Windows.Threading.DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(200) };
+        DispatcherTimer vptimer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(200) };
 
         private void map_ViewportChanged(object sender, EventArgs e)
         {
@@ -116,10 +117,37 @@ namespace Abnaki.Albiruni
 
         #endregion
 
+        #region Hover
+
+        DispatcherTimer hovtimer = new DispatcherTimer() { Interval = TimeSpan.FromSeconds(0.4) };
+
+        private void map_MouseLeave(object sender, MouseEventArgs e)
+        {
+            hovtimer.Stop();
+        }
+
+        private void map_MouseMove(object sender, MouseEventArgs e)
+        {
+            hovtimer.Stop(); hovtimer.Start();
+        }
+
+        void hovtimer_Tick(object sender, EventArgs e)
+        {
+            hovtimer.Stop();
+
+            Location loc = map.ViewportPointToLocation(Mouse.GetPosition(map));
+            //Debug.WriteLine("Hover on " + loc);
+
+            this.DataContext.OnHover(loc);
+        }
+
+
+        #endregion
+
         private void slprecision_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if ( this.DataContext != null )
-                this.DataContext.UpdateAdornments(); // depends on slprecision via PrecisionPower
+                this.DataContext.SetMesh((int)slprecision.Value); 
         }
 
     }
