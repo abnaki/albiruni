@@ -49,6 +49,7 @@
     <Compile Include="..\AlbiruniAssemblyInfo.cs">
       <Link>AlbiruniAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Mesh.cs" />
     <Compile Include="Providers\Geo\Gpx\PointDuck.cs" />
     <Compile Include="Providers\Geo\Gpx\V10\FileDuck.cs" />
     <Compile Include="Providers\Geo\Gpx\V11\FileDuck.cs" />
