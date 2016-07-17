@@ -19,20 +19,22 @@ namespace Abnaki.Albiruni
     {
         public MapViewModel()
         {
+            MinimumMesh = new Mesh();
+
             Rectangles = new ObservableCollection<MapRectangle>();
             Symbols = new ObservableCollection<MapPath>();
             Tracks = new ObservableCollection<MapPath>();
             ViewPortRect = new MapRectangle(); // unspecified
 
-            MessageTube.SubscribeCostly<Node>(HandleTree);
+            MessageTube.SubscribeCostly<Message.RootNodeMessage>(HandleTree);
         }
 
         public Location MapCenter { get; set; }
 
         /// <summary>
-        /// 90 / 2^PrecisionPower will be minimum limit on Delta of a Node to show individually as a MapRectangle
+        /// will be minimum limit on Delta of a Node to show individually as a MapRectangle
         /// </summary>
-        public int PrecisionPower { get; set; }
+        public Mesh MinimumMesh { get; set; }
 
         // want to use BulkObservableCollection or similar
         public ObservableCollection<MapRectangle> Rectangles { get; private set; }
@@ -61,6 +63,12 @@ namespace Abnaki.Albiruni
             }
         }
 
+        public void SetMesh(int power)
+        {
+            this.MinimumMesh = new Mesh(power);
+            UpdateAdornments();
+        }
+
         public void UpdateAdornments()
         {
             UpdateRectangles(newRoot: false);
@@ -71,12 +79,12 @@ namespace Abnaki.Albiruni
         System.Windows.Media.Brush m_defaultFillBrush = new SolidColorBrush(Color.FromArgb((byte)32, (byte)255, (byte)0, (byte)0));
 
 
-        public void HandleTree(Node root)
+        public void HandleTree(Message.RootNodeMessage msg)
         {
             //root.DebugPrint();
 
-            bool newRoot = root != RootNode;
-            RootNode = root;
+            bool newRoot = msg.Root != RootNode;
+            RootNode = msg.Root;
 
             UpdateRectangles(newRoot);
         }
@@ -121,7 +129,7 @@ namespace Abnaki.Albiruni
                     south: MapCenter.Latitude - viewHeight / 2
                 );
 
-                limits.MinimumDelta = 90 / (decimal)Math.Pow(2d, PrecisionPower);
+                limits.MinimumDelta = this.MinimumMesh.Delta;
 
                 Debug.WriteLine("limits " + limits);
 
@@ -251,6 +259,33 @@ namespace Abnaki.Albiruni
             Rectangles.Clear();
             Symbols.Clear();
             Tracks.Clear();
+        }
+
+        public void OnHover(Location loc)
+        {
+            if (RootNode == null)
+                return;
+
+            List<Node> nodes = new List<Node>();
+
+            RootNode.FindNodes((decimal)loc.Latitude, (decimal)loc.Longitude, this.MinimumMesh, nodes);
+
+            if ( nodes.Any() )
+            {
+                Message.SourceRecordMessage msg = new Message.SourceRecordMessage(nodes);
+                MessageTube.Publish(msg);
+            }
+
+            //if (nodes.Count > 0)
+            //{
+            //    Debug.WriteLine("Hovered on ");
+            //    Debug.Indent();
+            //    foreach (Node n in nodes)
+            //    {
+            //        Debug.WriteLine(n);
+            //    }
+            //    Debug.Unindent();
+            //}
         }
 
         public void Testing()
