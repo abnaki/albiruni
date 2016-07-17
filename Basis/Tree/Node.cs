@@ -47,6 +47,14 @@ namespace Abnaki.Albiruni.Tree
             }
         }
 
+        public IEnumerable<KeyValuePair<Source,SourceContentSummary>> GetSourcesSummaries()
+        {
+            if (mapSourceSummaries.IsValueCreated)
+                return mapSourceSummaries.Value;
+
+            return Enumerable.Empty<KeyValuePair<Source, SourceContentSummary>>();
+        }
+
         // find/add descendants, given point(s)
         void Grow(Node grandparent, PointDump positions, Source source, decimal minDelta)
         {
@@ -114,16 +122,57 @@ namespace Abnaki.Albiruni.Tree
 
         bool ContainPosition(IPoint p)
         {
+            return ContainPosition(p.Latitude, p.Longitude);
+        }
+
+        bool ContainPosition(decimal latitude, decimal longitude)
+        {
             decimal xc;
             switch (this.Axis)
             {
-                case Albiruni.Axis.NorthSouth: xc = p.Latitude; break;
-                case Albiruni.Axis.EastWest: xc = p.Longitude; break;
+                case Albiruni.Axis.NorthSouth: xc = latitude; break;
+                case Albiruni.Axis.EastWest: xc = longitude; break;
                 default:
                     throw new NotSupportedException("No support for Axis " + this.Axis);
             }
 
             return ((this.Degrees  < xc) && (xc < this.Degrees + this.Delta ));
+        }
+
+        public void FindNodes(decimal latitude, decimal longitude, Mesh precision, List<Node> nodes)
+        {
+            if (Delta >= precision.Delta)
+            {
+                if (ContainPosition(latitude, longitude))
+                {
+                    AddNodesHavingSources(nodes, recurse: false);
+
+                    if (Children != null)
+                    {
+                        Children.Item1.FindNodes(latitude, longitude, precision, nodes);
+                        Children.Item2.FindNodes(latitude, longitude, precision, nodes);
+                    }
+                }
+            }
+            else
+            {
+                // all descendant nodes are within precision
+                AddNodesHavingSources(nodes, recurse: true);
+            }
+        }
+
+        void AddNodesHavingSources(List<Node> nodes, bool recurse)
+        {
+            if (mapSourceSummaries.IsValueCreated && mapSourceSummaries.Value.Count > 0)
+            {
+                nodes.Add(this);
+            }
+
+            if (recurse && Children != null)
+            {
+                Children.Item1.AddNodesHavingSources(nodes, recurse);
+                Children.Item2.AddNodesHavingSources(nodes, recurse);
+            }
         }
 
         /// <summary>
