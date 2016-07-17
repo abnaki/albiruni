@@ -72,7 +72,16 @@ namespace Abnaki.Albiruni.Tests.Provider
 
             Source source = new Abnaki.Albiruni.Tree.Source(figpx, dicur);
 
-            root.Populate(source, minDelta: 1);
+            Mesh mesh = new Mesh() { Power = 7 };
+
+            root.Populate(source, mesh.Delta);
+
+            IPoint samplePoint = source.GpxFile.Points.AllPoints.First();
+            List<Node> testFindNodes = new List<Node>();
+
+            root.FindNodes(samplePoint.Latitude, samplePoint.Longitude, mesh, testFindNodes);
+
+            Debug.Assert(testFindNodes.Count > 0);
 
             root.DebugPrint();
         }
