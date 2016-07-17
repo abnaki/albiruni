@@ -32,6 +32,18 @@ namespace Abnaki.Albiruni.Tree
             RoutePoints = new PointSummary(routepoints);
         }
 
+        /// <summary>
+        /// Aggregate of all inputs
+        /// </summary>
+        public SourceContentSummary(IEnumerable<SourceContentSummary> summaries)
+            : this()
+        {
+            foreach ( SourceContentSummary s in summaries )
+            {
+                AggregateWith(s);
+            }
+        }
+
         public PointSummary WayPoints { get; private set; }
         public PointSummary TrackPoints { get; private set; }
         public PointSummary RoutePoints { get; private set; }
