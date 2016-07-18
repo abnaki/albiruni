@@ -68,7 +68,7 @@ namespace Abnaki.Albiruni.Menu
                             DirectoryInfo ditarget = di.CreateSubdirectory(Nursery.CacheDir);
 
                             var root = Abnaki.Albiruni.Tree.Node.NewGlobalRoot();
-                            Message.RootNodeMessage msg = new Message.RootNodeMessage(root);
+                            Message.RootNodeMessage msg = new Message.RootNodeMessage(root, di);
 
                             Nursery.GrowTree(root, di, ditarget, guidance);
 
