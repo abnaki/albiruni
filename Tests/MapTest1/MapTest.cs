@@ -41,7 +41,7 @@ namespace Abnaki.Albiruni.Tests.Map
 
             vm.SetViewPort(viewRect, unitRect);
 
-            var msg = new Message.RootNodeMessage(root);
+            var msg = new Message.RootNodeMessage(root, disource: null);
 
             vm.HandleTree(msg);
 
