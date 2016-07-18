@@ -49,5 +49,13 @@ namespace Abnaki.Albiruni.Graphic
                 && EqualDouble(rect.South, other.South)
                 && EqualDouble(rect.North, other.North);
         }
+
+        public static bool EqualCoordinates(this Location loc, Location other)
+        {
+            if (other == null)
+                return false;
+
+            return EqualDouble(loc.Latitude, other.Latitude) && EqualDouble(loc.Longitude, other.Longitude);
+        }
     }
 }
