@@ -26,6 +26,8 @@ namespace Abnaki.Albiruni
             Tracks = new ObservableCollection<MapPath>();
             ViewPortRect = new MapRectangle(); // unspecified
 
+            ClearLastNodesFound();
+
             MessageTube.SubscribeCostly<Message.RootNodeMessage>(HandleTree);
         }
 
@@ -82,6 +84,9 @@ namespace Abnaki.Albiruni
         public void HandleTree(Message.RootNodeMessage msg)
         {
             //root.DebugPrint();
+
+            ClearAdornments();
+            ClearLastNodesFound();
 
             bool newRoot = msg.Root != RootNode;
             RootNode = msg.Root;
@@ -241,7 +246,8 @@ namespace Abnaki.Albiruni
 
                 if (r != null)
                 {
-                    r.Fill = m_defaultFillBrush;
+                    CompleteRectangle(r);
+
                     this.Rectangles.Add(r); // efficient ?
 
                     results.Add(DescentResult.NewRectangles);
@@ -254,6 +260,27 @@ namespace Abnaki.Albiruni
                 return DescentResult.None;
         }
 
+        void CompleteRectangle(MapRectangle r)
+        {
+            r.Fill = m_defaultFillBrush;
+
+            //r.MouseLeftButtonUp += MapRectangle_MouseLeftButtonUp; // never gets  e.ClickCount == 2
+            r.MouseLeftButtonDown += MapRectangle_MouseLeftButtonDown;
+        }
+
+        void MapRectangle_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (e.ClickCount == 2)
+            {
+                MapRectangle r = (MapRectangle)sender;
+                MapBase map = r.ParentMap;
+                System.Windows.Point p = e.GetPosition(map);
+                Location loc = map.ViewportPointToLocation(p);
+
+                OnLeftDoubleClick(loc);
+            }
+        }
+
         void ClearAdornments()
         {
             Rectangles.Clear();
@@ -261,20 +288,52 @@ namespace Abnaki.Albiruni
             Tracks.Clear();
         }
 
+        Location lastLocation;
+        IEnumerable<Node> lastNodes;
+
+        void ClearLastNodesFound()
+        {
+            lastLocation = null;
+            lastNodes = Enumerable.Empty<Node>();
+        }
+
         public void OnHover(Location loc)
         {
-            if (RootNode == null)
-                return;
-
-            List<Node> nodes = new List<Node>();
-
-            RootNode.FindNodes((decimal)loc.Latitude, (decimal)loc.Longitude, this.MinimumMesh, nodes);
-
-            if ( nodes.Any() )
-            {
-                Message.SourceRecordMessage msg = new Message.SourceRecordMessage(nodes);
+            Message.SourceRecordMessage msg = SourceRecordOfLocation(loc);
+            if ( msg != null )
                 MessageTube.Publish(msg);
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <returns>non null only if Nodes exist at location
+        /// </returns>
+        Message.SourceRecordMessage SourceRecordOfLocation(Location loc)
+        {
+            if (RootNode == null)
+                return null;
+
+            if (loc.EqualCoordinates(lastLocation))
+            {
+                // lastNodes are correct
             }
+            else
+            {
+                List<Node> nodes = new List<Node>();
+                RootNode.FindNodes((decimal)loc.Latitude, (decimal)loc.Longitude, this.MinimumMesh, nodes);
+
+                lastLocation = loc;
+                lastNodes = nodes;
+            }
+
+            Message.SourceRecordMessage msg = null;
+
+            if (lastNodes.Any())
+            {
+                msg = new Message.SourceRecordMessage(lastNodes);
+            }
+
+            return msg;
 
             //if (nodes.Count > 0)
             //{
@@ -286,6 +345,24 @@ namespace Abnaki.Albiruni
             //    }
             //    Debug.Unindent();
             //}
+        }
+
+        void OnLeftDoubleClick(Location loc)
+        {
+            Message.SourceRecordMessage recsMsg = SourceRecordOfLocation(loc);
+            if (recsMsg != null)
+            {
+                int n = recsMsg.SourceRecords.Count();
+                if (n == 1)
+                {
+                    Message.InvokeSourceMessage msg = new Message.InvokeSourceMessage(recsMsg.SourceRecords.Single());
+                    MessageTube.Publish(msg);
+                }
+                else
+                {
+                    Debug.WriteLine("Not invoking " + n + " sources.  Expect uniqueness.");
+                }
+            }
         }
 
         public void Testing()
