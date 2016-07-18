@@ -29,16 +29,8 @@ namespace Abnaki.Albiruni
             InitializeComponent();
 
             MessageTube.SubscribeCostly<Message.SourceRecordMessage>(UpdateSources);
-            MessageTube.Subscribe<Message.RootNodeMessage>(OnRoot);
 
             this.grid.DoubleClickedRecord += grid_DoubleClickedRecord;
-        }
-
-        DirectoryInfo sourceDirectory;
-
-        void OnRoot(Message.RootNodeMessage msg)
-        {
-            sourceDirectory = msg.SourceDirectory;
         }
 
         void UpdateSources(Message.SourceRecordMessage msg)
@@ -56,23 +48,9 @@ namespace Abnaki.Albiruni
         {
             SourceRecord record = (SourceRecord)weakRecord;
 
-            FileInfo fisource = AbnakiFile.CombinedFilePath(sourceDirectory, record.Path);
-            if ( fisource.Exists )
-            {
-                //Debug.WriteLine("Want to open " + fisource.FullName);
-                using (new WaitCursor())
-                {
-                    ProcessStartInfo psi = new ProcessStartInfo(fisource.FullName);
-                    using (Process.Start(psi))
-                    {
-                        // indeed
-                    }
-                }
-            }
-            else
-            {
-                Abnaki.Windows.Software.Wpf.Diplomat.Notifier.Error("Nonexistent " + fisource.FullName);
-            }
+            Message.InvokeSourceMessage msg = new Message.InvokeSourceMessage(record);
+            MessageTube.Publish(msg);
+
         }
 
     }
