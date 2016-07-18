@@ -42,23 +42,28 @@ namespace Abnaki.Albiruni
             //this.DataContext.Testing();
         }
 
+
         #region Originally from xamlmapcontrol/SampleApps/WpfApplication/MainWindow.xaml.cs
 
         private void MapMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
+        { 
+            // not raised if hit a MapRectangle 
+
             if (e.ClickCount == 2)
             {
-                map.ZoomMap(e.GetPosition(map), Math.Floor(map.ZoomLevel + 1.5));
-                //map.TargetCenter = map.ViewportPointToLocation(e.GetPosition(map));
+                //Point p = e.GetPosition(map);
+                //Location loc = map.ViewportPointToLocation(p);
+                //map.ZoomMap(p, Math.Floor(map.ZoomLevel + 1.5));
+                //map.TargetCenter = loc;
             }
         }
 
         private void MapMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.ClickCount == 2)
-            {
-                map.ZoomMap(e.GetPosition(map), Math.Ceiling(map.ZoomLevel - 1.5));
-            }
+            //if (e.ClickCount == 2)
+            //{
+            //    map.ZoomMap(e.GetPosition(map), Math.Ceiling(map.ZoomLevel - 1.5));
+            //}
         }
 
         private void MapManipulationInertiaStarting(object sender, ManipulationInertiaStartingEventArgs e)
