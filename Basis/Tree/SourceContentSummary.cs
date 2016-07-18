@@ -86,5 +86,15 @@ namespace Abnaki.Albiruni.Tree
             ps.AggregateWith(this.RoutePoints);
             return ps;
         }
+
+        public override string ToString()
+        {
+            return Summarize("Way", WayPoints) + Summarize("Track", TrackPoints) + Summarize("Route", RoutePoints);
+        }
+
+        static string Summarize(string prefix, PointSummary ps)
+        {
+            return string.Format("{0}({1}) ", prefix, ps);
+        }
     }
 }
