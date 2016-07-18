@@ -30,6 +30,7 @@ namespace Abnaki.Albiruni
         }
 
         Menu.FileMenuBus fmbus;
+        ProcessLauncher procLauncher = new ProcessLauncher();
 
         IDockSystem IMainControl.DockingSystem
         {
