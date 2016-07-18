@@ -109,8 +109,10 @@
       <DependentUpon>Map.xaml</DependentUpon>
     </Compile>
     <Compile Include="MapViewModel.cs" />
+    <Compile Include="Message\InvokeSourceMessage.cs" />
     <Compile Include="Message\RootNodeMessage.cs" />
     <Compile Include="Message\SourceRecordMessage.cs" />
+    <Compile Include="ProcessLauncher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
