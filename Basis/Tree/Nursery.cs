@@ -79,10 +79,24 @@ namespace Abnaki.Albiruni.Tree
                     {
                         Debug.WriteLine("Reading " + fi.FullName);
 
-                        Source source = new Source(fi, disource);
-
                         firoot = Node.NewGlobalRoot();
-                        firoot.Populate(source, guidance.MinimumPrecision);
+
+                        try
+                        {
+                            Source source = new Source(fi, disource);
+
+                            firoot.Populate(source, guidance.MinimumPrecision);
+                        }
+                        catch (Exception ex)
+                        {
+                            // expected to be a sporadic bad file, not a systematic Albiruni bug.
+                            // firoot will survive anyway, and may be childless, trivial, or incomplete,
+                            // but want to avoid reading the exact source again.
+
+                            // AbnakiLog.Exception(ex, "Error due to " + fi.FullName);
+                            guidance.FilesExceptions[fi.FullName] = ex;
+                        }
+
 
                         // write firoot to a relative file under ditarget
                         foreach (DirectoryInfo disub in AbnakiFile.DirectorySequence(outfile))
@@ -104,11 +118,9 @@ namespace Abnaki.Albiruni.Tree
                         }
                     }
                 }
-                catch ( Exception ex )
+                finally
                 {
-                    // expected to be a sporadic bad file, not a systematic Albiruni bug.
-                    // AbnakiLog.Exception(ex, "Error due to " + fi.FullName);
-                    guidance.FilesExceptions[fi.FullName] = ex;
+
                 }
 
                 if (firoot != null)
