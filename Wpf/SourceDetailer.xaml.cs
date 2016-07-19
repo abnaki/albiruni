@@ -38,10 +38,14 @@ namespace Abnaki.Albiruni
             this.grid.BindGrid(msg.SourceRecords);
 
             this.grid.ConfigureColumns(new Col[] {
-                new Col(){ Field = "Path" },
-                new Col(){ Field = "Waypoints" },
-                new Col(){ Field = "Trackpoints" }
+                new Col("Path"),
+                new Col("Waypoints"),
+                new Col("Trackpoints"),
+                new Col("MinTime"){ Caption = "First UTC" },
+                new Col("MaxTime"){ Caption = "Last UTC"}
             });
+            
+            // in the future, want a generalized optional way for grid to display non-null DateTime ToLocalTime.
         }
 
         void grid_DoubleClickedRecord(object weakRecord)
