@@ -28,6 +28,11 @@ namespace Abnaki.Albiruni.Graphic
             };
         }
 
+        public static MapRectangle NewMapRectangle(decimal west, decimal east, decimal south, decimal north)
+        {
+            return NewMapRectangle((double)west, (double)east, (double)south, (double)north);
+        }
+
         static double Bounded(double min, double x, double max)
         {
             return Math.Max(min, Math.Min(x, max));
