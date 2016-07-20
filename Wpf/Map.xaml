@@ -111,6 +111,8 @@
                 ItemsSource="{Binding Symbols}" />
             <map:MapItemsControl
                 ItemsSource="{Binding Tracks}" />
+            <map:MapItemsControl
+                ItemsSource="{Binding EmphasizedPaths}" />
         </map:Map>
         <Grid
             Grid.Column="1">
