@@ -38,9 +38,10 @@ namespace Abnaki.Albiruni
             this.grid.BindGrid(msg.SourceRecords);
 
             this.grid.ConfigureColumns(new Col[] {
-                new Col("Path"),
+                new Col("Path"){ Caption = "File"}, // Tooltip="Double-click to open externally"
                 new Col("Waypoints"),
-                new Col("Trackpoints"),
+                new Col("Trackpoints"){ Caption = "Track points"},
+                new Col("Routepoints"){ Caption = "Route points"},
                 new Col("MinTime"){ Caption = "First UTC" },
                 new Col("MaxTime"){ Caption = "Last UTC"}
             });
