@@ -16,13 +16,14 @@ namespace Abnaki.Albiruni
         }
 
         Source Source { get; set; }
-        SourceContentSummary Summary { get; set; }
+        public SourceContentSummary Summary { get; private  set; }
         PointSummary OverallPoints { get; set; }
 
         public string Path { get { return this.Source.Path; } }
 
         public int Waypoints { get { return this.Summary.WayPoints.Points;  } }
         public int Trackpoints { get { return this.Summary.TrackPoints.Points; } }
+        public int Routepoints { get { return this.Summary.RoutePoints.Points; } }
 
         public DateTime? MinTime { get { return this.OverallPoints.MinTime; } }
         public DateTime? MaxTime { get { return this.OverallPoints.MaxTime; } }
