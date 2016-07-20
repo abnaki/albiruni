@@ -24,6 +24,7 @@ namespace Abnaki.Albiruni
             Rectangles = new ObservableCollection<MapRectangle>();
             Symbols = new ObservableCollection<MapPath>();
             Tracks = new ObservableCollection<MapPath>();
+            EmphasizedPaths = new ObservableCollection<MapPath>();
             ViewPortRect = new MapRectangle(); // unspecified
 
             ClearLastNodesFound();
@@ -42,6 +43,7 @@ namespace Abnaki.Albiruni
         public ObservableCollection<MapRectangle> Rectangles { get; private set; }
         public ObservableCollection<MapPath> Symbols { get; private set; }
         public ObservableCollection<MapPath> Tracks { get; private set; }
+        public ObservableCollection<MapPath> EmphasizedPaths { get; private set; }
 
         /// <summary>Last known rectangle; not bound to control.  i.e. set{} does not affect the map.
         /// </summary>
@@ -99,7 +101,8 @@ namespace Abnaki.Albiruni
         /// </summary>
         void UpdateRectangles(bool newRoot)
         {
-            Rectangles.Clear();
+            //Rectangles.Clear();
+            ClearAdornments();
 
             if (RootNode == null)
                 return; // OK
@@ -286,22 +289,45 @@ namespace Abnaki.Albiruni
             Rectangles.Clear();
             Symbols.Clear();
             Tracks.Clear();
+            EmphasizedPaths.Clear();
         }
 
         Location lastLocation;
-        IEnumerable<Node> lastNodes;
+        Node.FindResult lastNodeSpan;
 
         void ClearLastNodesFound()
         {
             lastLocation = null;
-            lastNodes = Enumerable.Empty<Node>();
+            lastNodeSpan = null;
         }
 
         public void OnHover(Location loc)
         {
-            Message.SourceRecordMessage msg = SourceRecordOfLocation(loc);
-            if ( msg != null )
+            Message.SourceRecordMessage msg = SourceRecordOfLocation(loc); // depends on MinimumMesh
+            if (msg != null)
+            {
                 MessageTube.Publish(msg);
+
+                EmphasizedPaths.Clear();
+                
+                if (msg.FinalSummary.Points > 0) // implies msg.NodeExtremes must contain non-nulls
+                {
+                    //MapRectangle r = MapExtensions.NewMapRectangle(ps.MinLongitude.Value, ps.MaxLongitude.Value, ps.MinLatitude.Value, ps.MaxLatitude.Value);
+                    // ps=msg.FinalSummary is inadequate for visibility; could be a single point or small/thin cluster.
+                    // Also MapControl 2.9 did not draw any MapRectangle Stroke.
+
+                    Graphic.Curve.OutlineRectangle r = new Graphic.Curve.OutlineRectangle(
+                        west: msg.NodeExtremes.MinLong.Value,
+                        east: msg.NodeExtremes.MaxLong.Value,
+                        south: msg.NodeExtremes.MinLat.Value,
+                        north: msg.NodeExtremes.MaxLat.Value);
+
+                    r.Stroke = Brushes.Yellow;
+                    r.StrokeThickness = 2;
+
+                    EmphasizedPaths.Add(r);
+                }
+            }
         }
 
         /// <summary>
@@ -319,18 +345,18 @@ namespace Abnaki.Albiruni
             }
             else
             {
-                List<Node> nodes = new List<Node>();
+                Node.FindResult nodes = new Node.FindResult();
                 RootNode.FindNodes((decimal)loc.Latitude, (decimal)loc.Longitude, this.MinimumMesh, nodes);
 
                 lastLocation = loc;
-                lastNodes = nodes;
+                lastNodeSpan = nodes;
             }
 
             Message.SourceRecordMessage msg = null;
 
-            if (lastNodes.Any())
+            if (lastNodeSpan != null)
             {
-                msg = new Message.SourceRecordMessage(lastNodes);
+                msg = new Message.SourceRecordMessage(lastNodeSpan);
             }
 
             return msg;
