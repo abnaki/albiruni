@@ -77,11 +77,11 @@ namespace Abnaki.Albiruni.Tests.Provider
             root.Populate(source, mesh.Delta);
 
             IPoint samplePoint = source.GpxFile.Points.AllPoints.First();
-            List<Node> testFindNodes = new List<Node>();
 
+            Node.FindResult testFindNodes = new Node.FindResult();
             root.FindNodes(samplePoint.Latitude, samplePoint.Longitude, mesh, testFindNodes);
 
-            Debug.Assert(testFindNodes.Count > 0);
+            Debug.Assert(testFindNodes.List.Count > 0);
 
             root.DebugPrint();
         }
