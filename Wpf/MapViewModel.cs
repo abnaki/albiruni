@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Diagnostics;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Media;
 
 using Abnaki.Albiruni.Tree;
@@ -269,6 +270,19 @@ namespace Abnaki.Albiruni
 
             //r.MouseLeftButtonUp += MapRectangle_MouseLeftButtonUp; // never gets  e.ClickCount == 2
             r.MouseLeftButtonDown += MapRectangle_MouseLeftButtonDown;
+
+            // need to be able to pan ParentMap if mouse hit rectangle.
+            r.AddHandler(UIElement.MouseDownEvent, new RoutedEventHandler(RouteToParentMap));
+            r.AddHandler(UIElement.MouseMoveEvent, new RoutedEventHandler(RouteToParentMap));
+            r.AddHandler(UIElement.MouseUpEvent, new RoutedEventHandler(RouteToParentMap));
+            
+        }
+
+        static void RouteToParentMap(object sender, RoutedEventArgs e)
+        {
+            MapPath r = (MapPath)sender;
+            r.ParentMap.RaiseEvent(e);
+            e.Handled = true;
         }
 
         void MapRectangle_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
