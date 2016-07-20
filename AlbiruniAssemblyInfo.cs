@@ -4,8 +4,8 @@ using System.Reflection;
 [assembly: AssemblyFileVersion("1.0.0.0")]
 
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Abnaki Way Components")]
+[assembly: AssemblyCompany("Abnaki Light Industry")]
 [assembly: AssemblyProduct("Albiruni")]
-[assembly: AssemblyCopyright("Copyright © 2016 Abnaki Way Components")]
+[assembly: AssemblyCopyright("Copyright © 2016 Abnaki Light Industry LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
