@@ -139,39 +139,84 @@ namespace Abnaki.Albiruni.Tree
             return ((this.Degrees  < xc) && (xc < this.Degrees + this.Delta ));
         }
 
-        public void FindNodes(decimal latitude, decimal longitude, Mesh precision, List<Node> nodes)
+        /// <summary>
+        /// Span of Degrees and/or Degrees+Delta of nodes
+        /// </summary>
+        public class Span
         {
+            public decimal? MinLat;
+            public decimal? MaxLat;
+            public decimal? MinLong;
+            public decimal? MaxLong;
+
+            public void NarrowTo(Node node)
+            {
+                // narrowing the span, not widening it, by nature of NullableExtreme signs
+               switch ( node.Axis )
+               {
+                   case Axis.EastWest:
+                       this.MinLong = Numerical.NullableExtreme(this.MinLong, node.Degrees, 1);
+                       this.MaxLong = Numerical.NullableExtreme(this.MaxLong, node.Degrees + node.Delta, -1);
+                       break;
+
+                   case Axis.NorthSouth:
+                       this.MinLat = Numerical.NullableExtreme(this.MinLat, node.Degrees, 1);
+                       this.MaxLat = Numerical.NullableExtreme(this.MaxLat, node.Degrees + node.Delta, -1);
+                       break;
+               }
+            }
+        }
+
+        public class FindResult
+        {
+            public readonly List<Node> List = new List<Node>();
+
+            public readonly Span NodeSpan = new Span();
+
+            public void Add(Node node)
+            {
+                this.List.Add(node);
+            }
+
+        }
+
+        public void FindNodes(decimal latitude, decimal longitude, Mesh precision, FindResult nodefind)
+        {
+            if (false == ContainPosition(latitude, longitude))
+                return;
+
+            nodefind.NodeSpan.NarrowTo(this);
+
             if (Delta >= precision.Delta)
             {
-                if (ContainPosition(latitude, longitude))
-                {
-                    AddNodesHavingSources(nodes, recurse: false);
+                //nodefind.NodeSpan.SpanNode(this);
 
-                    if (Children != null)
-                    {
-                        Children.Item1.FindNodes(latitude, longitude, precision, nodes);
-                        Children.Item2.FindNodes(latitude, longitude, precision, nodes);
-                    }
+                AddNodesHavingSources(nodefind, recurse: false);
+
+                if (Children != null)
+                {
+                    Children.Item1.FindNodes(latitude, longitude, precision, nodefind);
+                    Children.Item2.FindNodes(latitude, longitude, precision, nodefind);
                 }
             }
             else
             {
                 // all descendant nodes are within precision
-                AddNodesHavingSources(nodes, recurse: true);
+                AddNodesHavingSources(nodefind, recurse: true);
             }
         }
 
-        void AddNodesHavingSources(List<Node> nodes, bool recurse)
+        void AddNodesHavingSources(FindResult nodefind, bool recurse)
         {
             if (mapSourceSummaries.IsValueCreated && mapSourceSummaries.Value.Count > 0)
             {
-                nodes.Add(this);
+                nodefind.Add(this);
             }
 
             if (recurse && Children != null)
             {
-                Children.Item1.AddNodesHavingSources(nodes, recurse);
-                Children.Item2.AddNodesHavingSources(nodes, recurse);
+                Children.Item1.AddNodesHavingSources(nodefind, recurse);
+                Children.Item2.AddNodesHavingSources(nodefind, recurse);
             }
         }
 
