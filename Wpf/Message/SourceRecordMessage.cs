@@ -11,12 +11,24 @@ namespace Abnaki.Albiruni.Message
     /// </summary>
     class SourceRecordMessage
     {
-        public SourceRecordMessage(IEnumerable<Node> nodes)
+        public SourceRecordMessage(Node.FindResult nodefind)
         {
-            this.SourceRecords = CreateSourceRecords(nodes);
+            this.SourceRecords = CreateSourceRecords(nodefind.List);
+
+            IEnumerable<SourceContentSummary> summaries =
+                this.SourceRecords.Select(r => r.Summary);
+
+            SourceContentSummary unionSummaries = new SourceContentSummary(summaries);
+            this.FinalSummary = unionSummaries.FinalSummary();
+
+            this.NodeExtremes = nodefind.NodeSpan;
         }
 
         public IEnumerable<SourceRecord> SourceRecords { get; private set; }
+
+        public PointSummary FinalSummary { get; private set; }
+
+        public Node.Span NodeExtremes { get; private set; }
 
         public static IEnumerable<SourceRecord> CreateSourceRecords(IEnumerable<Node> nodes)
         {
