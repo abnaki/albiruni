@@ -105,27 +105,9 @@ namespace Abnaki.Albiruni.Tree
             this.MaxElevation = NullableExtreme(this.MaxElevation, subset.MaxElevation, 1);
         }
 
-        /// <summary>
-        /// Of the non-null args, return the extreme
-        /// </summary>
-        /// <param name="sign">1 implies max, -1 implies min
-        /// </param>
         static decimal? NullableExtreme(decimal? a, decimal? b, int sign)
         {
-            if (a.HasValue)
-            {
-                if (b.HasValue)
-                {
-                    if (b.Value.CompareTo(a.Value) == sign)
-                        return b;
-                }
-                return a;
-            }
-            else if (b.HasValue)
-            {
-                return b;
-            }
-            return null;
+            return Numerical.NullableExtreme(a, b, sign); // migrated
         }
 
         static DateTime? MinNullableTime(DateTime? dt, IPoint p)
@@ -135,14 +117,7 @@ namespace Abnaki.Albiruni.Tree
 
         static DateTime? MinNullableTime(DateTime? dt, DateTime? ptime)
         {
-            if ( dt.HasValue )
-            {
-                if (ptime.HasValue && ptime.Value < dt.Value)
-                    return ptime;
-
-                return dt;
-            }
-            return ptime;
+            return Numerical.MinNullableTime(dt, ptime);
         }
 
         static DateTime? MaxNullableTime(DateTime? dt, IPoint p)
@@ -152,14 +127,7 @@ namespace Abnaki.Albiruni.Tree
 
         static DateTime? MaxNullableTime(DateTime? dt, DateTime? ptime)
         {
-            if (dt.HasValue)
-            {
-                if (ptime.HasValue && dt.Value < ptime.Value)
-                    return ptime;
-
-                return dt;
-            }
-            return ptime;
+            return Numerical.MaxNullableTime(dt, ptime);
         }
 
         static void WriteNullable(DateTime? d, BinaryWriter bw)
