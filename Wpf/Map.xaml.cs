@@ -25,12 +25,21 @@ namespace Abnaki.Albiruni
 
             vptimer.Tick += vptimer_Tick;
             hovtimer.Tick += hovtimer_Tick;
+
+            Clear();
         }
 
         public new MapViewModel DataContext
         {
             get { return base.DataContext as MapViewModel; }
             set { base.DataContext = value; }
+        }
+
+        void Clear()
+        {
+            vptimer.Stop();
+            hovtimer.Stop();
+            hovPoint = new Point();
         }
 
         protected override void OnInitialized(EventArgs e)
@@ -125,6 +134,7 @@ namespace Abnaki.Albiruni
         #region Hover
 
         DispatcherTimer hovtimer = new DispatcherTimer() { Interval = TimeSpan.FromSeconds(0.4) };
+        Point hovPoint = new Point();
 
         private void map_MouseLeave(object sender, MouseEventArgs e)
         {
@@ -133,14 +143,23 @@ namespace Abnaki.Albiruni
 
         private void map_MouseMove(object sender, MouseEventArgs e)
         {
-            hovtimer.Stop(); hovtimer.Start();
+            hovtimer.Stop();
+
+            Point pmoved = Mouse.GetPosition(map);
+            if (pmoved != hovPoint)
+            {
+                hovtimer.Start();
+            }
+            // else, observed unwanted MouseMove events at same point if hovering on a drawn MapPolyline
         }
 
         void hovtimer_Tick(object sender, EventArgs e)
         {
             hovtimer.Stop();
 
-            Location loc = map.ViewportPointToLocation(Mouse.GetPosition(map));
+            hovPoint = Mouse.GetPosition(map);
+            
+            Location loc = map.ViewportPointToLocation(hovPoint);
             //Debug.WriteLine("Hover on " + loc);
 
             this.DataContext.OnHover(loc);
