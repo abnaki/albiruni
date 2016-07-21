@@ -28,7 +28,7 @@
                         <xcad:LayoutAnchorable
                             ContentId="sourcedetail"
                             Title="Details">
-                            <Albiruni:SourceDetailer />
+                            <Albiruni:SourceDetailer  VerticalAlignment="Stretch" Height="auto"/>
                         </xcad:LayoutAnchorable>
                     </xcad:LayoutAnchorGroup>
                 </xcad:LayoutAnchorSide>
