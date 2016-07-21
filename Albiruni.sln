@@ -24,7 +24,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfPreferredControls", "..\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapTest1", "Tests\MapTest1\MapTest1.csproj", "{3EB857DE-EA66-4FAD-A276-0BF59D9683B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfBasis", "..\windows\WpfBasis\WpfBasis.csproj", "{4B21D9F8-3EAF-4C29-AE6A-8C73C99393EC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfBasis", "..\windows\Library\Software\WpfBasis\WpfBasis.csproj", "{4B21D9F8-3EAF-4C29-AE6A-8C73C99393EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
