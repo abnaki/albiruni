@@ -317,8 +317,10 @@ namespace Abnaki.Albiruni
 
         public void OnHover(Location loc)
         {
-            Message.SourceRecordMessage msg = SourceRecordOfLocation(loc); // depends on MinimumMesh
-            if (msg != null)
+            bool hoverChanged;
+
+            Message.SourceRecordMessage msg = SourceRecordOfLocation(loc, out hoverChanged); // depends on MinimumMesh
+            if (msg != null && hoverChanged)
             {
                 MessageTube.Publish(msg);
 
@@ -348,8 +350,10 @@ namespace Abnaki.Albiruni
         /// </summary>
         /// <returns>non null only if Nodes exist at location
         /// </returns>
-        Message.SourceRecordMessage SourceRecordOfLocation(Location loc)
+        Message.SourceRecordMessage SourceRecordOfLocation(Location loc, out bool changed)
         {
+            changed = false;
+
             if (RootNode == null)
                 return null;
 
@@ -361,9 +365,12 @@ namespace Abnaki.Albiruni
             {
                 Node.FindResult nodes = new Node.FindResult();
                 RootNode.FindNodes((decimal)loc.Latitude, (decimal)loc.Longitude, this.MinimumMesh, nodes);
+                
+                changed = (lastNodeSpan == null || false == lastNodeSpan.SameNodes(nodes));
 
                 lastLocation = loc;
                 lastNodeSpan = nodes;
+
             }
 
             Message.SourceRecordMessage msg = null;
@@ -389,7 +396,8 @@ namespace Abnaki.Albiruni
 
         void OnLeftDoubleClick(Location loc)
         {
-            Message.SourceRecordMessage recsMsg = SourceRecordOfLocation(loc);
+            bool locationChanged; // unused.  user can invoke a source multiple times, not required to move mouse.
+            Message.SourceRecordMessage recsMsg = SourceRecordOfLocation(loc, out locationChanged);
             if (recsMsg != null)
             {
                 int n = recsMsg.SourceRecords.Count();
