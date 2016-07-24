@@ -51,12 +51,17 @@
     </Compile>
     <Compile Include="Mesh.cs" />
     <Compile Include="Numerical.cs" />
+    <Compile Include="Providers\FileReader.cs" />
     <Compile Include="Providers\Geo\Gpx\PointDuck.cs" />
     <Compile Include="Providers\Geo\Gpx\V10\FileDuck.cs" />
     <Compile Include="Providers\Geo\Gpx\V11\FileDuck.cs" />
     <Compile Include="Providers\IFile.cs" />
+    <Compile Include="Providers\Image\ExifHeader.cs" />
     <Compile Include="Providers\IPoint.cs" />
+    <Compile Include="Providers\Image\JpegFile.cs" />
+    <Compile Include="Providers\Image\JpegReader.cs" />
     <Compile Include="Providers\PointDump.cs" />
+    <Compile Include="Providers\PurePoint.cs" />
     <Compile Include="Tree\InputOutput\IBinaryRead.cs" />
     <Compile Include="Tree\InputOutput\IBinaryWrite.cs" />
     <Compile Include="Tree\Enums.cs" />
@@ -74,6 +79,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\forks\photo\src\photo.exif\photo.exif.csproj">
+      <Project>{13800742-9fff-4ed1-8d5d-259ec188bd6b}</Project>
+      <Name>photo.exif</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\windows\Library\Commonality\Commonality.csproj">
       <Project>{2c290af1-de15-4b75-8774-c4196f1e213d}</Project>
       <Name>Commonality</Name>
