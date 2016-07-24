@@ -1,6 +1,6 @@
 # Albiruni
 
-Windows desktop software to map large sets of GPS data, such as tracks and waypoints, in an efficient summarized style, rarely found in other open source software.   Painting it with subtle-colored polygons rather than solid lines and icons, the map and essential facts are readable, even as scale is zoomed, no matter the quantity of data.
+Windows desktop software to map large sets of GPS data, such as tracks and waypoints, in an efficient summarized style, rarely found in other open source software.    Painting it with subtle-colored polygons rather than solid lines and icons, the map and essential facts are readable, even as scale is zoomed, no matter the quantity of data.   It currently reads all **gpx** and geotagged **jpg** files in/under a folder.
 
 Named after the medieval Persian scientist [Abū Rayḥān Muḥammad ibn Aḥmad Al-Bīrūnī](https://en.wikipedia.org/wiki/Al-Biruni).  Almost 1000 years ago, he accurately measured the Earth and tabulated coordinates of hundreds of locations.
 
@@ -61,6 +61,7 @@ Gold medal contributions to open source mapping:
 Strongly appreciated:
 
 - Extended WPF Toolkit Community Edition
+- photo exif
 - Prism for WPF
 - Fody PropertyChanged
 - WPFFolderBrowser
