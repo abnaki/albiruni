@@ -178,6 +178,10 @@ namespace Abnaki.Albiruni.Tree
                 this.List.Add(node);
             }
 
+            public bool SameNodes(FindResult other)
+            {
+                return this.List.SequenceEqual(other.List);
+            }
         }
 
         public void FindNodes(decimal latitude, decimal longitude, Mesh precision, FindResult nodefind)
@@ -225,7 +229,7 @@ namespace Abnaki.Albiruni.Tree
         /// </summary>
         public void Populate(Source source, decimal minDelta) 
         {
-            Grow(null, source.GpxFile.Points, source, minDelta: minDelta);
+            Grow(null, source.InputFile.Points, source, minDelta: minDelta);
         }
 
         public void Graft(Node grandparent, Node branch)
