@@ -22,8 +22,8 @@ namespace Abnaki.Albiruni.Tree
 
         public Source(FileInfo fi, DirectoryInfo dibase) : this()
         {
-            this.GpxFile = new Providers.GpxFile();
-            this.GpxFile.Deserialize(fi);
+            this.InputFile = Providers.FileReader.SelectFileReader(fi);
+            this.InputFile.Deserialize(fi);
 
             this.Path = AbnakiFile.RelativePath(fi, dibase);
             
@@ -36,7 +36,7 @@ namespace Abnaki.Albiruni.Tree
 
         public string Path { get; private set; }
 
-        public Providers.GpxFile GpxFile { get; private set; } // may want to generalize type
+        public Providers.FileReader InputFile { get; private set; }
 
         public override string ToString()
         {
