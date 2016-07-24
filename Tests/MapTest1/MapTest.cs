@@ -17,7 +17,7 @@ namespace Abnaki.Albiruni.Tests.Map
             MapViewModel vm = new MapViewModel();
 
             var provTest = new Abnaki.Albiruni.Tests.Provider.UnitTest1();
-            Node root = provTest.TestNurseryRoot();
+            Node root = provTest.TestRootGpx();
 
             root.DebugPrint();
 
