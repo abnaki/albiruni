@@ -46,9 +46,7 @@ namespace Abnaki.Albiruni.Tree
 
         static IEnumerable<FileInfo> FindLocalFiles(DirectoryInfo di, Guidance guidance)
         {
-            return di.GetFiles(guidance.Wildcard + GpxFile.Extension)
-                .Where(f => f.Name.ToLower().EndsWith(GpxFile.Extension));
-            // without Where, it is rather perturbing that GetFiles returns files ending with .gpx~
+            return FileReader.FindFiles(di, guidance.Wildcard);
         }
 
         /// <summary>
