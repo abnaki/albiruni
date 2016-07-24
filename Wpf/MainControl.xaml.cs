@@ -30,6 +30,7 @@ namespace Abnaki.Albiruni
         }
 
         Menu.FileMenuBus fmbus;
+        Menu.OptionMenuBus optbus;
         ProcessLauncher procLauncher = new ProcessLauncher();
 
         IDockSystem IMainControl.DockingSystem
@@ -40,6 +41,7 @@ namespace Abnaki.Albiruni
         void IMainControl.ConfigureMenu(IMainMenu menu)
         {
             fmbus = new Menu.FileMenuBus(menu);
+            optbus = new Menu.OptionMenuBus(menu);
         }
 
         void IMainControl.EmplacedInWindow()
