@@ -14,21 +14,28 @@ namespace Abnaki.Albiruni.Tests.Provider
     [TestClass]
     public class UnitTest1
     {
+        static DirectoryInfo RelativeDir(string relative)
+        {
+            return new DirectoryInfo(Path.Combine(Environment.CurrentDirectory, relative));
+        }
+
         DirectoryInfo GeoGpxDir()
         {
             // Not only does Basis project reference Geo (geospatial library) by Nuget, but also
             // github.com/sibartlett/Geo is cloned into a sibling workspace;
             // and note test executes in CurrentDirectory equal to bin\debug under project.
-            string ddir = @"..\..\..\..\..\Geo\reference\gpx";
 
-            return new DirectoryInfo(Path.Combine(Environment.CurrentDirectory, ddir));
+            return RelativeDir(@"..\..\..\..\..\Geo\reference\gpx");
         }
 
         DirectoryInfo SampleGpxDir()
         {
-            string ddir = @"..\..\..\..\Sample\Flight";
+            return RelativeDir(@"..\..\..\..\Sample\Flight");
+        }
 
-            return new DirectoryInfo(Path.Combine(Environment.CurrentDirectory, ddir));
+        DirectoryInfo SampleImageDir()
+        {
+            return RelativeDir(@"..\..\..\..\Sample\Images");
         }
 
         IEnumerable<FileInfo> GeoGpxFiles()
@@ -76,7 +83,7 @@ namespace Abnaki.Albiruni.Tests.Provider
 
             root.Populate(source, mesh.Delta);
 
-            IPoint samplePoint = source.GpxFile.Points.AllPoints.First();
+            IPoint samplePoint = source.InputFile.Points.AllPoints.First();
 
             Node.FindResult testFindNodes = new Node.FindResult();
             root.FindNodes(samplePoint.Latitude, samplePoint.Longitude, mesh, testFindNodes);
@@ -87,14 +94,24 @@ namespace Abnaki.Albiruni.Tests.Provider
         }
 
         [TestMethod]
-        public void TestNursery()
+        public void TestGpx()
         {
-            Node root = TestNurseryRoot();
+            Node root = TestRootGpx();
         }
 
-        public Node TestNurseryRoot()
+        public Node TestRootGpx()
         {
-            DirectoryInfo di = SampleGpxDir();
+            return TestRootSource(SampleGpxDir());
+        }
+
+        [TestMethod]
+        public void TestImage()
+        {
+            Node root = TestRootSource(SampleImageDir());
+        }
+
+        Node TestRootSource(DirectoryInfo di)
+        {
             DirectoryInfo dicur = new DirectoryInfo(Environment.CurrentDirectory);
             DirectoryInfo ditarget = dicur.CreateSubdirectory(Nursery.CacheDir);
 
