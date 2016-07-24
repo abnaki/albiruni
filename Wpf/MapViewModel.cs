@@ -10,6 +10,7 @@ using System.Windows.Media;
 using Abnaki.Albiruni.Tree;
 using Abnaki.Albiruni.Graphic;
 using Abnaki.Windows.Software.Wpf;
+using Abnaki.Windows.Software.Wpf.Menu;
 using MapControl;
 using PropertyChanged;
 
@@ -28,9 +29,12 @@ namespace Abnaki.Albiruni
             EmphasizedPaths = new ObservableCollection<MapPath>();
             ViewPortRect = new MapRectangle(); // unspecified
 
+            SetCellBrush(cellHueLevel, 0, 0);
+
             ClearLastNodesFound();
 
             MessageTube.SubscribeCostly<Message.RootNodeMessage>(HandleTree);
+            ButtonBus<Menu.OptionMenuKey>.HookupSubscriber(HandleOption);
         }
 
         public Location MapCenter { get; set; }
@@ -80,9 +84,6 @@ namespace Abnaki.Albiruni
         }
 
         Node RootNode { get; set; }
-
-        System.Windows.Media.Brush m_defaultFillBrush = new SolidColorBrush(Color.FromArgb((byte)32, (byte)255, (byte)0, (byte)0));
-
 
         public void HandleTree(Message.RootNodeMessage msg)
         {
@@ -412,6 +413,37 @@ namespace Abnaki.Albiruni
                 }
             }
         }
+
+        System.Windows.Media.Brush m_defaultFillBrush;
+        const int cellHueLevel = 255;
+        const int cellAlpha = 48;
+
+        void SetCellBrush(int red, int green, int blue)
+        {
+            m_defaultFillBrush = new SolidColorBrush(Color.FromArgb((byte)cellAlpha, (byte)red, (byte)green, (byte)blue));
+            UpdateRectangles(newRoot: false);
+        }
+
+        private void HandleOption(ButtonMessage<Menu.OptionMenuKey> msg)
+        {
+            if (false == msg.Checked)
+                return;
+
+            switch (msg.Key)
+            {
+                case Menu.OptionMenuKey.MapCellColorRed:
+                    SetCellBrush(cellHueLevel, 0, 0);
+                    break;
+                case Menu.OptionMenuKey.MapCellColorGreen:
+                    SetCellBrush(0, cellHueLevel, 0);
+                    break;
+                case Menu.OptionMenuKey.MapCellColorBlue:
+                    SetCellBrush(0, 0, cellHueLevel);
+                    break;
+            }
+        }
+
+
 
         public void Testing()
         {
