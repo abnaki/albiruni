@@ -16,34 +16,18 @@ namespace Abnaki.Albiruni.Providers
     /// </summary>
     /// <remarks>
     /// </remarks>
-    public class GpxFile
+    public class GpxFile : FileReader
     {
         public static string Extension
         {
             get { return ".gpx";  }
         }
 
-        public void Deserialize(FileInfo fi)
-        {
-            if (false == fi.Exists)
-                throw new FileNotFoundException("Nonexistent " + fi.FullName);
-
-            IFile filedat = OpenGpxFile(fi);
-            this.Points = new PointDump(filedat);
-
-            //using (Stream str = fi.OpenRead())
-            //{
-            //    GeoGpsData = GpsData.Parse(str);
-            //}
-        }
-
-        // GpsData is a lowest common denominator 
+        // GpsData was a lowest common denominator 
         //  with objects in terms of lat,lon and little else.
         //public GpsData GeoGpsData { get; private set; }
 
-        public PointDump Points { get; private set; }
-
-        IFile OpenGpxFile(FileInfo fi)
+        protected override IFile OpenFile(FileInfo fi)
         {
             string v = null;
             using (Stream str = fi.OpenRead())
