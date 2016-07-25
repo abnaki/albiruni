@@ -186,26 +186,26 @@ namespace Abnaki.Albiruni.Tree
 
         public void FindNodes(decimal latitude, decimal longitude, Mesh precision, FindResult nodefind)
         {
-            if (false == ContainPosition(latitude, longitude))
-                return;
-
-            nodefind.NodeSpan.NarrowTo(this);
-
-            if (Delta >= precision.Delta)
+            if (Delta >= precision.Delta ) 
             {
-                //nodefind.NodeSpan.SpanNode(this);
-
-                AddNodesHavingSources(nodefind, recurse: false);
-
-                if (Children != null)
+                if (ContainPosition(latitude, longitude))
                 {
-                    Children.Item1.FindNodes(latitude, longitude, precision, nodefind);
-                    Children.Item2.FindNodes(latitude, longitude, precision, nodefind);
+                    nodefind.NodeSpan.NarrowTo(this);
+
+                    AddNodesHavingSources(nodefind, recurse: false);
+
+                    if (Children != null)
+                    {
+                        Children.Item1.FindNodes(latitude, longitude, precision, nodefind);
+                        Children.Item2.FindNodes(latitude, longitude, precision, nodefind);
+                    }
                 }
             }
             else
             {
-                // all descendant nodes are within precision
+                // All descendant nodes are within precision.
+                // It is sufficient for the last ancestor such that Delta>=precision.Delta to contain (latitude,longitude).
+                // That is, FindResult can have sources from cousins of the node that contains the point.
                 AddNodesHavingSources(nodefind, recurse: true);
             }
         }
