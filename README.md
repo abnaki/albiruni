@@ -10,8 +10,9 @@ Release scheduled for Summer 2016.  Albiruni's code is under [GNU Public License
 
 ## Sample
 
-![Mediterranean Sea](./Documents/img/sample-med.png)
-[From Geo gpx examples.](https://github.com/sibartlett/Geo/tree/master/reference/gpx)
+Mouse on a cell in Switzerland to display detail about source files:
+![Europe](./Documents/img/sample-med.png)
+[From gpsbabel gpx examples.](https://github.com/gpsbabel/gpsbabel/tree/master/reference)
 
 ## Practical applications for visualization
 
