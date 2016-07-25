@@ -10,7 +10,7 @@ Release scheduled for Summer 2016.  Albiruni's code is under [GNU Public License
 
 ## Sample
 
-Mouse on a cell in Switzerland to display detail about source files:
+Mouse on a cell to display detail about source files.  Note yellow rectangle near center.
 ![Europe](./Documents/img/sample-med.png)
 [From gpsbabel gpx examples.](https://github.com/gpsbabel/gpsbabel/tree/master/reference)
 
