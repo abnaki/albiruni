@@ -213,7 +213,8 @@ namespace Abnaki.Albiruni
                 results.Add(DescentResult.PointsCovered);
             }
 
-            if ( results.Any(r => r == DescentResult.PointsCovered) 
+            if ( node.Delta >= limits.MinimumDelta
+                && results.Any(r => r == DescentResult.PointsCovered) 
                 && parent != null && parent.Delta >= limits.MinimumDelta )
             {
                 // any descendants exist, and node has not been excluded for view or precision reasons (above)
