@@ -322,29 +322,28 @@ namespace Abnaki.Albiruni
             bool hoverChanged;
 
             Message.SourceRecordMessage msg = SourceRecordOfLocation(loc, out hoverChanged); // depends on MinimumMesh
-            if (msg != null && hoverChanged)
+
+            if (msg != null && hoverChanged
+                && msg.FinalSummary.Points > 0) // implies msg.NodeExtremes must contain non-nulls
             {
                 MessageTube.Publish(msg);
 
                 EmphasizedPaths.Clear();
-                
-                if (msg.FinalSummary.Points > 0) // implies msg.NodeExtremes must contain non-nulls
-                {
-                    //MapRectangle r = MapExtensions.NewMapRectangle(ps.MinLongitude.Value, ps.MaxLongitude.Value, ps.MinLatitude.Value, ps.MaxLatitude.Value);
-                    // ps=msg.FinalSummary is inadequate for visibility; could be a single point or small/thin cluster.
-                    // Also MapControl 2.9 did not draw any MapRectangle Stroke.
 
-                    Graphic.Curve.OutlineRectangle r = new Graphic.Curve.OutlineRectangle(
-                        west: msg.NodeExtremes.MinLong.Value,
-                        east: msg.NodeExtremes.MaxLong.Value,
-                        south: msg.NodeExtremes.MinLat.Value,
-                        north: msg.NodeExtremes.MaxLat.Value);
+                //MapRectangle r = MapExtensions.NewMapRectangle(ps.MinLongitude.Value, ps.MaxLongitude.Value, ps.MinLatitude.Value, ps.MaxLatitude.Value);
+                // ps=msg.FinalSummary is inadequate for visibility; could be a single point or small/thin cluster.
+                // Also MapControl 2.9 did not draw any MapRectangle Stroke.
 
-                    r.Stroke = Brushes.Yellow;
-                    r.StrokeThickness = 2;
+                Graphic.Curve.OutlineRectangle r = new Graphic.Curve.OutlineRectangle(
+                    west: msg.NodeExtremes.MinLong.Value,
+                    east: msg.NodeExtremes.MaxLong.Value,
+                    south: msg.NodeExtremes.MinLat.Value,
+                    north: msg.NodeExtremes.MaxLat.Value);
 
-                    EmphasizedPaths.Add(r);
-                }
+                r.Stroke = Brushes.Yellow;
+                r.StrokeThickness = 2;
+
+                EmphasizedPaths.Add(r);
             }
         }
 
