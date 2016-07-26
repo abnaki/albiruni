@@ -147,11 +147,12 @@
                         Orientation="Vertical"
                         HorizontalAlignment="Center"
                         Height="70"
-                        Minimum="6"
-                        Maximum="12"
+                        Minimum="8"
+                        Maximum="14"
                         Name="slprecision"
                         SmallChange="1"
                         ValueChanged="slprecision_ValueChanged">
+                        <!--maybe want Tick properties -->
                         <!-- no Binding because of excess difficulty binding Slider to Mesh.Power -->
                     </Slider>
                 </StackPanel>

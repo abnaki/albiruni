@@ -24,7 +24,7 @@ namespace Abnaki.Albiruni
         int power;
 
         /// <summary>
-        /// Mesh Delta is 90 degrees divided by Power of 2.
+        /// Mesh Delta is 360 degrees divided by Power of 2.
         /// </summary>
         public int Power
         {
@@ -35,7 +35,7 @@ namespace Abnaki.Albiruni
             set
             {
                 power = value;
-                Delta = 90 / (decimal)Math.Pow(2d, power);
+                Delta = 360 / (decimal)Math.Pow(2d, power);
             }
         }
     }

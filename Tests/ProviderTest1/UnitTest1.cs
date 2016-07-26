@@ -79,7 +79,7 @@ namespace Abnaki.Albiruni.Tests.Provider
 
             Source source = new Abnaki.Albiruni.Tree.Source(figpx, dicur);
 
-            Mesh mesh = new Mesh() { Power = 7 };
+            Mesh mesh = new Mesh() { Power = 9 };
 
             root.Populate(source, mesh.Delta);
 
