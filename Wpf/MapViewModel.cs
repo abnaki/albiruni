@@ -74,6 +74,7 @@ namespace Abnaki.Albiruni
 
         public void SetMesh(int power)
         {
+            ClearLastNodesFound();
             this.MinimumMesh = new Mesh(power);
             UpdateAdornments();
         }
