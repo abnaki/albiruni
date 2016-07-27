@@ -10,6 +10,9 @@ namespace Abnaki.Albiruni.Tree.InputOutput
 
         void Init(System.IO.Stream stream);
 
+        /// <summary>Exists after Init()</summary>
+        int? MeshPower { get; }
+
         void ReadSources();
 
         Source ReadSource();
