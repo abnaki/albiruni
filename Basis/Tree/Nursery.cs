@@ -26,10 +26,8 @@ namespace Abnaki.Albiruni.Tree
             /// <summary>start of filenames</summary>
             public string Wildcard = "*";
 
-            /// <summary>minimum threshold, in degrees; no nodes will have Delta below this</summary>
-            /// <remarks>90 * 2^-12 is about 2.4 km at equator, and -15 would be 300 meters.
-            /// </remarks>
-            public decimal MinimumPrecision = 1;
+            /// <summary>no nodes will have Delta less than this</summary>
+            public Mesh MinimumMesh { get; set; }
 
             public SortedDictionary<string, Exception> FilesExceptions = new SortedDictionary<string, Exception>();
         }
@@ -83,7 +81,7 @@ namespace Abnaki.Albiruni.Tree
                         {
                             Source source = new Source(fi, disource);
 
-                            firoot.Populate(source, guidance.MinimumPrecision);
+                            firoot.Populate(source, guidance.MinimumMesh);
                         }
                         catch (Exception ex)
                         {
