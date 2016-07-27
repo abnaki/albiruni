@@ -47,7 +47,7 @@ namespace Abnaki.Albiruni
             base.OnInitialized(e);
 
             this.DataContext = new MapViewModel();
-            this.DataContext.MinimumMesh = new Mesh((int)slprecision.Value);
+            this.DataContext.DisplayMesh = new Mesh((int)slprecision.Value);
             //this.DataContext.Testing();
         }
 
@@ -170,8 +170,9 @@ namespace Abnaki.Albiruni
 
         private void slprecision_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if ( this.DataContext != null )
-                this.DataContext.SetMesh((int)slprecision.Value); 
+            if (this.DataContext != null)
+                this.DataContext.UpdateMesh();
+                // this.DataContext.SetMesh((int)slprecision.Value); 
         }
 
     }
