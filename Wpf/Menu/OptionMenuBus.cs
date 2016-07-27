@@ -12,23 +12,41 @@ namespace Abnaki.Albiruni.Menu
     {
         public OptionMenuBus(IMainMenu menu)
         {
-            menu.AddCommandChild<OptionMenuKey>(TopMenuKey.Option, OptionMenuKey.Map, "Map");
-            menu.AddCommand(new MenuSeed<OptionMenuKey>()
-            {
-                ParentKey = OptionMenuKey.Map,
-                Key = OptionMenuKey.MapCellColor,
-                Label = "Cell Color"
+            menu.AddCommandChild<OptionMenuKey>(TopMenuKey.Option, OptionMenuKey.Data);
+            menu.AddCommandChild<OptionMenuKey>(OptionMenuKey.Data, OptionMenuKey.DataMeshPower);
+            
+            AddExclusiveCommands(menu, OptionMenuKey.DataMeshPower, new[] {
+                OptionMenuKey.DataMeshPower14,
+                OptionMenuKey.DataMeshPower15,
+                OptionMenuKey.DataMeshPower16,
+                OptionMenuKey.DataMeshPower17,
+                OptionMenuKey.DataMeshPower18,
+                OptionMenuKey.DataMeshPower19
             });
 
-            menu.AddExclusiveCommands(OptionMenuKey.MapCellColor, new MenuSeed<OptionMenuKey>[] {
-                new MenuSeed<OptionMenuKey>(OptionMenuKey.MapCellColorRed, "Red", true),
-                new MenuSeed<OptionMenuKey>(OptionMenuKey.MapCellColorGreen, "Green", false),
-                new MenuSeed<OptionMenuKey>(OptionMenuKey.MapCellColorBlue,"Blue", false)
-            });
+            menu.AddCommandChild<OptionMenuKey>(TopMenuKey.Option, OptionMenuKey.Map);
+            menu.AddCommandChild<OptionMenuKey>(OptionMenuKey.Map, OptionMenuKey.MapCellColor);
+
+            AddExclusiveCommands(menu, OptionMenuKey.MapCellColor, 
+                new[]{OptionMenuKey.MapCellColorRed, OptionMenuKey.MapCellColorGreen, OptionMenuKey.MapCellColorBlue});
 
         }
 
+        public static void GetMeshFromOption(OptionMenuKey key, Action<int> onpower)
+        {
+            switch (key)
+            {
+                case Menu.OptionMenuKey.DataMeshPower14:
+                case Menu.OptionMenuKey.DataMeshPower15:
+                case Menu.OptionMenuKey.DataMeshPower16:
+                case Menu.OptionMenuKey.DataMeshPower17:
+                case Menu.OptionMenuKey.DataMeshPower18:
+                case Menu.OptionMenuKey.DataMeshPower19:
+                    onpower((int)key); // requires enum int to agree
+                    break;
+            }
 
+        }
 
     }
 }
