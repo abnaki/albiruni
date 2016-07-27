@@ -81,7 +81,7 @@ namespace Abnaki.Albiruni.Tests.Provider
 
             Mesh mesh = new Mesh() { Power = 9 };
 
-            root.Populate(source, mesh.Delta);
+            root.Populate(source, mesh);
 
             IPoint samplePoint = source.InputFile.Points.AllPoints.First();
 
