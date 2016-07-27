@@ -21,8 +21,6 @@ namespace Abnaki.Albiruni
     {
         public MapViewModel()
         {
-            MinimumMesh = new Mesh();
-
             Rectangles = new ObservableCollection<MapRectangle>();
             Symbols = new ObservableCollection<MapPath>();
             Tracks = new ObservableCollection<MapPath>();
@@ -42,7 +40,18 @@ namespace Abnaki.Albiruni
         /// <summary>
         /// will be minimum limit on Delta of a Node to show individually as a MapRectangle
         /// </summary>
-        public Mesh MinimumMesh { get; set; }
+        public Mesh DisplayMesh { get; set; }
+
+        /// <summary>Necessary to bind DisplayMesh Power</summary>
+        public int DisplayMeshPower
+        {
+            get { return DisplayMesh.Power; }
+            set { DisplayMesh = new Mesh(value); }
+        }
+
+        /// <summary>Finest Mesh for user control
+        /// </summary>
+        public int MeshMaximumPower { get; set; }
 
         // want to use BulkObservableCollection or similar
         public ObservableCollection<MapRectangle> Rectangles { get; private set; }
@@ -72,10 +81,9 @@ namespace Abnaki.Albiruni
             }
         }
 
-        public void SetMesh(int power)
+        public void UpdateMesh()
         {
             ClearLastNodesFound();
-            this.MinimumMesh = new Mesh(power);
             UpdateAdornments();
         }
 
@@ -140,7 +148,7 @@ namespace Abnaki.Albiruni
                     south: MapCenter.Latitude - viewHeight / 2
                 );
 
-                limits.MinimumDelta = this.MinimumMesh.Delta;
+                limits.MinimumDelta = this.DisplayMesh.Delta;
 
                 Debug.WriteLine("limits " + limits);
 
@@ -182,7 +190,6 @@ namespace Abnaki.Albiruni
         /// Add a Rectangle for every Node in tree that intersects ViewPortRect,
         /// not descending to any Nodes having Delta < MinimumPrecision.
         /// </summary>
-        /// <returns>true if anything added</returns>
         DescentResult AddDescendantRectangles(Node node, Node parent, DescentLimits limits)
         {
             switch (node.Axis)
@@ -366,7 +373,7 @@ namespace Abnaki.Albiruni
             else
             {
                 Node.FindResult nodes = new Node.FindResult();
-                RootNode.FindNodes((decimal)loc.Latitude, (decimal)loc.Longitude, this.MinimumMesh, nodes);
+                RootNode.FindNodes((decimal)loc.Latitude, (decimal)loc.Longitude, this.DisplayMesh, nodes);
                 
                 changed = (lastNodeSpan == null || false == lastNodeSpan.SameNodes(nodes));
 
@@ -441,7 +448,11 @@ namespace Abnaki.Albiruni
                 case Menu.OptionMenuKey.MapCellColorBlue:
                     SetCellBrush(0, 0, cellHueLevel);
                     break;
+
             }
+
+            Menu.OptionMenuBus.GetMeshFromOption(msg.Key, p => MeshMaximumPower = p);
+            
         }
 
 
