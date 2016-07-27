@@ -251,12 +251,27 @@ namespace Abnaki.Albiruni.Tree
                 Children.Item2.Graft(this, branch.Children.Item2);
             }
 
-             // graft sources
-            foreach ( var pair in branch.mapSourceSummaries.Value )
-            {
-                this.mapSourceSummaries.Value.Add(pair.Key, pair.Value);
-            }
+            MergeSourceSummaries(branch);
 
+        }
+
+        void MergeSourceSummaries(Node other)
+        {
+            var map = this.mapSourceSummaries.Value;
+
+            foreach (var pair in other.mapSourceSummaries.Value)
+            {
+                SourceContentSummary otherSummary = pair.Value;
+                if (map.ContainsKey(pair.Key))
+                {
+                    SourceContentSummary existing = map[pair.Key];
+                    existing.AggregateWith(otherSummary);
+                }
+                else
+                {
+                    map.Add(pair.Key, otherSummary);
+                }
+            }
         }
 
         public void DebugPrint()
@@ -360,6 +375,34 @@ namespace Abnaki.Albiruni.Tree
                 Children.Item1.GetSources(sources);
                 Children.Item2.GetSources(sources);
             }
+        }
+
+        public enum FathomResult { None, Descendants, This };
+
+        public FathomResult Fathom(decimal minimumDelta)
+        {
+            FathomResult r = FathomResult.None;
+
+            if ( Children != null )
+            {
+                FathomResult rc1 = Children.Item1.Fathom(minimumDelta);
+                FathomResult rc2 = Children.Item2.Fathom(minimumDelta);
+
+                r = (FathomResult)Math.Max((int)rc1, (int)rc2);
+                
+                if ( r == FathomResult.This )
+                {
+                    MergeSourceSummaries(Children.Item1);
+                    MergeSourceSummaries(Children.Item2);
+                    Children = null;
+                    r = FathomResult.Descendants;
+                }
+            }
+
+            if (Delta < minimumDelta)
+                r = FathomResult.This;
+
+            return r;
         }
 
         public override string ToString()
