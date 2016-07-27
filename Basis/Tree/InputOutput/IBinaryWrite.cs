@@ -6,7 +6,7 @@ namespace Abnaki.Albiruni.Tree.InputOutput
 {
     public interface IBinaryWrite : IDisposable
     {
-        void Init(System.IO.Stream stream);
+        void Init(System.IO.Stream stream, Mesh minimumMesh);
 
         System.IO.BinaryWriter Writer { get; }
 
