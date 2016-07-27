@@ -22,7 +22,11 @@ namespace Abnaki.Albiruni.Menu
                 ParentKey = TopMenuKey.File,
                 Tooltip = "Open a top-level folder containing files or other folders to search."
             });
+
+            ButtonBus<Menu.OptionMenuKey>.HookupSubscriber(HandleOption);
         }
+
+        Mesh minimumMesh = new Mesh(14);
 
         WPFFolderBrowser.WPFFolderBrowserDialog folderDialog = new WPFFolderBrowser.WPFFolderBrowserDialog("Open Folder");
 
@@ -45,7 +49,7 @@ namespace Abnaki.Albiruni.Menu
                 DirectoryInfo di = new DirectoryInfo(folderDialog.FileName);
 
                 Nursery.Guidance guidance = new Nursery.Guidance();
-                guidance.MinimumPrecision = 90 / (decimal)System.Math.Pow(2, 12); // may eventually have UI
+                guidance.MinimumMesh = minimumMesh; // may eventually have UI
 
                 List<FileInfo> potentialFiles = new List<FileInfo>();
                 Nursery.SearchForFiles(di, guidance, potentialFiles);
@@ -89,6 +93,14 @@ namespace Abnaki.Albiruni.Menu
                 }
             }
         }
+
+        private void HandleOption(ButtonMessage<OptionMenuKey> msg)
+        {
+            Menu.OptionMenuBus.GetMeshFromOption(msg.Key, p => minimumMesh = new Mesh(p));
+
+        }
+
+
     }
 
     enum FileMenuKey
