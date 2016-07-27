@@ -43,8 +43,16 @@ namespace Abnaki.Albiruni.Tree
         public void Init(System.IO.Stream stream)
         {
             Reader = new System.IO.BinaryReader(stream);
+            
             ReadVersion = Reader.ReadInt32(); // written first in TreeBinaryWrite.Init()
+
+            if (ReadVersion >= 3)
+            {
+                MeshPower = Reader.ReadInt32();
+            }
         }
+
+        public int? MeshPower { get; private set; }
 
         SortedList<int, Source> mapNumberSources = new SortedList<int, Source>();
     }
