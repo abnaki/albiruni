@@ -10,22 +10,22 @@ namespace Abnaki.Albiruni.Menu
         DataMeshPower,
         // May want to move to a control.
         // Ballpark of mesh size from equator to 45 latitude, keeping 2 sig figs.
-        [Label("1.7 to 2.4 km")]
+        [Label("1.7 to 2.4 km", Detail = "area 4.2 to 6.0 km²")]
         DataMeshPower14 = 14,
 
-        [Label("0.8 to 1.2 km")]
+        [Label("0.8 to 1.2 km", Detail = "area 1.0 to 1.5 km²")]
         DataMeshPower15 = 15,
 
-        [Label("430 to 610 m")]
+        [Label("430 to 610 m", Detail = "area 0.3 km²")]
         DataMeshPower16 = 16,
 
-        [Label("210 to 300 m")]
+        [Label("210 to 300 m", Detail = "area 6 to 9 ha")]
         DataMeshPower17 = 17,
 
-        [Label("100 to 150 m")]
+        [Label("100 to 150 m", Detail = "area 1.6 to 2.3 ha")]
         DataMeshPower18 = 18,
 
-        [Label("50 to 75 m")]
+        [Label("50 to 75 m", Detail = "area 0.4 to 0.6 ha")]
         DataMeshPower19 = 19,
 
         Map, // parent
