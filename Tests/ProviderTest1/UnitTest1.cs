@@ -125,7 +125,7 @@ namespace Abnaki.Albiruni.Tests.Provider
             //root.DebugPrint();
 
             Node checkRoot = Node.NewGlobalRoot();
-            Nursery.Read(checkRoot, ditarget, guidance.Wildcard + Nursery.FileExt);
+            Nursery.Read(checkRoot, ditarget, guidance);
 
             //checkRoot.DebugPrint();
 
