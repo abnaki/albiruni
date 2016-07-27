@@ -9,6 +9,7 @@ using Abnaki.Windows.Software.Wpf;
 using Abnaki.Windows.Software.Wpf.Menu;
 using Abnaki.Windows.Software.Wpf.Ultimate;
 using Abnaki.Albiruni.Tree;
+using System.Diagnostics;
 
 
 namespace Abnaki.Albiruni.Menu
@@ -77,6 +78,9 @@ namespace Abnaki.Albiruni.Menu
                             Nursery.GrowTree(root, di, ditarget, guidance);
 
                             MessageTube.Publish(msg);
+
+                            Node.Statistic rootStat = root.GetStatistic();
+                            Debug.WriteLine("Tree of data in " + di.FullName + "  " + rootStat.ContentSummary.FinalSummary());
                         }
 
                         if (guidance.FilesExceptions.Count > 0)
