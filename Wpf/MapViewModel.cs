@@ -104,7 +104,7 @@ namespace Abnaki.Albiruni
         {
             //root.DebugPrint();
 
-            ClearAdornments();
+            ClearTreeDependentObjects();
             ClearLastNodesFound();
 
             bool newRoot = msg.Root != RootNode;
@@ -118,8 +118,7 @@ namespace Abnaki.Albiruni
         /// </summary>
         void UpdateRectangles(bool newRoot)
         {
-            //Rectangles.Clear();
-            ClearAdornments();
+            ClearViewPortDependentObjects();
 
             if (RootNode == null)
                 return; // OK
@@ -314,11 +313,17 @@ namespace Abnaki.Albiruni
             }
         }
 
-        void ClearAdornments()
+        void ClearViewPortDependentObjects()
         {
+            // different sets will need to be created depending on intersection with viewport
             Rectangles.Clear();
             Symbols.Clear();
             Tracks.Clear();
+        }
+
+        void ClearTreeDependentObjects()
+        {
+            ClearViewPortDependentObjects();
             EmphasizedPaths.Clear();
         }
 
