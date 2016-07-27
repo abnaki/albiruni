@@ -66,12 +66,20 @@ namespace Abnaki.Albiruni.Tree
 
                 try
                 {
+                    bool needWrite = true;
+
                     if (outfile.Exists && outfile.LastWriteTimeUtc > fi.LastWriteTimeUtc) // outfile from valid previously created Node
                     {
                         Debug.WriteLine("Existing " + outfile.FullName);
-                        firoot = ReadNodeFile(outfile);
+                        firoot = ReadNodeFile(outfile, guidance);
+
+                        // firoot tree having excess detail (smaller minimum delta than guidance) should be fathomed and rewritten
+                        // to avoid perpetual unwanted memory/CPU usage.
+                        Node.FathomResult fathom = firoot.Fathom(guidance.MinimumMesh.Delta);
+                        needWrite = (fathom != Node.FathomResult.None);
                     }
-                    else
+                    
+                    if ( firoot == null ) // no existing file satisfies guidance
                     {
                         Debug.WriteLine("Reading " + fi.FullName);
 
@@ -93,7 +101,10 @@ namespace Abnaki.Albiruni.Tree
                             guidance.FilesExceptions[fi.FullName] = ex;
                         }
 
+                    }
 
+                    if ( needWrite )
+                    {
                         // write firoot to a relative file under ditarget
                         foreach (DirectoryInfo disub in AbnakiFile.DirectorySequence(outfile))
                         {
@@ -104,7 +115,7 @@ namespace Abnaki.Albiruni.Tree
                         using (Stream outstream = outfile.OpenWrite())
                         using (InputOutput.IBinaryWrite tbw = new TreeBinaryWrite())
                         {
-                            tbw.Init(outstream);
+                            tbw.Init(outstream, guidance.MinimumMesh);
 
                             tbw.WriteSources(firoot);
 
@@ -133,37 +144,48 @@ namespace Abnaki.Albiruni.Tree
         /// <summary>
         /// Practically only for testing
         /// </summary>
-        public static void Read(Node root, DirectoryInfo ditarget, string wildcard)
+        public static void Read(Node root, DirectoryInfo ditarget, Guidance guidance)
         {
             //DirectoryInfo diStart = ditarget.GetDirectories()
 
-            foreach (FileInfo fi in ditarget.GetFiles(wildcard))
+            foreach (FileInfo fi in ditarget.GetFiles(guidance.Wildcard + FileExt))
             {
-                Node firoot = ReadNodeFile(fi);
+                Node firoot = ReadNodeFile(fi, guidance);
                 root.Graft(null, firoot);
             }
 
             foreach ( DirectoryInfo disub in ditarget.GetDirectories())
             {
-                Read(root, disub, wildcard);
+                Read(root, disub, guidance);
             }
 
         }
 
-        private static Node ReadNodeFile(FileInfo fi)
+        private static Node ReadNodeFile(FileInfo fi, Guidance guidance)
         {
+            Node firoot = null;
+
             using (Stream stream = fi.OpenRead())
             using (InputOutput.IBinaryRead ibr = new TreeBinaryRead())
             {
                 ibr.Init(stream);
 
-                ibr.ReadSources();
+                if (ibr.MeshPower.HasValue && ibr.MeshPower >= guidance.MinimumMesh.Power)
+                {
+                    ibr.ReadSources();
 
-                Node firoot = Node.NewGlobalRoot();
-                firoot.Read(ibr);
+                    firoot = Node.NewGlobalRoot();
+                    firoot.Read(ibr);
+                }
+                else
+                {
+                    string msg = string.Format("Disregarding file with mesh power {0} less than guidance {1}, {2}", ibr.MeshPower, guidance.MinimumMesh.Power, fi.FullName);
+                    Debug.WriteLine(msg);
+                    // firoot shall remain null
+                }
 
-                return firoot;
             }
+            return firoot;
         }
 
     }
