@@ -75,8 +75,11 @@ namespace Abnaki.Albiruni.Tree
 
                         // firoot tree having excess detail (smaller minimum delta than guidance) should be fathomed and rewritten
                         // to avoid perpetual unwanted memory/CPU usage.
-                        Node.FathomResult fathom = firoot.Fathom(guidance.MinimumMesh.Delta);
-                        needWrite = (fathom != Node.FathomResult.None);
+                        if (firoot != null)
+                        {
+                            Node.FathomResult fathom = firoot.Fathom(guidance.MinimumMesh.Delta);
+                            needWrite = (fathom != Node.FathomResult.None);
+                        }
                     }
                     
                     if ( firoot == null ) // no existing file satisfies guidance
