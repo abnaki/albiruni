@@ -119,7 +119,7 @@ namespace Abnaki.Albiruni
                 return; // OK
 
             Node.Statistic stat = RootNode.GetStatistic();
-            Debug.WriteLine(stat);
+            //Debug.WriteLine(stat);
             PointSummary pointSummary = stat.ContentSummary.FinalSummary();
             if (pointSummary.Points > 0)
             {
@@ -150,7 +150,7 @@ namespace Abnaki.Albiruni
 
                 limits.MinimumDelta = this.DisplayMesh.Delta;
 
-                Debug.WriteLine("limits " + limits);
+                //Debug.WriteLine("limits " + limits);
 
                 AddDescendantRectangles(RootNode, null, limits);
 
