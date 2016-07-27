@@ -68,26 +68,32 @@ namespace Abnaki.Albiruni
 
         public void SetViewPort(MapRectangle viewRect, MapRectangle unitRect)
         {
-            DisplayUnitRect = unitRect;
+            using (new WaitCursor())
+            {
+                DisplayUnitRect = unitRect;
 
-            if (this.ViewPortRect.EqualCoordinates(viewRect))
-            {
-                // skip
-            }
-            else
-            {
-                this.ViewPortRect = viewRect;
-                UpdateAdornments();
+                if (this.ViewPortRect.EqualCoordinates(viewRect))
+                {
+                    // skip
+                }
+                else
+                {
+                    this.ViewPortRect = viewRect;
+                    UpdateAdornments();
+                }
             }
         }
 
         public void UpdateMesh()
         {
-            ClearLastNodesFound();
-            UpdateAdornments();
+            using (new WaitCursor())
+            {
+                ClearLastNodesFound();
+                UpdateAdornments();
+            }
         }
 
-        public void UpdateAdornments()
+        void UpdateAdornments()
         {
             UpdateRectangles(newRoot: false);
         }
