@@ -19,9 +19,9 @@ namespace Abnaki.Albiruni.Tests.Map
             var provTest = new Abnaki.Albiruni.Tests.Provider.UnitTest1();
             Node root = provTest.TestRootGpx();
 
-            root.DebugPrint();
+            //root.DebugPrint();
 
-            vm.MinimumMesh = new Mesh(6);
+            vm.DisplayMesh = new Mesh(6);
 
             var viewRect = new MapControl.MapRectangle()
             {
