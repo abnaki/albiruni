@@ -227,9 +227,9 @@ namespace Abnaki.Albiruni.Tree
         /// <summary>
         /// Grow tree to cover given data
         /// </summary>
-        public void Populate(Source source, decimal minDelta) 
+        public void Populate(Source source, Mesh minimumMesh) 
         {
-            Grow(null, source.InputFile.Points, source, minDelta: minDelta);
+            Grow(null, source.InputFile.Points, source, minDelta: minimumMesh.Delta);
         }
 
         public void Graft(Node grandparent, Node branch)
