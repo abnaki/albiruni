@@ -8,7 +8,7 @@ namespace Abnaki.Albiruni.Tree
 {
     class TreeBinaryWrite : IBinaryWrite
     {
-        internal const int FileVersion = 2;
+        internal const int FileVersion = 3;
 
         public System.IO.BinaryWriter Writer
         {
@@ -31,10 +31,12 @@ namespace Abnaki.Albiruni.Tree
             }
         }
 
-        public void Init(System.IO.Stream stream)
+        public void Init(System.IO.Stream stream, Mesh minimumMesh)
         {
             this.Writer = new System.IO.BinaryWriter(stream);
             this.Writer.Write(FileVersion);
+
+            this.Writer.Write(minimumMesh.Power);
         }
 
         public void Dispose()
