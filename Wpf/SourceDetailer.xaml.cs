@@ -29,8 +29,15 @@ namespace Abnaki.Albiruni
             InitializeComponent();
 
             MessageTube.SubscribeCostly<Message.SourceRecordMessage>(UpdateSources);
+            MessageTube.SubscribeCostly<Message.RootNodeMessage>(HandleTree);
 
             this.grid.DoubleClickedRecord += grid_DoubleClickedRecord;
+        }
+
+        private void HandleTree(Message.RootNodeMessage msg)
+        {
+            this.grid.Clear();
+            // no old data
         }
 
         void UpdateSources(Message.SourceRecordMessage msg)
