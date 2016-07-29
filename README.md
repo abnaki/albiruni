@@ -12,7 +12,9 @@ Release scheduled for Summer 2016.  Albiruni's code is under [GNU Public License
 
 Mouse on a cell to display detail about source files.  Note yellow rectangle near center.
 ![Europe](./Documents/img/sample-med.png)
-[From gpsbabel gpx examples.](https://github.com/gpsbabel/gpsbabel/tree/master/reference)
+In Details, double click a file to open it externally.
+If a cell on the map has only one file, you are free to double click the cell to open the file.
+[Data from gpsbabel gpx examples.](https://github.com/gpsbabel/gpsbabel/tree/master/reference)
 
 ## Practical applications for visualization
 
