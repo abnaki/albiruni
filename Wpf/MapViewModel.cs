@@ -21,7 +21,7 @@ namespace Abnaki.Albiruni
     {
         public MapViewModel()
         {
-            Rectangles = new ObservableCollection<MapRectangle>();
+            Rectangles = new List<MapRectangle>();
             Symbols = new ObservableCollection<MapPath>();
             Tracks = new ObservableCollection<MapPath>();
             EmphasizedPaths = new ObservableCollection<MapPath>();
@@ -53,8 +53,9 @@ namespace Abnaki.Albiruni
         /// </summary>
         public int MeshMaximumPower { get; set; }
 
-        // want to use BulkObservableCollection or similar
-        public ObservableCollection<MapRectangle> Rectangles { get; private set; }
+        public List<MapRectangle> Rectangles { get; private set; }
+        
+        // with MapItems want to use BulkObservableCollection or similar
         public ObservableCollection<MapPath> Symbols { get; private set; }
         public ObservableCollection<MapPath> Tracks { get; private set; }
         public ObservableCollection<MapPath> EmphasizedPaths { get; private set; }
@@ -159,13 +160,13 @@ namespace Abnaki.Albiruni
 
                 AddDescendantRectangles(RootNode, null, limits);
 
-                if (Rectangles.Count > 0)
-                {
-                    Debug.WriteLine("Westernmost rectangle " + Rectangles.Min(r => r.West));
-                    Debug.WriteLine("Easternmost rectangle " + Rectangles.Max(r => r.East));
-                    Debug.WriteLine("Southernmost rectangle " + Rectangles.Min(r => r.South));
-                    Debug.WriteLine("Northernmost rectangle " + Rectangles.Max(r => r.North));
-                }
+                //if (Rectangles.Count > 0)
+                //{
+                //    Debug.WriteLine("Westernmost rectangle " + Rectangles.Min(r => r.West));
+                //    Debug.WriteLine("Easternmost rectangle " + Rectangles.Max(r => r.East));
+                //    Debug.WriteLine("Southernmost rectangle " + Rectangles.Min(r => r.South));
+                //    Debug.WriteLine("Northernmost rectangle " + Rectangles.Max(r => r.North));
+                //}
             }
         }
 
