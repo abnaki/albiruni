@@ -97,7 +97,7 @@ namespace Abnaki.Albiruni
             if (ParentMap == null || this.DataContext == null )
                 return;
 
-            Debug.WriteLine(GetType().Name + " rendering " + this.DataContext.Rectangles.Count + " rectangles");
+            //Debug.WriteLine(GetType().Name + " rendering " + this.DataContext.Rectangles.Count + " rectangles");
 
             foreach ( MapRectangle mrect in this.DataContext.Rectangles )
             {
