@@ -29,6 +29,7 @@ Mouse on a cell to display detail about source files.  Note yellow rectangle nea
  - aviation
 - government, regulatory
  - disaster, search, rescue
+ - disease control
  - law enforcement
  - criminal investigation
  - miltary, defense
