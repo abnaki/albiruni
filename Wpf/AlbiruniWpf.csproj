@@ -100,6 +100,7 @@
       <Link>AlbiruniAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Graphic\Curve\OutlineRectangle.cs" />
+    <Compile Include="MapNodeLayer.cs" />
     <Compile Include="Menu\FileMenuBus.cs" />
     <Compile Include="Graphic\Curve\Track.cs" />
     <Compile Include="Graphic\MapExtensions.cs" />
