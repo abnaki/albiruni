@@ -1,4 +1,5 @@
 ﻿<UserControl
+    xmlns:Albiruni="clr-namespace:Abnaki.Albiruni"
     x:Class="Abnaki.Albiruni.Map"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -81,9 +82,9 @@
             MouseLeftButtonDown="MapMouseLeftButtonDown"
             MouseRightButtonDown="MapMouseRightButtonDown"
             ManipulationInertiaStarting="MapManipulationInertiaStarting"
-            ViewportChanged="map_ViewportChanged"
             MouseLeave="map_MouseLeave"
             MouseMove="map_MouseMove">
+            <Albiruni:MapNodeLayer />
             <map:MapGraticule
                 Opacity="0.6" />
             <map:MapScale
@@ -105,8 +106,9 @@
             <!--<map:MapItemsControl ItemsSource="{Binding Pushpins}"
                                  ItemContainerStyle="{StaticResource PushpinItemStyle}"
                                  IsSynchronizedWithCurrentItem="True"/>-->
-            <map:MapItemsControl
-                ItemsSource="{Binding Rectangles}" />
+            <!-- MapNodeLayer performs better than MapItemsControl for large set of Rectangles -->
+            <!--<map:MapItemsControl
+                ItemsSource="{Binding Rectangles}" />-->
             <map:MapItemsControl
                 ItemsSource="{Binding Symbols}" />
             <map:MapItemsControl
