@@ -23,7 +23,6 @@ namespace Abnaki.Albiruni
         {
             InitializeComponent();
 
-            vptimer.Tick += vptimer_Tick;
             hovtimer.Tick += hovtimer_Tick;
 
             Clear();
@@ -37,7 +36,6 @@ namespace Abnaki.Albiruni
 
         void Clear()
         {
-            vptimer.Stop();
             hovtimer.Stop();
             hovPoint = new Point();
         }
@@ -55,7 +53,7 @@ namespace Abnaki.Albiruni
         #region Originally from xamlmapcontrol/SampleApps/WpfApplication/MainWindow.xaml.cs
 
         private void MapMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        { 
+        {
             // not raised if hit a MapRectangle 
 
             if (e.ClickCount == 2)
@@ -89,48 +87,6 @@ namespace Abnaki.Albiruni
 
         #endregion
 
-        #region Community-suggested xamlmapcontrol viewport change event using a timer
-
-        void vptimer_Tick(object sender, EventArgs e)
-        {
-            vptimer.Stop();
-
-            Point pNorthWest = new Point(0, 0);
-            Point pSouthEast = new Point(map.ActualWidth, map.ActualHeight);
-            Point pUnit = new Point(1, 1);
-            Location locNorthWest = map.ViewportPointToLocation(pNorthWest);
-            Location locSouthEast = map.ViewportPointToLocation(pSouthEast);
-            Location locUnit = map.ViewportPointToLocation(pUnit);
-
-            MapRectangle viewRect = new MapRectangle()
-            {
-                North = locNorthWest.Latitude,
-                South = locSouthEast.Latitude,
-                West = locNorthWest.Longitude,
-                East = locSouthEast.Longitude
-            };
-
-            MapRectangle unitRect = new MapRectangle()
-            {
-                North = locNorthWest.Latitude,
-                South = locUnit.Latitude,
-                West = locNorthWest.Longitude,
-                East = locUnit.Longitude
-            };
-
-            this.DataContext.SetViewPort(viewRect, unitRect);
-        }
-
-        DispatcherTimer vptimer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(200) };
-
-        private void map_ViewportChanged(object sender, EventArgs e)
-        {
-            vptimer.Stop(); vptimer.Start(); // MS idea of Reset
-        }
-
-
-        #endregion
-
         #region Hover
 
         DispatcherTimer hovtimer = new DispatcherTimer() { Interval = TimeSpan.FromSeconds(0.4) };
@@ -158,7 +114,7 @@ namespace Abnaki.Albiruni
             hovtimer.Stop();
 
             hovPoint = Mouse.GetPosition(map);
-            
+
             Location loc = map.ViewportPointToLocation(hovPoint);
             //Debug.WriteLine("Hover on " + loc);
 
@@ -172,7 +128,16 @@ namespace Abnaki.Albiruni
         {
             if (this.DataContext != null)
                 this.DataContext.UpdateMesh();
-                // this.DataContext.SetMesh((int)slprecision.Value); 
+
+            InvalidateMapPanels();
+        }
+
+        void InvalidateMapPanels()
+        {
+            foreach (MapPanel mp in LogicalTreeHelper.GetChildren(this.map).OfType<MapPanel>())
+            {
+                mp.InvalidateVisual();
+            }
         }
 
     }
