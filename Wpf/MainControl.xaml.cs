@@ -15,6 +15,8 @@ using System.Windows.Shapes;
 
 using Abnaki.Windows.GUI;
 using Abnaki.Windows.Software.Wpf.Ultimate;
+using Abnaki.Windows.Software.Wpf;
+using Abnaki.Albiruni.Message;
 
 namespace Abnaki.Albiruni
 {
@@ -27,6 +29,8 @@ namespace Abnaki.Albiruni
         public MainControl()
         {
             InitializeComponent();
+
+            MessageTube.Subscribe<RootNodeMessage>(HandleRoot);
         }
 
         Menu.FileMenuBus fmbus;
@@ -46,7 +50,17 @@ namespace Abnaki.Albiruni
 
         void IMainControl.EmplacedInWindow()
         {
-            MainTitle("Albiruni");
+            UpdateRootDirectory(null);
+        }
+
+        private void HandleRoot(RootNodeMessage msg)
+        {
+            UpdateRootDirectory(msg.SourceDirectory.FullName);
+        }
+
+        void UpdateRootDirectory(string path)
+        {
+            MainTitle("Albiruni " + path);
         }
 
         public event Action<string> MainTitle; // IMainControl
