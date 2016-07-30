@@ -99,6 +99,17 @@ namespace Abnaki.Albiruni
             UpdateRectangles(newRoot: false);
         }
 
+        public PointSummary GetRootPointSummary()
+        {
+            Node.Statistic stat;
+            if (RootNode == null)
+                stat = new Node.Statistic();
+            else
+                stat = RootNode.GetStatistic();
+
+            return stat.ContentSummary.FinalSummary();
+        }
+
         Node RootNode { get; set; }
 
         public void HandleTree(Message.RootNodeMessage msg)
@@ -124,9 +135,7 @@ namespace Abnaki.Albiruni
             if (RootNode == null)
                 return; // OK
 
-            Node.Statistic stat = RootNode.GetStatistic();
-            //Debug.WriteLine(stat);
-            PointSummary pointSummary = stat.ContentSummary.FinalSummary();
+            PointSummary pointSummary = GetRootPointSummary();
             if (pointSummary.Points > 0)
             {
                 if (newRoot)
