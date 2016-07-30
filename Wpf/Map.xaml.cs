@@ -14,6 +14,8 @@ using MapControl;
 using Abnaki.Windows.Software.Wpf;
 using Abnaki.Windows.Software.Wpf.Ultimate;
 using Abnaki.Windows.Software.Wpf.Profile;
+using Abnaki.Albiruni.Tree;
+using Abnaki.Albiruni.Graphic;
 
 namespace Abnaki.Albiruni
 {
@@ -226,6 +228,21 @@ namespace Abnaki.Albiruni
             }
         }
 
+        private void BuZoomFit_Click(object sender, RoutedEventArgs e)
+        {
+            PointSummary summary = DataContext.GetRootPointSummary();
+            if (summary.Points > 0)
+            {
+                Location sw = new Location((double)summary.MinLatitude, (double)summary.MinLongitude);
+                Location ne = new Location((double)summary.MaxLatitude, (double)summary.MaxLongitude);
+                this.map.ZoomToBounds(sw, ne);
+
+                //Debug.WriteLine(string.Format("Fit zoomed to {0} while slzoom is [{1}, {2}, {3}]", map.ZoomLevel,
+                //    slzoom.Minimum, slzoom.Value, slzoom.Maximum));
+            }
+        }
+
+
         private void Farewell(FarewellMessage msg)
         {
             MapPref pref = new MapPref()
@@ -244,5 +261,6 @@ namespace Abnaki.Albiruni
             public int PrecisionPower { get; set; }
             public bool SyncZoom { get; set; }
         }
+
     }
 }
