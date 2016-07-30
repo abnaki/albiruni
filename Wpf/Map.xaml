@@ -123,6 +123,14 @@
                 Orientation="Vertical"
                 HorizontalAlignment="Center">
                 <StackPanel
+                    Margin="8">
+                    <Button
+                        Name="BuZoomFit"
+                        Content="Fit"
+                        Click="BuZoomFit_Click" 
+                        ToolTip="Zoom to fit data in all files"/>
+                </StackPanel>
+                <StackPanel
                     Margin="5">
                     <TextBlock
                         Text="Zoom"
@@ -132,7 +140,7 @@
                         FontSize="10" />
                     <Slider
                         Name="slzoom"
-                        ToolTip="Zoom Level"
+                        ToolTip="Up is closer - smaller area.  Down is farther - larger area."
                         Height="100"
                         HorizontalAlignment="Center"
                         SmallChange="0.01"
@@ -145,6 +153,7 @@
                 <CheckBox
                     Name="ChkSync"
                     Content="Sync"
+                    ToolTip="Change Zoom and Precision in unison.  Cells will appear smaller as map zooms in."
                     Background="LightGray"
                     Foreground="Black"
                     Margin="5"
@@ -156,12 +165,13 @@
                         Foreground="Black"
                         HorizontalAlignment="Center" />
                     <Slider 
+                        Name="slprecision"
                         Orientation="Vertical"
                         HorizontalAlignment="Center"
+                        ToolTip="Cell size.  Changes by multiples of 2.  Up for smaller cells."
                         Height="70"
                         Minimum="8"
                         Maximum="{Binding MeshMaximumPower}"
-                        Name="slprecision"
                         Value="{Binding DisplayMeshPower}"
                         SmallChange="1"
                         ValueChanged="slprecision_ValueChanged">
