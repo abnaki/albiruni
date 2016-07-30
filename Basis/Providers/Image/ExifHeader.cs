@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 
-using photo.exif; // use Abnaki fork, or an equally good build by fraxedas after July 24, 2016.
+using photo.exif;  // use Abnaki fork, or an equally good build by fraxedas after July 24, 2016.
+using Afk.ZoneInfo;
+using System.Globalization; 
 
 namespace Abnaki.Albiruni.Providers.Image
 {
@@ -18,7 +20,7 @@ namespace Abnaki.Albiruni.Providers.Image
                 throw new FileNotFoundException("Failed to find " + fi.FullName);
 
             photo.exif.Parser parser = new photo.exif.Parser();
-            IEnumerable<ExifItem> xitems = parser.Parse(fi.FullName);
+            IEnumerable<ExifItem> xitems = parser.Parse(fi.FullName).ToList();
 
             IEnumerable<ExifItem> gpsItems = xitems.Where(x => 1 <= x.Id && x.Id <= 4)
                 .OrderByDescending(x => x.Id) // hemispheres will be handled after numbers
@@ -61,6 +63,33 @@ namespace Abnaki.Albiruni.Providers.Image
             // also useful, but not found in sample jpg files:  
             // GPSSTimeStamp  Id=7   expect x.Value to be URational[3] of hours, minutes, seconds, UTC
             // GPSDateStamp   Id=29  x.Value is string, believed to be UTC
+
+            // efforts to salvage other non-GPS data
+            if (gpsItems.Any() && false == p.Time.HasValue)
+            {
+                ExifItem xtime = xitems.FirstOrDefault(x => x.Id == 36867); // DateTimeOriginal
+                if (xtime != null)
+                {
+                    // maybe photo.exif should exclude the ending 0 char:
+                    string sdate = new string(Convert.ToString(xtime.Value).TakeWhile(c => c != 0).ToArray());
+                    // EXIF 2.3 ignores timezone entirely.
+                    // Deduce from location, assuming camera clock is accurate as well.
+                    DateTime dt;
+                    GeoTimeZone.TimeZoneResult tzr = GeoTimeZone.TimeZoneLookup.GetTimeZone((double)p.Latitude, (double)p.Longitude);
+
+                    if (false == string.IsNullOrEmpty(tzr.Result))
+                    {
+                        TzTimeZone tz = TzTimeInfo.GetZone(tzr.Result);
+
+                        if (DateTime.TryParseExact(sdate, "yyyy:MM:dd HH:mm:ss",
+                            CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out dt))
+                        {
+                            p.Time = tz.ToUniversalTime(dt);
+                        }
+
+                    }
+                }
+            }
 
             singlePoint = p;
         }
