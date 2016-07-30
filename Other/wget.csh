@@ -25,6 +25,10 @@ $WG https://github.com/micdenny/WpfScreenHelper/raw/master/LICENSE
 
 $WG http://xamlmapcontrol.codeplex.com/license
 
+$WG https://github.com/LZorglub/TimeZone/raw/master/LICENSE
+
+$WG https://github.com/mj1856/GeoTimeZone/raw/master/LICENSE
+
 # Forks:
 
 $WG https://github.com/abnaki/photo/raw/master/LICENSE
