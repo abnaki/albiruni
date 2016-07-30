@@ -11,6 +11,9 @@ using System.Diagnostics;
 using System.Windows.Threading;
 
 using MapControl;
+using Abnaki.Windows.Software.Wpf;
+using Abnaki.Windows.Software.Wpf.Ultimate;
+using Abnaki.Windows.Software.Wpf.Profile;
 
 namespace Abnaki.Albiruni
 {
@@ -24,6 +27,8 @@ namespace Abnaki.Albiruni
             InitializeComponent();
 
             hovtimer.Tick += hovtimer_Tick;
+
+            MessageTube.Subscribe<FarewellMessage>(Farewell);
 
             Clear();
         }
@@ -47,6 +52,14 @@ namespace Abnaki.Albiruni
             this.DataContext = new MapViewModel();
             this.DataContext.DisplayMesh = new Mesh((int)slprecision.Value);
             //this.DataContext.Testing();
+
+            MapPref pref = Preference.ReadClassPrefs<Map, MapPref>();
+            if ( pref != null )
+            {
+                slzoom.Value = pref.Zoom;
+                slprecision.Value = pref.PrecisionPower;
+                ChkSync.IsChecked = pref.SyncZoom;
+            }
         }
 
 
@@ -213,5 +226,23 @@ namespace Abnaki.Albiruni
             }
         }
 
+        private void Farewell(FarewellMessage msg)
+        {
+            MapPref pref = new MapPref()
+            {
+                Zoom = slzoom.Value,
+                PrecisionPower = (int)slprecision.Value,
+                SyncZoom = ChkSync.IsChecked == true
+            };
+
+            Preference.WriteClassPrefs<Map, MapPref>(pref);
+        }
+
+        public class MapPref
+        {
+            public double Zoom { get; set; }
+            public int PrecisionPower { get; set; }
+            public bool SyncZoom { get; set; }
+        }
     }
 }
