@@ -128,9 +128,10 @@
                         Text="Zoom"
                         Margin="0,0,0,2"
                         HorizontalAlignment="Center"
-                        Foreground="Gray"
+                        Foreground="Black"
                         FontSize="10" />
                     <Slider
+                        Name="slzoom"
                         ToolTip="Zoom Level"
                         Height="100"
                         HorizontalAlignment="Center"
@@ -138,12 +139,21 @@
                         Orientation="Vertical"
                         Minimum="{Binding MinZoomLevel, ElementName=map}"
                         Maximum="{Binding MaxZoomLevel, ElementName=map}"
-                        Value="{Binding TargetZoomLevel, ElementName=map}" />
+                        Value="{Binding TargetZoomLevel, ElementName=map}"
+                        ValueChanged="slzoom_ValueChanged" />
                 </StackPanel>
+                <CheckBox
+                    Name="ChkSync"
+                    Content="Sync"
+                    Background="LightGray"
+                    Foreground="Black"
+                    Margin="5"
+                    Checked="ChkSync_Checked"
+                    Unchecked="ChkSync_Unchecked" />
                 <StackPanel>
                     <TextBlock
                         Text="Precision"
-                        Foreground="Gray"
+                        Foreground="Black"
                         HorizontalAlignment="Center" />
                     <Slider 
                         Orientation="Vertical"
