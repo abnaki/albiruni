@@ -124,12 +124,85 @@ namespace Abnaki.Albiruni
 
         #endregion
 
+        bool syncingZoomPrecision = false;
+        bool outdatedMesh = false;
+        double? precisionMinusZoomSynced;
+
+        protected override void OnRender(DrawingContext drawingContext)
+        {
+            base.OnRender(drawingContext);
+
+            if ( outdatedMesh )
+            {
+                if (this.DataContext != null)
+                    this.DataContext.UpdateMesh();
+
+                InvalidateMapPanels();
+            }
+        }
+
         private void slprecision_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (this.DataContext != null)
-                this.DataContext.UpdateMesh();
+            //slzoom.Value += e.NewValue - e.OldValue of slprecision
+            double deltaPrecision = e.NewValue - e.OldValue;
+            ChangeBoundedBySlider(slzoom, e, slzoom.Value + deltaPrecision, z => map.ZoomLevel = z);
 
-            InvalidateMapPanels();
+            outdatedMesh = true;
+            InvalidateVisual();
+        }
+
+        private void slzoom_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            //slprecision.Value = precisionMinusZoomSynced.Value + slzoom.Value
+            ChangeBoundedBySlider(slprecision, e, precisionMinusZoomSynced + slzoom.Value, p => slprecision.Value = p);
+            //outdatedMesh = true; 
+            //InvalidateVisual(); // implied by slprecision Value change
+        }
+
+        void ChangeBoundedBySlider(Slider slitarget,
+            RoutedPropertyChangedEventArgs<double> e,
+            double? proposed,
+            Action<double> actset)
+        {
+            if (syncingZoomPrecision)
+                return;
+            if (false == proposed.HasValue)
+                return;
+            if (false == precisionMinusZoomSynced.HasValue)
+                return;
+
+            bool allowed = false;
+            syncingZoomPrecision = true;
+            try
+            {
+                allowed = (slitarget.Minimum <= proposed && proposed <= slitarget.Maximum);
+
+                if (allowed)
+                {
+                    actset(proposed.Value);
+                }
+                else // reject
+                {
+                    Slider slisource = (Slider)e.Source;
+                    slisource.Value = e.OldValue;
+                }
+            }
+            finally
+            {
+                syncingZoomPrecision = false;
+            }
+            //return allowed;
+        }
+
+
+        private void ChkSync_Checked(object sender, RoutedEventArgs e)
+        {
+            precisionMinusZoomSynced = slprecision.Value - slzoom.Value;
+        }
+
+        private void ChkSync_Unchecked(object sender, RoutedEventArgs e)
+        {
+            precisionMinusZoomSynced = null;
         }
 
         void InvalidateMapPanels()
