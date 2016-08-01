@@ -74,8 +74,16 @@ namespace Abnaki.Albiruni
 
             if (e.ClickCount == 2)
             {
-                //Point p = e.GetPosition(map);
-                //Location loc = map.ViewportPointToLocation(p);
+                Point p = e.GetPosition(map);
+                Location loc = map.ViewportPointToLocation(p);
+
+                // map never got mouseup if synchronous:
+                Dispatcher.InvokeAsync(() =>{
+                    System.Threading.Thread.Sleep(500);
+                    this.DataContext.OnLeftDoubleClick(loc);
+                }, DispatcherPriority.Background);
+
+                // old demo
                 //map.ZoomMap(p, Math.Floor(map.ZoomLevel + 1.5));
                 //map.TargetCenter = loc;
             }
@@ -223,10 +231,20 @@ namespace Abnaki.Albiruni
 
         void InvalidateMapPanels()
         {
-            foreach (MapPanel mp in LogicalTreeHelper.GetChildren(this.map).OfType<MapPanel>())
+            foreach (MapPanel mp in ChildMapPanels() )
             {
                 mp.InvalidateVisual();
             }
+        }
+
+        IEnumerable<MapPanel> ChildMapPanels()
+        {
+            return LogicalTreeHelper.GetChildren(this.map).OfType<MapPanel>();
+        }
+
+        MapNodeLayer GetMapNodeLayer()
+        {
+            return ChildMapPanels().OfType<MapNodeLayer>().Single();
         }
 
         private void BuZoomFit_Click(object sender, RoutedEventArgs e)
