@@ -30,15 +30,42 @@ namespace Abnaki.Albiruni.Tree
             public Mesh MinimumMesh { get; set; }
 
             public SortedDictionary<string, Exception> FilesExceptions = new SortedDictionary<string, Exception>();
+
+            public int? PotentialSourceFileCount { get; set; }
+            public long? PotentialSourceFileBytes { get; set; }
+
+            internal void CountPotentialSourceFiles(IEnumerable<FileInfo> files)
+            {
+                if ( files.Any() )
+                {
+                    PotentialSourceFileCount = (PotentialSourceFileCount ?? 0) + files.Count();
+                    PotentialSourceFileBytes = (PotentialSourceFileBytes ?? 0) + files.Sum(f => f.Length);
+                }
+            }
+
+            internal void CountSourceFile()
+            {
+                SourceFileCount++;
+                var h = SourceFileCounted;
+                if ( h != null )
+                    h(SourceFileCount);
+            }
+
+            int SourceFileCount { get; set; }
+
+            public event Action<int> SourceFileCounted;
+
+            //public readonly System.Threading.AutoResetEvent Done = new System.Threading.AutoResetEvent(false);
         }
 
-        public static void SearchForFiles(DirectoryInfo disource, Guidance guidance, List<FileInfo> resultingFiles)
+        public static void SearchForFiles(DirectoryInfo disource, Guidance guidance)
         {
-            resultingFiles.AddRange(FindLocalFiles(disource, guidance));
+            var files = FindLocalFiles(disource, guidance).ToList();
+            guidance.CountPotentialSourceFiles(files);
 
             foreach ( DirectoryInfo disub in disource.GetDirectories())
             {
-                SearchForFiles(disub, guidance, resultingFiles);
+                SearchForFiles(disub, guidance);
             }
         }
 
@@ -70,7 +97,7 @@ namespace Abnaki.Albiruni.Tree
 
                     if (outfile.Exists && outfile.LastWriteTimeUtc > fi.LastWriteTimeUtc) // outfile from valid previously created Node
                     {
-                        Debug.WriteLine("Existing " + outfile.FullName);
+                        //Debug.WriteLine("Existing " + outfile.FullName);
                         firoot = ReadNodeFile(outfile, guidance);
 
                         // firoot tree having excess detail (smaller minimum delta than guidance) should be fathomed and rewritten
@@ -84,7 +111,7 @@ namespace Abnaki.Albiruni.Tree
                     
                     if ( firoot == null ) // no existing file satisfies guidance
                     {
-                        Debug.WriteLine("Reading " + fi.FullName);
+                        //Debug.WriteLine("Reading " + fi.FullName);
 
                         firoot = Node.NewGlobalRoot();
 
@@ -130,7 +157,7 @@ namespace Abnaki.Albiruni.Tree
                 }
                 finally
                 {
-
+                    guidance.CountSourceFile();
                 }
 
                 if (firoot != null)
