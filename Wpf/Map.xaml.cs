@@ -31,6 +31,7 @@ namespace Abnaki.Albiruni
             hovtimer.Tick += hovtimer_Tick;
 
             MessageTube.Subscribe<FarewellMessage>(Farewell);
+            MessageTube.Subscribe<Message.InvalidateMessage>(HandleInvalidate);
 
             Clear();
         }
@@ -240,6 +241,11 @@ namespace Abnaki.Albiruni
                 //Debug.WriteLine(string.Format("Fit zoomed to {0} while slzoom is [{1}, {2}, {3}]", map.ZoomLevel,
                 //    slzoom.Minimum, slzoom.Value, slzoom.Maximum));
             }
+        }
+
+        private void HandleInvalidate(Message.InvalidateMessage msg)
+        {
+            this.map.InvalidateVisual();
         }
 
 
