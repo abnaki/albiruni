@@ -7,6 +7,7 @@ using System.Diagnostics;
 
 using MapControl;
 using System.Windows.Threading;
+using Abnaki.Windows.Software.Wpf.Menu;
 
 namespace Abnaki.Albiruni
 {
@@ -19,6 +20,7 @@ namespace Abnaki.Albiruni
         {
             vptimer.Tick += vptimer_Tick;
 
+            ButtonBus<Menu.OptionMenuKey>.HookupSubscriber(HandleOption);
         }
 
         public new MapViewModel DataContext
@@ -31,6 +33,23 @@ namespace Abnaki.Albiruni
         {
             vptimer.Stop();
         }
+
+        private void HandleOption(ButtonMessage<Menu.OptionMenuKey> msg)
+        {
+            if (false == msg.Checked)
+                return;
+
+            switch (msg.Key)
+            {
+                case Menu.OptionMenuKey.MapCellColorRed:
+                case Menu.OptionMenuKey.MapCellColorGreen:
+                case Menu.OptionMenuKey.MapCellColorBlue:
+                    InvalidateVisual();
+                    break;
+            }
+
+        }
+
 
         #region Community-suggested xamlmapcontrol viewport change event using a timer
 
