@@ -293,13 +293,13 @@ namespace Abnaki.Albiruni
         {
             r.Fill = m_defaultFillBrush;
 
-            //r.MouseLeftButtonUp += MapRectangle_MouseLeftButtonUp; // never gets  e.ClickCount == 2
-            r.MouseLeftButtonDown += MapRectangle_MouseLeftButtonDown;
-
-            // need to be able to pan ParentMap if mouse hit rectangle.
-            r.AddHandler(UIElement.MouseDownEvent, new RoutedEventHandler(RouteToParentMap));
-            r.AddHandler(UIElement.MouseMoveEvent, new RoutedEventHandler(RouteToParentMap));
-            r.AddHandler(UIElement.MouseUpEvent, new RoutedEventHandler(RouteToParentMap));
+            // events unused because MapNodeLayer does not put MapRectangles in a control.
+            ////r.MouseLeftButtonUp += MapRectangle_MouseLeftButtonUp; // never gets  e.ClickCount == 2
+            //r.MouseLeftButtonDown += MapRectangle_MouseLeftButtonDown;
+            //// need to be able to pan ParentMap if mouse hit rectangle.
+            //r.AddHandler(UIElement.MouseDownEvent, new RoutedEventHandler(RouteToParentMap));
+            //r.AddHandler(UIElement.MouseMoveEvent, new RoutedEventHandler(RouteToParentMap));
+            //r.AddHandler(UIElement.MouseUpEvent, new RoutedEventHandler(RouteToParentMap));
             
         }
 
@@ -424,7 +424,7 @@ namespace Abnaki.Albiruni
             //}
         }
 
-        void OnLeftDoubleClick(Location loc)
+        internal void OnLeftDoubleClick(Location loc)
         {
             bool locationChanged; // unused.  user can invoke a source multiple times, not required to move mouse.
             Message.SourceRecordMessage recsMsg = SourceRecordOfLocation(loc, out locationChanged);
