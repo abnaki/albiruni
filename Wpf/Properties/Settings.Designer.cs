@@ -22,5 +22,17 @@ namespace Abnaki.Albiruni.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://{c}.tile.openstreetmap.org/{z}/{x}/{y}.png")]
+        public string OpenStreetMapTileUrl {
+            get {
+                return ((string)(this["OpenStreetMapTileUrl"]));
+            }
+            set {
+                this["OpenStreetMapTileUrl"] = value;
+            }
+        }
     }
 }
