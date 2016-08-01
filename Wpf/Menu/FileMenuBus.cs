@@ -10,6 +10,9 @@ using Abnaki.Windows.Software.Wpf.Menu;
 using Abnaki.Windows.Software.Wpf.Ultimate;
 using Abnaki.Albiruni.Tree;
 using System.Diagnostics;
+using Abnaki.Windows.Software.Wpf.Diplomat;
+using System.ComponentModel;
+using System.Windows.Input;
 
 
 namespace Abnaki.Albiruni.Menu
@@ -52,50 +55,114 @@ namespace Abnaki.Albiruni.Menu
                 Nursery.Guidance guidance = new Nursery.Guidance();
                 guidance.MinimumMesh = minimumMesh; // may eventually have UI
 
-                List<FileInfo> potentialFiles = new List<FileInfo>();
-                Nursery.SearchForFiles(di, guidance, potentialFiles);
+                Nursery.SearchForFiles(di, guidance);
 
-                if (potentialFiles.Count == 0)
+                if ( 0 == (guidance.PotentialSourceFileCount ?? 0  ) )
                 {
                     Abnaki.Windows.Software.Wpf.Diplomat.Notifier.Error("No compatible files exist under " + di.FullName);
                 }
                 else
                 {
-                    string question = string.Format("Read {0} possible file(s) totaling {1:N0} bytes ?", potentialFiles.Count, potentialFiles.Sum(f => f.Length));
+                    string question = string.Format("Read {0} possible file(s) totaling {1:N0} bytes ?", 
+                        guidance.PotentialSourceFileCount, guidance.PotentialSourceFileBytes);
 
                     if (MessageBoxResult.OK ==
                         MessageBox.Show(Application.Current.MainWindow, question, "Confirm", MessageBoxButton.OKCancel, MessageBoxImage.Question)
                         )
                     {
-                        // want to move to a worker thread, provide dialog for progress and interrupt button.
-                        using (new WaitCursor())
-                        {
-                            DirectoryInfo ditarget = di.CreateSubdirectory(Nursery.CacheDir);
-
-                            var root = Abnaki.Albiruni.Tree.Node.NewGlobalRoot();
-                            Message.RootNodeMessage msg = new Message.RootNodeMessage(root, di);
-
-                            Nursery.GrowTree(root, di, ditarget, guidance);
-
-                            MessageTube.Publish(msg);
-
-                            Node.Statistic rootStat = root.GetStatistic();
-                            Debug.WriteLine("Tree of data in " + di.FullName + "  " + rootStat.ContentSummary.FinalSummary());
-                        }
-
-                        if (guidance.FilesExceptions.Count > 0)
-                        {
-                            foreach (var pair in guidance.FilesExceptions)
-                            {
-                                Abnaki.Windows.AbnakiLog.Exception(pair.Value, "Error due to " + pair.Key);
-                            }
-                            string msg = guidance.FilesExceptions.Count + " error(s)";
-                            Abnaki.Windows.Software.Wpf.Diplomat.Notifier.Error(msg);
-
-                        }
+                        OpenTreeState state = new OpenTreeState() { RootDirectory = di, Guidance = guidance };
+                        GuiOpenDirectory(state);
                     }
                 }
             }
+        }
+
+        class OpenTreeState
+        {
+            public Message.RootNodeMessage Message { get; set; }
+            public DirectoryInfo RootDirectory { get; set; }
+            public Nursery.Guidance Guidance { get; set; }
+        }
+
+        //void GuiOpenDirectory(OpenTreeState state)
+        //{
+        //    MessageTube.Publish(new Message.InvalidateMessage()); // now dialog is out of the map's way.
+        //    WaitCursor.Progressing();
+        //    OpenDirectoryTree(state);
+        //    OpenTreeResponse(state);
+        //}
+
+        void GuiOpenDirectory(OpenTreeState state) // BackgroundWorker.  no big payoff yet but user could Exit.
+        {
+            // want to provide dialog for progress and cancel button.
+            // also see Xceed BusyIndicator.
+
+            BackgroundWorker thread = new BackgroundWorker();
+            thread.DoWork += (sender, e) =>
+            {
+                BackgroundWorker th = (BackgroundWorker)sender;
+                OpenTreeState st = (OpenTreeState)e.Argument;
+                //st.Guidance.SourceFileCounted += n => th.ReportProgress((int)((double)n / (double)st.Guidance.PotentialSourceFileCount));
+                OpenDirectoryTree(st);
+                e.Result = e.Argument;
+            };
+            thread.RunWorkerCompleted += (sender, e) =>
+            {
+                OpenTreeResponse((OpenTreeState)e.Result);
+                WaitCursor.Default();
+            };
+            thread.WorkerSupportsCancellation = true;
+            //thread.WorkerReportsProgress = true;
+            //thread.ProgressChanged += thread_ProgressChanged;
+            WaitCursor.Progressing();
+            thread.RunWorkerAsync(state);
+
+            MessageTube.Publish(new Message.InvalidateMessage()); // now dialog is out of the map's way.
+
+            //    Notifier.Error("Failed to completely read " + di.FullName + " within " + tsLimit);
+        }
+
+        void OpenDirectoryTree(OpenTreeState state)
+        {
+            DirectoryInfo ditarget = state.RootDirectory.CreateSubdirectory(Nursery.CacheDir);
+
+            var root = Abnaki.Albiruni.Tree.Node.NewGlobalRoot();
+
+            Nursery.GrowTree(root, state.RootDirectory, ditarget, state.Guidance);
+
+            Node.Statistic rootStat = root.GetStatistic();
+            Debug.WriteLine("Tree of data in " + state.RootDirectory.FullName + "  " + rootStat.ContentSummary.FinalSummary());
+
+            state.Message = new Message.RootNodeMessage(root, state.RootDirectory);
+        }
+
+        void thread_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+
+        }
+
+        void OpenTreeResponse(OpenTreeState state)
+        {
+            OpenTreeCompletion();
+
+            MessageTube.Publish(state.Message);
+
+            if (state.Guidance.FilesExceptions.Count > 0)
+            {
+                foreach (var pair in state.Guidance.FilesExceptions)
+                {
+                    Abnaki.Windows.AbnakiLog.Exception(pair.Value, "Error due to " + pair.Key);
+                }
+                string msg = state.Guidance.FilesExceptions.Count + " error(s)";
+                Abnaki.Windows.Software.Wpf.Diplomat.Notifier.Error(msg);
+
+            }
+
+        }
+
+        void OpenTreeCompletion()
+        {
+            WaitCursor.Default();
         }
 
         private void HandleOption(ButtonMessage<OptionMenuKey> msg)
