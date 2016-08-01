@@ -112,6 +112,7 @@
     <Compile Include="MapViewModel.cs" />
     <Compile Include="Menu\OptionMenuBus.cs" />
     <Compile Include="Menu\OptionMenuKey.cs" />
+    <Compile Include="Message\InvalidateMessage.cs" />
     <Compile Include="Message\InvokeSourceMessage.cs" />
     <Compile Include="Message\RootNodeMessage.cs" />
     <Compile Include="Message\SourceRecordMessage.cs" />
