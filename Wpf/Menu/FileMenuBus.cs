@@ -13,6 +13,8 @@ using System.Diagnostics;
 using Abnaki.Windows.Software.Wpf.Diplomat;
 using System.ComponentModel;
 using System.Windows.Input;
+using Abnaki.Windows;
+using System.Text;
 
 
 namespace Abnaki.Albiruni.Menu
@@ -82,6 +84,7 @@ namespace Abnaki.Albiruni.Menu
             public Message.RootNodeMessage Message { get; set; }
             public DirectoryInfo RootDirectory { get; set; }
             public Nursery.Guidance Guidance { get; set; }
+            public string FinalError { get; set; }
         }
 
         //void GuiOpenDirectory(OpenTreeState state)
@@ -124,7 +127,15 @@ namespace Abnaki.Albiruni.Menu
 
         void OpenDirectoryTree(OpenTreeState state)
         {
-            DirectoryInfo ditarget = state.RootDirectory.CreateSubdirectory(Nursery.CacheDir);
+            DirectoryInfo ditarget = null;
+            try
+            {
+                ditarget = state.RootDirectory.CreateSubdirectory(Nursery.CacheDir);
+            }
+            catch ( Exception ex ) // permissions?
+            {
+                AbnakiLog.Exception(ex, "Creating " + Nursery.CacheDir);
+            }
 
             var root = Abnaki.Albiruni.Tree.Node.NewGlobalRoot();
 
@@ -134,6 +145,8 @@ namespace Abnaki.Albiruni.Menu
             Debug.WriteLine("Tree of data in " + state.RootDirectory.FullName + "  " + rootStat.ContentSummary.FinalSummary());
 
             state.Message = new Message.RootNodeMessage(root, state.RootDirectory);
+
+            state.FinalError = "Unable to create " + Nursery.CacheDir + " folder for future speedup.";
         }
 
         void thread_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -147,17 +160,27 @@ namespace Abnaki.Albiruni.Menu
 
             MessageTube.Publish(state.Message);
 
+            StringBuilder sbErr = new StringBuilder();
+
             if (state.Guidance.FilesExceptions.Count > 0)
             {
                 foreach (var pair in state.Guidance.FilesExceptions)
                 {
                     Abnaki.Windows.AbnakiLog.Exception(pair.Value, "Error due to " + pair.Key);
                 }
-                string msg = state.Guidance.FilesExceptions.Count + " error(s)";
-                Abnaki.Windows.Software.Wpf.Diplomat.Notifier.Error(msg);
-
+                sbErr.Append(state.Guidance.FilesExceptions.Count + " error(s).  ");
             }
 
+            if ( false == string.IsNullOrEmpty(state.FinalError) )
+            {
+                sbErr.Append(state.FinalError);
+            }
+
+            if (sbErr.Length > 0)
+            {
+                Abnaki.Windows.Software.Wpf.Diplomat.Notifier.Error(sbErr.ToString());
+                MessageTube.Publish(new Message.InvalidateMessage()); // now dialog is out of the map's way.
+            }
         }
 
         void OpenTreeCompletion()
