@@ -134,6 +134,7 @@ namespace Abnaki.Albiruni.Menu
             }
             catch ( Exception ex ) // permissions?
             {
+                state.FinalError = "Unable to create " + Nursery.CacheDir + " folder for future speedup.";
                 AbnakiLog.Exception(ex, "Creating " + Nursery.CacheDir);
             }
 
@@ -145,8 +146,6 @@ namespace Abnaki.Albiruni.Menu
             Debug.WriteLine("Tree of data in " + state.RootDirectory.FullName + "  " + rootStat.ContentSummary.FinalSummary());
 
             state.Message = new Message.RootNodeMessage(root, state.RootDirectory);
-
-            state.FinalError = "Unable to create " + Nursery.CacheDir + " folder for future speedup.";
         }
 
         void thread_ProgressChanged(object sender, ProgressChangedEventArgs e)
