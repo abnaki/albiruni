@@ -10,4 +10,4 @@ Albiruni's code is under [GNU Public License](./LICENSE).
 
 OpenStreetMaps are displayed, as they are free. 
 
-Also see the [Wiki.](/abnaki/albiruni/wiki)
+Also see the [Wiki.](../../wiki)
