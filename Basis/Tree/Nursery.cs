@@ -77,6 +77,8 @@ namespace Abnaki.Albiruni.Tree
         /// <summary>
         /// Descend to find source files and populate tree starting at root.
         /// </summary>
+        /// <param name="ditarget">null means to forbid writing
+        /// </param>
         public static void GrowTree(Node root, DirectoryInfo disource, DirectoryInfo ditarget, Guidance guidance)
         {
             GrowSub(root, disource, disource, ditarget, guidance);
@@ -87,15 +89,17 @@ namespace Abnaki.Albiruni.Tree
             foreach ( FileInfo fi in FindLocalFiles(di, guidance) )
             {
                 string relpath = AbnakiFile.RelativePath(di, disource);
-                FileInfo outfile = AbnakiFile.CombinedFilePath(ditarget, relpath, Path.ChangeExtension(fi.Name, FileExt));
+                FileInfo outfile = null;
+                if ( ditarget != null )
+                    outfile = AbnakiFile.CombinedFilePath(ditarget, relpath, Path.ChangeExtension(fi.Name, FileExt));
 
                 Node firoot = null;
 
                 try
                 {
-                    bool needWrite = true;
+                    bool needWrite = (outfile != null);
 
-                    if (outfile.Exists && outfile.LastWriteTimeUtc > fi.LastWriteTimeUtc) // outfile from valid previously created Node
+                    if (outfile != null && outfile.Exists && outfile.LastWriteTimeUtc > fi.LastWriteTimeUtc) // outfile from valid previously created Node
                     {
                         //Debug.WriteLine("Existing " + outfile.FullName);
                         firoot = ReadNodeFile(outfile, guidance);
