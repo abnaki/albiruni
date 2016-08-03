@@ -234,10 +234,14 @@ namespace Abnaki.Albiruni
             //return allowed;
         }
 
+        void EstablishSync()
+        {
+            precisionMinusZoomSynced = slprecision.Value - slzoom.Value;
+        }
 
         private void ChkSync_Checked(object sender, RoutedEventArgs e)
         {
-            precisionMinusZoomSynced = slprecision.Value - slzoom.Value;
+            EstablishSync();
         }
 
         private void ChkSync_Unchecked(object sender, RoutedEventArgs e)
@@ -269,6 +273,8 @@ namespace Abnaki.Albiruni
             if (summary.Points > 0)
             {
                 slprecision.Value = slprecision.Minimum;
+                if (precisionMinusZoomSynced.HasValue)
+                    EstablishSync();
 
                 Location sw = new Location((double)summary.MinLatitude, (double)summary.MinLongitude);
                 Location ne = new Location((double)summary.MaxLatitude, (double)summary.MaxLongitude);
