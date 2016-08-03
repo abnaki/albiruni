@@ -69,15 +69,15 @@ namespace Abnaki.Albiruni
 
         public void SetViewPort(MapRectangle viewRect, MapRectangle unitRect)
         {
-            using (new WaitCursor())
-            {
-                DisplayUnitRect = unitRect;
+            DisplayUnitRect = unitRect;
 
-                if (this.ViewPortRect.EqualCoordinates(viewRect))
-                {
-                    // skip
-                }
-                else
+            if (this.ViewPortRect.EqualCoordinates(viewRect))
+            {
+                // skip
+            }
+            else
+            {
+                using (new WaitCursor())
                 {
                     this.ViewPortRect = viewRect;
                     UpdateAdornments();
@@ -138,30 +138,35 @@ namespace Abnaki.Albiruni
             PointSummary pointSummary = GetRootPointSummary();
             if (pointSummary.Points > 0)
             {
+
+                // (rather than MapRectangle, want an abstraction to allow for two disjoint shapes 
+                // such as two rectangles abutting longitude +- 180; 
+                // and easily check for its intersection with a Node.)
+
+                DescentLimits limits = new DescentLimits();
                 if (newRoot)
                 {
                     decimal midLat = (pointSummary.MinLatitude.Value + pointSummary.MaxLatitude.Value) / 2;
                     decimal midLon = (pointSummary.MinLongitude.Value + pointSummary.MaxLongitude.Value) / 2;
                     MapCenter = new Location((double)midLat, (double)midLon);
                     // note that the view may still remain zoomed in far enough to not intersect any points in the tree.  ergo, user must zoom out.
+
+                    // predicting bounds from last known view
+                    double viewWidth = ViewPortRect.East - ViewPortRect.West;
+                    double viewHeight = ViewPortRect.North - ViewPortRect.South;
+
+                    limits.LogicalBound = MapExtensions.NewMapRectangle(
+
+                        west: MapCenter.Longitude - viewWidth / 2,
+                        east: MapCenter.Longitude + viewWidth / 2,
+                        north: MapCenter.Latitude + viewHeight / 2,
+                        south: MapCenter.Latitude - viewHeight / 2
+                    );
                 }
-
-                // predicting bounds from last known view
-                double viewWidth = ViewPortRect.East - ViewPortRect.West;
-                double viewHeight = ViewPortRect.North - ViewPortRect.South;
-
-                // rather than MapRectangle, want an abstraction to allow for two disjoint shapes 
-                // such as two rectangles abutting longitude +- 180; 
-                // and easily check for its intersection with a Node.
-
-                DescentLimits limits = new DescentLimits();
-                limits.LogicalBound = MapExtensions.NewMapRectangle(
-
-                    west: MapCenter.Longitude - viewWidth / 2,
-                    east: MapCenter.Longitude + viewWidth / 2,
-                    north: MapCenter.Latitude + viewHeight / 2,
-                    south: MapCenter.Latitude - viewHeight / 2
-                );
+                else
+                {
+                    limits.LogicalBound = ViewPortRect;
+                }
 
                 limits.MinimumDelta = this.DisplayMesh.Delta;
 
