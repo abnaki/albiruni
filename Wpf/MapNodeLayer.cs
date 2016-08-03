@@ -18,8 +18,6 @@ namespace Abnaki.Albiruni
     {
         public MapNodeLayer()
         {
-            vptimer.Tick += vptimer_Tick;
-
             ButtonBus<Menu.OptionMenuKey>.HookupSubscriber(HandleOption);
         }
 
@@ -27,11 +25,6 @@ namespace Abnaki.Albiruni
         {
             get { return (MapViewModel)base.DataContext;  }
             set { base.DataContext = value; }
-        }
-
-        void Clear()
-        {
-            vptimer.Stop();
         }
 
         private void HandleOption(ButtonMessage<Menu.OptionMenuKey> msg)
@@ -51,30 +44,7 @@ namespace Abnaki.Albiruni
         }
 
 
-        #region Community-suggested xamlmapcontrol viewport change event using a timer
-
-        void vptimer_Tick(object sender, EventArgs e)
-        {
-            vptimer.Stop();
-
-            ViewportChangeSettled();
-        }
-
-        DispatcherTimer vptimer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(200) };
-
-        protected override void OnViewportChanged()
-        {
-            base.OnViewportChanged();
-
-            vptimer.Stop(); vptimer.Start(); // MS idea of Reset
-
-            InvalidateVisual(); // all current graphics must be redrawn
-        }
-
-
-        #endregion
-
-        void ViewportChangeSettled()
+        internal void ViewportChangeSettled()
         {
             if (DataContext == null)
                 return;
