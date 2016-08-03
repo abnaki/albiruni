@@ -30,6 +30,15 @@ namespace Abnaki.Albiruni
 
             hovtimer.Tick += hovtimer_Tick;
 
+            vptimer = new ViewPortTimer(this.map);
+            MapNodeLayer layer = GetMapNodeLayer();
+            vptimer.Changed += (s, e) => layer.InvalidateVisual();
+            vptimer.Settled += (s, e) =>
+            {
+                CompleteZoom(s, e: null);
+                layer.ViewportChangeSettled();
+            };
+
             MessageTube.Subscribe<FarewellMessage>(Farewell);
             MessageTube.Subscribe<Message.InvalidateMessage>(HandleInvalidate);
 
@@ -148,6 +157,8 @@ namespace Abnaki.Albiruni
 
         #endregion
 
+        ViewPortTimer vptimer;
+
         bool syncingZoomPrecision = false;
         bool outdatedMesh = false;
         double? precisionMinusZoomSynced;
@@ -177,10 +188,15 @@ namespace Abnaki.Albiruni
 
         private void slzoom_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            //slprecision.Value = precisionMinusZoomSynced.Value + slzoom.Value
-            ChangeBoundedBySlider(slprecision, e, precisionMinusZoomSynced + slzoom.Value, p => slprecision.Value = p);
+            // this has precedence over the binding to MapViewModel affecting MapBase.
+            //CompleteZoom(sender, e);
             //outdatedMesh = true; 
             //InvalidateVisual(); // implied by slprecision Value change
+        }
+
+        void CompleteZoom(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            ChangeBoundedBySlider(slprecision, e, precisionMinusZoomSynced + slzoom.Value, p => slprecision.Value = p);
         }
 
         void ChangeBoundedBySlider(Slider slitarget,
@@ -205,8 +221,8 @@ namespace Abnaki.Albiruni
                 {
                     actset(proposed.Value);
                 }
-                else // reject
-                {
+                else if ( e != null )
+                {  // reject
                     Slider slisource = (Slider)e.Source;
                     slisource.Value = e.OldValue;
                 }
@@ -252,10 +268,13 @@ namespace Abnaki.Albiruni
             PointSummary summary = DataContext.GetRootPointSummary();
             if (summary.Points > 0)
             {
+                slprecision.Value = slprecision.Minimum;
+
                 Location sw = new Location((double)summary.MinLatitude, (double)summary.MinLongitude);
                 Location ne = new Location((double)summary.MaxLatitude, (double)summary.MaxLongitude);
                 this.map.ZoomToBounds(sw, ne);
 
+                CompleteZoom(sender, e: null);
                 //Debug.WriteLine(string.Format("Fit zoomed to {0} while slzoom is [{1}, {2}, {3}]", map.ZoomLevel,
                 //    slzoom.Minimum, slzoom.Value, slzoom.Maximum));
             }
