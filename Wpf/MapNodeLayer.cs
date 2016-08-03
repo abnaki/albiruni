@@ -43,42 +43,6 @@ namespace Abnaki.Albiruni
 
         }
 
-
-        internal void ViewportChangeSettled()
-        {
-            if (DataContext == null)
-                return;
-
-            var map = ParentMap;
-
-            Point pNorthWest = new Point(0, 0);
-            Point pSouthEast = new Point(map.ActualWidth, map.ActualHeight);
-            Point pUnit = new Point(1, 1);
-            Location locNorthWest = map.ViewportPointToLocation(pNorthWest);
-            Location locSouthEast = map.ViewportPointToLocation(pSouthEast);
-            Location locUnit = map.ViewportPointToLocation(pUnit);
-
-            MapRectangle viewRect = new MapRectangle()
-            {
-                North = locNorthWest.Latitude,
-                South = locSouthEast.Latitude,
-                West = locNorthWest.Longitude,
-                East = locSouthEast.Longitude
-            };
-
-            MapRectangle unitRect = new MapRectangle()
-            {
-                North = locNorthWest.Latitude,
-                South = locUnit.Latitude,
-                West = locNorthWest.Longitude,
-                East = locUnit.Longitude
-            };
-
-            this.DataContext.SetViewPort(viewRect, unitRect);
-
-            InvalidateVisual();
-        }
-
         protected override void OnRender(DrawingContext dc)
         {
             base.OnRender(dc);
