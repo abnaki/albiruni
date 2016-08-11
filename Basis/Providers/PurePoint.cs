@@ -32,5 +32,11 @@ namespace Abnaki.Albiruni.Providers
             get;
             set;
         }
+
+        public bool TimeReliable
+        {
+            get;
+            set;
+        }
     }
 }
