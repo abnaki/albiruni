@@ -26,6 +26,7 @@ namespace Abnaki.Albiruni.Providers.Geo.Gpx
                 Latitude: wpt.lat,
                 Longitude: wpt.lon,
                 Time: DateTimeOfWpt(wpt),
+                TimeReliable: true,
                 Elevation: wpt.eleSpecified ? (decimal?)wpt.ele : (decimal?)null);
 
             return Impromptu.ActLike<IPoint>(temp); // duck typing
