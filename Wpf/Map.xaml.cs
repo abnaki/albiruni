@@ -309,7 +309,10 @@ namespace Abnaki.Albiruni
 
                 Location sw = new Location((double)summary.MinLatitude, (double)summary.MinLongitude);
                 Location ne = new Location((double)summary.MaxLatitude, (double)summary.MaxLongitude);
-                this.map.ZoomToBounds(sw, ne);
+                if (sw.EqualCoordinates(ne)) // unusual
+                    this.DataContext.MapCenter = sw; 
+                else  // usual
+                    this.map.ZoomToBounds(sw, ne);
 
                 CompleteZoom(sender, e: null);
                 //Debug.WriteLine(string.Format("Fit zoomed to {0} while slzoom is [{1}, {2}, {3}]", map.ZoomLevel,
