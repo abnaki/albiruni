@@ -23,5 +23,8 @@ namespace Abnaki.Albiruni.Providers
 
         /// <summary>when visited</summary>
         DateTime? Time { get; }
+
+        /// <summary>true if time is from atomic clock</summary>
+        bool TimeReliable { get; }
     }
 }
