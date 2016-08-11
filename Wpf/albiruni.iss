@@ -22,7 +22,7 @@ OutputDir=SetupOutput
 ; SignTool=signtool ; can't prompt for passphrase
 
 [Files]
-Source: "bin\Release\*"; Excludes: "*.pdb,*vshost*"; DestDir: "{app}"
+Source: "bin\Release\*"; Excludes: "*.pdb,*vshost*"; DestDir: "{app}"; Flags: recursesubdirs
 Source: "..\Other\OtherLicenses\*"; DestDir: "{app}\OtherLicenses"; Flags: recursesubdirs
 Source: "..\Sample\*"; DestDir: "{app}\Sample"; Excludes: "*.albiruni*,*.abt"; Flags: recursesubdirs
 
