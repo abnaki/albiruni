@@ -83,7 +83,7 @@ namespace Abnaki.Albiruni.Tests.Provider
 
             root.Populate(source, mesh);
 
-            IPoint samplePoint = source.InputFile.Points.AllPoints.First();
+            IPoint samplePoint = source.PointProvider.Points.AllPoints.First();
 
             Node.FindResult testFindNodes = new Node.FindResult();
             root.FindNodes(samplePoint.Latitude, samplePoint.Longitude, mesh, testFindNodes);
@@ -120,6 +120,7 @@ namespace Abnaki.Albiruni.Tests.Provider
             Node root = Node.NewGlobalRoot();
 
             Nursery.Guidance guidance = new Nursery.Guidance();
+            guidance.MinimumMesh = new Mesh(13);
             Nursery.GrowTree(root, di, ditarget, guidance);
 
             //root.DebugPrint();
