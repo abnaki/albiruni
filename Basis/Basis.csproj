@@ -64,6 +64,7 @@
     <Compile Include="Providers\Image\JpegFile.cs" />
     <Compile Include="Providers\Image\JpegReader.cs" />
     <Compile Include="Providers\PointDump.cs" />
+    <Compile Include="Providers\PointReader.cs" />
     <Compile Include="Providers\PurePoint.cs" />
     <Compile Include="Tree\InputOutput\IBinaryRead.cs" />
     <Compile Include="Tree\InputOutput\IBinaryWrite.cs" />
