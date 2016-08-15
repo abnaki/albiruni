@@ -172,7 +172,19 @@ namespace Abnaki.Albiruni
 
                 //Debug.WriteLine("limits " + limits);
 
-                AddDescendantRectangles(RootNode, null, limits);
+                Queue<MapRectangle> qrect = new Queue<MapRectangle>();
+
+                Stopwatch watch = new Stopwatch();
+                watch.Start();
+
+                AddDescendantRectangles(RootNode, null, limits, qrect);
+
+                // all assorted non-coalesced rectangles
+                this.Rectangles.AddRange(qrect);
+
+                watch.Stop();
+
+                Debug.WriteLine(Rectangles.Count + " Rectangles created in " + watch.Elapsed);
 
                 //if (Rectangles.Count > 0)
                 //{
@@ -210,7 +222,7 @@ namespace Abnaki.Albiruni
         /// Add a Rectangle for every Node in tree that intersects ViewPortRect,
         /// not descending to any Nodes having Delta < MinimumPrecision.
         /// </summary>
-        DescentResult AddDescendantRectangles(Node node, Node parent, DescentLimits limits)
+        DescentResult AddDescendantRectangles(Node node, Node parent, DescentLimits limits, Queue<MapRectangle> quRects)
         {
             switch (node.Axis)
             {
@@ -228,12 +240,16 @@ namespace Abnaki.Albiruni
                     break;
             }
 
+            //Debug.Indent(); // slow?
+
             List<DescentResult> results = new List<DescentResult>();
-            //DescentResult rchild1 = DescentResult.None, rchild2 = DescentResult.None;
+            Queue<MapRectangle> childQuRects = new Queue<MapRectangle>();
+            
             if ( node.Children != null )
             {
-                results.Add(AddDescendantRectangles(node.Children.Item1, node, limits));
-                results.Add(AddDescendantRectangles(node.Children.Item2, node, limits));
+                results.Add(AddDescendantRectangles(node.Children.Item1, node, limits, childQuRects));
+                results.Add(AddDescendantRectangles(node.Children.Item2, node, limits, childQuRects));
+
             }
 
             if ( node.SourceCount > 0)
@@ -241,20 +257,21 @@ namespace Abnaki.Albiruni
                 results.Add(DescentResult.PointsCovered);
             }
 
-            if ( node.Delta >= limits.MinimumDelta
+            MapRectangle rect = null;
+
+            if (node.Delta >= limits.MinimumDelta
                 && results.Any(r => r == DescentResult.PointsCovered) 
                 && parent != null && parent.Delta >= limits.MinimumDelta )
             {
                 // any descendants exist, and node has not been excluded for view or precision reasons (above)
 
-                MapRectangle r = null;
                 switch (node.Axis)
                 {
                     case Axis.NorthSouth:
                         if ( (double)node.Delta < this.DisplayUnitRect.North - DisplayUnitRect.South)
                             break; //  not displayed
 
-                        r = new MapRectangle()
+                        rect = new MapRectangle()
                         {
                             South = (double)node.Degrees,
                             North = (double)(node.Degrees + node.Delta),
@@ -266,7 +283,7 @@ namespace Abnaki.Albiruni
                         if ( (double)node.Delta < this.DisplayUnitRect.East - DisplayUnitRect.West)
                             break; //  not displayed
 
-                        r = new MapRectangle()
+                        rect = new MapRectangle()
                         {
                             South = (double)parent.Degrees,
                             North = (double)(parent.Degrees + parent.Delta),
@@ -277,16 +294,33 @@ namespace Abnaki.Albiruni
                     default:
                         throw new NotSupportedException("No support for axis " + node.Axis);
                 }
-
-                if (r != null)
+            }
+            else if ( childQuRects.Count > 0  )
+            {
+                MapRectangle rectCoalesce = CoalesceRectangle(childQuRects);
+                if ( rectCoalesce == null )
+                {   // assortment of non-space-filling rectangles
+                    while (childQuRects.Count > 0)
+                    {
+                        quRects.Enqueue(childQuRects.Dequeue());
+                    }
+                }
+                else
                 {
-                    CompleteRectangle(r);
-
-                    this.Rectangles.Add(r); // efficient ?
-
-                    results.Add(DescentResult.NewRectangles);
+                    rect = rectCoalesce;
                 }
             }
+
+            if (rect != null)
+            {
+                CompleteRectangle(rect);
+
+                quRects.Enqueue(rect);
+
+                results.Add(DescentResult.NewRectangles);
+            }
+
+            //Debug.Unindent();
 
             if (results.Count > 0)
                 return (DescentResult)results.Max();
@@ -306,6 +340,31 @@ namespace Abnaki.Albiruni
             //r.AddHandler(UIElement.MouseMoveEvent, new RoutedEventHandler(RouteToParentMap));
             //r.AddHandler(UIElement.MouseUpEvent, new RoutedEventHandler(RouteToParentMap));
             
+        }
+
+        /// <summary>
+        /// Non-null if rectangles fill a rectangular space.  Otherwise null.
+        /// </summary>
+        /// <param name="rectangles">must be non-intersecting
+        /// </param>
+        MapRectangle CoalesceRectangle(IEnumerable<MapRectangle> rectangles)
+        {
+            MapRectangle bounds = new MapRectangle()
+            {
+                North = rectangles.Max(r => r.North),
+                South = rectangles.Min(r => r.South),
+                West = rectangles.Min(r => r.West),
+                East = rectangles.Max(r => r.East)
+            };
+
+            Func<MapRectangle,double> Area = r => (r.North - r.South)*(r.East - r.West);
+            double boundArea = Area(bounds);
+            double sumArea = rectangles.Sum(r => Area(r));
+
+            if (Math.Abs(sumArea - boundArea) < double.Epsilon)
+                return bounds;
+
+            return null;
         }
 
         static void RouteToParentMap(object sender, RoutedEventArgs e)
