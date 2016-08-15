@@ -136,7 +136,12 @@ namespace Abnaki.Albiruni.Tree
                     throw new NotSupportedException("No support for Axis " + this.Axis);
             }
 
-            return ((this.Degrees  < xc) && (xc < this.Degrees + this.Delta ));
+            return ContainPosition(xc);
+        }
+
+        bool ContainPosition(decimal degrees)
+        {
+            return ((this.Degrees <= degrees) && (degrees < this.Degrees + this.Delta));
         }
 
         /// <summary>
@@ -229,7 +234,7 @@ namespace Abnaki.Albiruni.Tree
         /// </summary>
         public void Populate(Source source, Mesh minimumMesh) 
         {
-            Grow(null, source.InputFile.Points, source, minDelta: minimumMesh.Delta);
+            Grow(null, source.PointProvider.Points, source, minDelta: minimumMesh.Delta);
         }
 
         public void Graft(Node grandparent, Node branch)
