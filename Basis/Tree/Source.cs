@@ -22,11 +22,18 @@ namespace Abnaki.Albiruni.Tree
 
         public Source(FileInfo fi, DirectoryInfo dibase) : this()
         {
-            this.InputFile = Providers.FileReader.SelectFileReader(fi);
-            this.InputFile.Deserialize(fi);
+            Providers.FileReader filer = Providers.FileReader.SelectFileReader(fi);
+            this.PointProvider = filer;
+            filer.Deserialize(fi);
 
             this.Path = AbnakiFile.RelativePath(fi, dibase);
-            
+        }
+
+        /// <summary>Less often used
+        /// </summary>
+        public Source(Providers.PointReader points) : this()
+        {
+            this.PointProvider = points;
         }
 
         public int SerialNumber { get; private set; }
@@ -36,7 +43,7 @@ namespace Abnaki.Albiruni.Tree
 
         public string Path { get; private set; }
 
-        public Providers.FileReader InputFile { get; private set; }
+        public Providers.PointReader PointProvider { get; private set; }
 
         public override string ToString()
         {
