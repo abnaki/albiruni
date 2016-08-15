@@ -5,7 +5,7 @@ using System.Linq;
 namespace Abnaki.Albiruni.Providers
 {
     /// <summary>
-    /// Explicit copies to prevent costly enumeration through data in wrappers.
+    /// Explicit copies of IPoints (to avoid costly enumeration through data in wrappers)
     /// </summary>
     public class PointDump
     {
