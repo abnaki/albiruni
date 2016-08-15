@@ -58,10 +58,16 @@ namespace Abnaki.Albiruni
             }
         }
 
+        Pen testPen = new Pen(Brushes.Purple, 1); // good for development
+
         void Render(DrawingContext dc, MapRectangle mrect)
         {
             Rect r = RectFromMap(mrect);
-            dc.DrawRectangle(mrect.Fill, pen: null, rectangle: r);
+
+            dc.DrawRectangle(mrect.Fill, rectangle: r,
+                pen: null // testPen
+                );
+
         }
 
         Rect RectFromMap(MapRectangle mrect)
