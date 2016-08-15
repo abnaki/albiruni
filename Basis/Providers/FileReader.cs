@@ -8,11 +8,8 @@ namespace Abnaki.Albiruni.Providers
     /// <summary>
     /// Reads data and returns IFile, abstractly, depending on data type
     /// </summary>
-    public abstract class FileReader
+    public abstract class FileReader : PointReader
     {
-
-        public PointDump Points { get; private set; }
-
         protected abstract IFile OpenFile(FileInfo fi);
 
         public void Deserialize(FileInfo fi)
