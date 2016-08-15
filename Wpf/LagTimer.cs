@@ -6,18 +6,20 @@ using System.Windows.Threading;
 namespace Abnaki.Albiruni
 {
     /// <summary>
-    /// Helps delay logic after interactive panning/zooming has stopped briefly.
+    /// Provides a delayed or lagging event after the originally handled event stopped for a short time.
+    /// The original event is typically too rapid-firing, 
+    /// and handlers of the Settled event are designed to be expensive/slow.
     /// </summary>
-    class ViewPortTimer
+    class LagTimer
     {
-        public ViewPortTimer(MapControl.MapBase map)
+        public LagTimer(Action<EventHandler> addHandler)
         {
             vptimer.Tick += vptimer_Tick;
 
-            map.ViewportChanged += map_ViewportChanged;
+            addHandler(ThingChanged);
         }
 
-        /// <summary>Map ViewportChanged.  Do not add costly handlers.
+        /// <summary>Watched.  Do not add costly handlers.
         /// </summary>
         public event EventHandler Changed;
 
@@ -37,7 +39,7 @@ namespace Abnaki.Albiruni
         }
 
 
-        void map_ViewportChanged(object sender, EventArgs e)
+        void ThingChanged(object sender, EventArgs e)
         {
             vptimer.Stop(); vptimer.Start(); // MS idea of Reset
 

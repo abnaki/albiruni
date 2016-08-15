@@ -30,7 +30,9 @@ namespace Abnaki.Albiruni
 
             hovtimer.Tick += hovtimer_Tick;
 
-            vptimer = new ViewPortTimer(this.map);
+            // Helps delay logic after interactive panning/zooming has stopped briefly.
+            vptimer = new LagTimer(h => this.map.ViewportChanged += h);
+
             MapNodeLayer layer = GetMapNodeLayer();
             vptimer.Changed += (s, e) => layer.InvalidateVisual();
             vptimer.Settled += (s, e) =>
@@ -188,7 +190,7 @@ namespace Abnaki.Albiruni
 
         #endregion
 
-        ViewPortTimer vptimer;
+        LagTimer vptimer;
 
         bool syncingZoomPrecision = false;
         bool outdatedMesh = false;
