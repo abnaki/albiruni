@@ -164,7 +164,7 @@
                         Text="Precision"
                         Foreground="Black"
                         HorizontalAlignment="Center" />
-                    <Slider 
+                    <Slider
                         Name="slprecision"
                         Orientation="Vertical"
                         HorizontalAlignment="Center"
@@ -173,8 +173,7 @@
                         Minimum="8"
                         Maximum="{Binding MeshMaximumPower}"
                         Value="{Binding DisplayMeshPower}"
-                        SmallChange="1"
-                        ValueChanged="slprecision_ValueChanged">
+                        SmallChange="1">
                         <!--maybe want Tick properties -->
                     </Slider>
                 </StackPanel>
