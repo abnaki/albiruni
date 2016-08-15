@@ -9,6 +9,17 @@ namespace Abnaki.Albiruni.Providers
     /// </summary>
     public class PurePoint : IPoint
     {
+        public PurePoint()
+        {
+
+        }
+
+        public PurePoint(decimal lat, decimal lon)
+        {
+            this.Latitude = lat;
+            this.Longitude = lon;
+        }
+
         public decimal Latitude
         {
             get;
@@ -38,5 +49,11 @@ namespace Abnaki.Albiruni.Providers
             get;
             set;
         }
+
+        public override string ToString()
+        {
+            return GetType().Name + "(" + Latitude + ", " + Longitude + ")";
+        }
+
     }
 }
