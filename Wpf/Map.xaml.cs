@@ -31,7 +31,7 @@ namespace Abnaki.Albiruni
             hovtimer.Tick += hovtimer_Tick;
 
             // Helps delay logic after interactive panning/zooming has stopped briefly.
-            vptimer = new LagTimer(h => this.map.ViewportChanged += h);
+            this.map.ViewportChanged += vptimer.OnChanged;
 
             MapNodeLayer layer = GetMapNodeLayer();
             vptimer.Changed += (s, e) => layer.InvalidateVisual();
@@ -42,6 +42,10 @@ namespace Abnaki.Albiruni
                 layer.InvalidateVisual();
             };
 
+            // delay costly logic
+            slprecision.ValueChanged += slprecTimer.OnChanged;
+            slprecTimer.Settled += slprecTimer_Settled;
+            
             MessageTube.Subscribe<FarewellMessage>(Farewell);
             MessageTube.Subscribe<Message.InvalidateMessage>(HandleInvalidate);
 
@@ -190,7 +194,9 @@ namespace Abnaki.Albiruni
 
         #endregion
 
-        LagTimer vptimer;
+        LagTimer<EventArgs> vptimer = new LagTimer<EventArgs>();
+
+        LagTimer<RoutedPropertyChangedEventArgs<double>> slprecTimer = new LagTimer<RoutedPropertyChangedEventArgs<double>>();
 
         bool syncingZoomPrecision = false;
         bool outdatedMesh = false;
@@ -209,7 +215,7 @@ namespace Abnaki.Albiruni
             }
         }
 
-        private void slprecision_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        void slprecTimer_Settled(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             //slzoom.Value += e.NewValue - e.OldValue of slprecision
             double deltaPrecision = e.NewValue - e.OldValue;
