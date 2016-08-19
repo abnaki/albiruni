@@ -5,5 +5,8 @@
     <Setting Name="OpenStreetMapTileUrl" Type="System.String" Scope="User">
       <Value Profile="(Default)">http://{c}.tile.openstreetmap.org/{z}/{x}/{y}.png</Value>
     </Setting>
+    <Setting Name="OpenStreetMapParallel" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

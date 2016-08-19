@@ -14,11 +14,13 @@
     <UserControl.Resources>
         <!-- TileLayers with OpenStreetMap data. -->
         <!-- also see Properties/Settings.settings  -->
+        <!-- Obey host's terms such as http://wiki.openstreetmap.org/wiki/Tile_usage_policy --> 
         <map:TileLayer
             x:Key="OpenStreetMap"
             SourceName="OpenStreetMap"
             Description="Maps © [OpenStreetMap Contributors](http://www.openstreetmap.org/copyright)"
             TileSource="{Binding Source={x:Static albprop:Settings.Default}, Path=OpenStreetMapTileUrl, Mode=OneWay}"
+            MaxParallelDownloads="{Binding Source={x:Static albprop:Settings.Default}, Path=OpenStreetMapTileParallel, Mode=OneWay}"
             MaxZoomLevel="19" />
         <!-- <local:LocationToVisibilityConverter x:Key="LocationToVisibilityConverter"/> -->
         <DataTemplate
