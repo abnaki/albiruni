@@ -18,6 +18,7 @@ using Abnaki.Albiruni.Tree;
 using Abnaki.Albiruni.Graphic;
 using Abnaki.Windows;
 using System.IO;
+using System.Reflection;
 
 namespace Abnaki.Albiruni
 {
@@ -48,10 +49,11 @@ namespace Abnaki.Albiruni
             slprecision.ValueChanged += slprecTimer.OnChanged;
             slprecTimer.Settled += slprecTimer_Settled;
 
-            // openstreetmaps.org requires 7 days at least.    
             // Server usage is far more critical than timeliness, hence large timespan.
+            // openstreetmaps.org requires 7 days at least.
             TileImageLoader.MinimumCacheExpiration = TimeSpan.FromDays(60);
             TileImageLoader.DefaultCacheExpiration = TimeSpan.FromDays(60);
+            TileImageLoader.HttpUserAgent = "Albiruni " + Assembly.GetEntryAssembly().GetName().Version; // important: goes to server, a required courtesy
             MapCache.Init();
             if (MapCache.Cache != null)
                 TileImageLoader.Cache = MapCache.Cache;
