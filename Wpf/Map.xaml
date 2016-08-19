@@ -117,6 +117,16 @@
                 ItemsSource="{Binding Tracks}" />
             <map:MapItemsControl
                 ItemsSource="{Binding EmphasizedPaths}" />
+            <Border
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Background="#1FFFFFFF">
+                <TextBlock
+                    Margin="2"
+                    FontSize="10"
+                    Foreground="Black"
+                    map:HyperlinkText.InlinesSource="{Binding TileLayer.Description, ElementName=map}" />
+            </Border>
         </map:Map>
         <Grid
             Grid.Column="1">
