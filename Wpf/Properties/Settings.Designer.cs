@@ -46,5 +46,17 @@ namespace Abnaki.Albiruni.Properties {
                 this["OpenStreetMapParallel"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("16")]
+        public int OpenStreetMapZoom {
+            get {
+                return ((int)(this["OpenStreetMapZoom"]));
+            }
+            set {
+                this["OpenStreetMapZoom"] = value;
+            }
+        }
     }
 }

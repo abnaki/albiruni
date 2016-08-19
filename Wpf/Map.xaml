@@ -21,7 +21,7 @@
             Description="Maps © [OpenStreetMap Contributors](http://www.openstreetmap.org/copyright)"
             TileSource="{Binding Source={x:Static albprop:Settings.Default}, Path=OpenStreetMapTileUrl, Mode=OneWay}"
             MaxParallelDownloads="{Binding Source={x:Static albprop:Settings.Default}, Path=OpenStreetMapTileParallel, Mode=OneWay}"
-            MaxZoomLevel="19" />
+            MaxZoomLevel="{Binding Source={x:Static albprop:Settings.Default}, Path=OpenStreetMapZoom, Mode=OneWay}" />
         <!-- <local:LocationToVisibilityConverter x:Key="LocationToVisibilityConverter"/> -->
         <DataTemplate
             x:Key="PolylineItemTemplate">
@@ -78,7 +78,7 @@
         <map:Map
             x:Name="map"
             ZoomLevel="5"
-            MaxZoomLevel="20"
+            MaxZoomLevel="{Binding Source={x:Static albprop:Settings.Default}, Path=OpenStreetMapZoom, Mode=OneWay}"
             Center="{Binding MapCenter}"
             TileLayer="{StaticResource OpenStreetMap}"
             MouseLeftButtonDown="MapMouseLeftButtonDown"
@@ -157,8 +157,8 @@
                         HorizontalAlignment="Center"
                         SmallChange="0.01"
                         Orientation="Vertical"
+                        Maximum="{Binding Source={x:Static albprop:Settings.Default}, Path=OpenStreetMapZoom, Mode=OneWay}"
                         Minimum="{Binding MinZoomLevel, ElementName=map}"
-                        Maximum="{Binding MaxZoomLevel, ElementName=map}"
                         Value="{Binding TargetZoomLevel, ElementName=map}"
                         ValueChanged="slzoom_ValueChanged" />
                 </StackPanel>
@@ -182,8 +182,8 @@
                         HorizontalAlignment="Center"
                         ToolTip="Cell size. &#10;Changes by multiples of 2. &#10;Up for smaller cells."
                         Height="70"
-                        Minimum="8"
                         Maximum="{Binding MeshMaximumPower}"
+                        Minimum="8"
                         Value="{Binding DisplayMeshPower}"
                         SmallChange="1">
                         <!--maybe want Tick properties -->
