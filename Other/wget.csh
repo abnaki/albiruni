@@ -1,7 +1,11 @@
 #!/bin/csh -f
 
 # please see:
-../../windows/Library/Software/WpfApplication/wgetlicense.csh
+source ../../windows/Library/Software/WpfApplication/wgetlicense.csh
+
+echo Shall call = $WG
+$WG http://wiki.osmfoundation.org/wiki/Licence/Licence_and_Legal_FAQ
+$WG http://opendatacommons.org/licenses/odbl/1.0/
 
 $WG https://github.com/sibartlett/Geo/raw/master/LICENSE
 
