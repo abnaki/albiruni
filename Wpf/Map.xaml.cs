@@ -16,6 +16,8 @@ using Abnaki.Windows.Software.Wpf.Ultimate;
 using Abnaki.Windows.Software.Wpf.Profile;
 using Abnaki.Albiruni.Tree;
 using Abnaki.Albiruni.Graphic;
+using Abnaki.Windows;
+using System.IO;
 
 namespace Abnaki.Albiruni
 {
@@ -45,6 +47,14 @@ namespace Abnaki.Albiruni
             // delay costly logic
             slprecision.ValueChanged += slprecTimer.OnChanged;
             slprecTimer.Settled += slprecTimer_Settled;
+
+            // openstreetmaps.org requires 7 days at least.    
+            // Server usage is far more critical than timeliness, hence large timespan.
+            TileImageLoader.MinimumCacheExpiration = TimeSpan.FromDays(60);
+            TileImageLoader.DefaultCacheExpiration = TimeSpan.FromDays(60);
+            MapCache.Init();
+            if (MapCache.Cache != null)
+                TileImageLoader.Cache = MapCache.Cache;
             
             MessageTube.Subscribe<FarewellMessage>(Farewell);
             MessageTube.Subscribe<Message.InvalidateMessage>(HandleInvalidate);
