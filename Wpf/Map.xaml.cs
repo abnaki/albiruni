@@ -225,7 +225,7 @@ namespace Abnaki.Albiruni
         {
             //slzoom.Value += e.NewValue - e.OldValue of slprecision
             double deltaPrecision = e.NewValue - e.OldValue;
-            ChangeBoundedBySlider(slzoom, e, slzoom.Value + deltaPrecision, z => map.ZoomLevel = z);
+            ChangeBoundedBySlider(slzoom, vptimer, e, slzoom.Value + deltaPrecision, z => map.ZoomLevel = z);
 
             outdatedMesh = true;
             InvalidateVisual();
@@ -241,10 +241,11 @@ namespace Abnaki.Albiruni
 
         void CompleteZoom(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            ChangeBoundedBySlider(slprecision, e, precisionMinusZoomSynced + slzoom.Value, p => slprecision.Value = p);
+            ChangeBoundedBySlider(slprecision, slprecTimer, e, precisionMinusZoomSynced + slzoom.Value, p => slprecision.Value = p);
         }
 
         void ChangeBoundedBySlider(Slider slitarget,
+            LagTimer lagTimer,
             RoutedPropertyChangedEventArgs<double> e,
             double? proposed,
             Action<double> actset)
@@ -258,6 +259,9 @@ namespace Abnaki.Albiruni
 
             bool allowed = false;
             syncingZoomPrecision = true;
+            // programmatic change of a slider, no lag wanted; and correct logic requires syncingZoomPrecision here.
+            lagTimer.Bypass = true;  
+
             try
             {
                 allowed = (slitarget.Minimum <= proposed && proposed <= slitarget.Maximum);
@@ -275,6 +279,7 @@ namespace Abnaki.Albiruni
             finally
             {
                 syncingZoomPrecision = false;
+                lagTimer.Bypass = false;
             }
             //return allowed;
         }
