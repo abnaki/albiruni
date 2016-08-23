@@ -19,6 +19,8 @@ using Abnaki.Albiruni.Graphic;
 using Abnaki.Windows;
 using System.IO;
 using System.Reflection;
+using Abnaki.Albiruni.TileHost;
+using Abnaki.Albiruni.Message;
 
 namespace Abnaki.Albiruni
 {
@@ -48,18 +50,10 @@ namespace Abnaki.Albiruni
             // delay costly logic
             slprecision.ValueChanged += slprecTimer.OnChanged;
             slprecTimer.Settled += slprecTimer_Settled;
-
-            // Server usage is far more critical than timeliness, hence large timespan.
-            // openstreetmaps.org requires 7 days at least.
-            TileImageLoader.MinimumCacheExpiration = TimeSpan.FromDays(60);
-            TileImageLoader.DefaultCacheExpiration = TimeSpan.FromDays(60);
-            TileImageLoader.HttpUserAgent = "Albiruni " + Assembly.GetEntryAssembly().GetName().Version; // important: goes to server, a required courtesy
-            MapCache.Init();
-            if (MapCache.Cache != null)
-                TileImageLoader.Cache = MapCache.Cache;
             
             MessageTube.Subscribe<FarewellMessage>(Farewell);
-            MessageTube.Subscribe<Message.InvalidateMessage>(HandleInvalidate);
+            MessageTube.Subscribe<InvalidateMessage>(HandleInvalidate);
+            MessageTube.Subscribe<TileHostMessage>(HandleTileHost);
 
             Clear();
         }
@@ -255,7 +249,7 @@ namespace Abnaki.Albiruni
             double? proposed,
             Action<double> actset)
         {
-            if (syncingZoomPrecision)
+            if (syncingZoomPrecision) // vestige of old logic without LagTimer
                 return;
             if (false == proposed.HasValue)
                 return;
@@ -302,15 +296,15 @@ namespace Abnaki.Albiruni
 
         void InvalidateMapPanels()
         {
-            foreach (MapPanel mp in ChildMapPanels() )
+            foreach (PanelBase mp in ChildMapPanels())
             {
                 mp.InvalidateVisual();
             }
         }
 
-        IEnumerable<MapPanel> ChildMapPanels()
+        IEnumerable<PanelBase> ChildMapPanels()
         {
-            return LogicalTreeHelper.GetChildren(this.map).OfType<MapPanel>();
+            return LogicalTreeHelper.GetChildren(this.map).OfType<PanelBase>();
         }
 
         MapNodeLayer GetMapNodeLayer()
@@ -345,6 +339,48 @@ namespace Abnaki.Albiruni
             this.map.InvalidateVisual();
         }
 
+        #region Tiles
+
+        void HandleTileHost(TileHostMessage msg)
+        {
+            Debug.WriteLine(GetType().Name + " handles " + msg.LocatorTemplate);
+
+            ChangeTileLayer(msg.LocatorTemplate);
+        }
+
+        Dictionary<LocatorTemplate, MapTiLayer> mapTileLayers = new Dictionary<LocatorTemplate, MapTiLayer>();
+
+        void ChangeTileLayer(LocatorTemplate loctemp)
+        {
+            MapTiLayer layer;
+            if ( mapTileLayers.ContainsKey(loctemp))
+            {
+                layer = mapTileLayers[loctemp];
+            }
+            else
+            {
+                layer = new MapTiLayer(loctemp);
+            }
+
+            slzoom.Maximum = map.MaxZoomLevel = layer.MaxZoomLevel;
+
+            if (layer != map.TileLayer)
+            {
+                ClearTileLayer();
+                map.TileLayer = layer;
+                ClearTileLayer();
+
+                map.InvalidateVisual();
+            }
+        }
+
+        void ClearTileLayer()
+        {
+            if (map.TileLayer is MapTiLayer)
+                ((MapTiLayer)map.TileLayer).ClearUpdate();
+        }
+
+        #endregion
 
         private void Farewell(FarewellMessage msg)
         {
