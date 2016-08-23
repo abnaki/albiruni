@@ -101,6 +101,7 @@
     <Compile Include="Graphic\Curve\OutlineRectangle.cs" />
     <Compile Include="MapCache.cs" />
     <Compile Include="MapNodeLayer.cs" />
+    <Compile Include="MapTiLayer.cs" />
     <Compile Include="Menu\FileMenuBus.cs" />
     <Compile Include="Graphic\Curve\Track.cs" />
     <Compile Include="Graphic\MapExtensions.cs" />
@@ -118,6 +119,7 @@
     <Compile Include="Message\InvokeSourceMessage.cs" />
     <Compile Include="Message\RootNodeMessage.cs" />
     <Compile Include="Message\SourceRecordMessage.cs" />
+    <Compile Include="Message\TileHostMessage.cs" />
     <Compile Include="ProcessLauncher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -138,6 +140,14 @@
     <Compile Include="SourceRecord.cs" />
     <Compile Include="Starter.cs" />
     <Compile Include="LagTimer.cs" />
+    <Compile Include="TileHostGrid.xaml.cs">
+      <DependentUpon>TileHostGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TileHost\TiRecord.cs" />
+    <Compile Include="TileHost\Governor.cs" />
+    <Compile Include="TileHost\LocatorInstance.cs" />
+    <Compile Include="TileHost\LocatorTemplate.cs" />
+    <Compile Include="TileHost\Organization.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -184,6 +194,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SourceDetailer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TileHostGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
