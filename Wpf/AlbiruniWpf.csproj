@@ -42,12 +42,6 @@
     <ApplicationIcon>albiruni.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FileDb">
-      <HintPath>..\packages\XAML.MapControl.2.9.0\lib\net45\FileDb.dll</HintPath>
-    </Reference>
-    <Reference Include="FileDbCache.WPF">
-      <HintPath>..\packages\XAML.MapControl.2.9.0\lib\net45\FileDbCache.WPF.dll</HintPath>
-    </Reference>
     <Reference Include="ImageFileCache.WPF">
       <HintPath>..\packages\XAML.MapControl.2.9.0\lib\net45\ImageFileCache.WPF.dll</HintPath>
     </Reference>
