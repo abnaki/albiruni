@@ -6,6 +6,17 @@ using System.Windows.Threading;
 namespace Abnaki.Albiruni
 {
     /// <summary>
+    /// Base class, free from generic type
+    /// </summary>
+    class LagTimer
+    {
+        protected DispatcherTimer vptimer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(200) };
+
+        public bool Running { get { return vptimer.IsEnabled; } }
+
+    }
+
+    /// <summary>
     /// Provides a delayed or lagging event after the originally handled event stopped for a short time.
     /// The original event is typically too rapid-firing, 
     /// and handlers of the Settled event are designed to be expensive/slow.
@@ -14,7 +25,7 @@ namespace Abnaki.Albiruni
     /// <typeparam name="Targ">
     /// event passes Targ as in void delegate(object,Targ)
     /// </typeparam>
-    class LagTimer<Targ>
+    class LagTimer<Targ> : LagTimer
         where Targ : class
     {
         public LagTimer()
@@ -31,8 +42,6 @@ namespace Abnaki.Albiruni
         public event Action<object, Targ> Settled;
 
         Targ LastArg { get; set; }
-
-        DispatcherTimer vptimer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(200) };
 
         void vptimer_Tick(object sender, EventArgs e)
         {
