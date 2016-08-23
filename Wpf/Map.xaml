@@ -10,65 +10,6 @@
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="300">
-    <!-- partly based on xamlmapcontrol/SampleApps/WpfApplication/MainWindow.xaml -->
-    <UserControl.Resources>
-        <!-- TileLayers with OpenStreetMap data. -->
-        <!-- also see Properties/Settings.settings  -->
-        <!-- Obey host's terms such as http://wiki.openstreetmap.org/wiki/Tile_usage_policy --> 
-        <map:TileLayer
-            x:Key="OpenStreetMap"
-            SourceName="OpenStreetMap"
-            Description="Maps © [OpenStreetMap Contributors](http://www.openstreetmap.org/copyright)"
-            TileSource="{Binding Source={x:Static albprop:Settings.Default}, Path=OpenStreetMapTileUrl, Mode=OneWay}"
-            MaxParallelDownloads="{Binding Source={x:Static albprop:Settings.Default}, Path=OpenStreetMapTileParallel, Mode=OneWay}"
-            MaxZoomLevel="{Binding Source={x:Static albprop:Settings.Default}, Path=OpenStreetMapZoom, Mode=OneWay}" />
-        <!-- <local:LocationToVisibilityConverter x:Key="LocationToVisibilityConverter"/> -->
-        <DataTemplate
-            x:Key="PolylineItemTemplate">
-            <map:MapPolyline
-                Locations="{Binding Locations}"
-                Stroke="Red"
-                StrokeThickness="3" />
-        </DataTemplate>
-        <Style
-            x:Key="PolylineItemStyle"
-            TargetType="map:MapItem">
-            <Setter
-                Property="Template">
-                <Setter.Value>
-                    <ControlTemplate
-                        TargetType="map:MapItem">
-                        <map:MapPolyline
-                            Locations="{Binding Locations}"
-                            Stroke="Red"
-                            StrokeThickness="3" />
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style
-            x:Key="PointItemStyle"
-            TargetType="map:MapItem">
-            <EventSetter
-                Event="TouchDown"
-                Handler="MapItemTouchDown" />
-            <Setter
-                Property="map:MapPanel.Location"
-                Value="{Binding Location}" />
-            <Setter
-                Property="Foreground"
-                Value="Black" />
-            <Style.Triggers>
-                <Trigger
-                    Property="IsSelected"
-                    Value="True">
-                    <Setter
-                        Property="Panel.ZIndex"
-                        Value="1" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
@@ -78,9 +19,8 @@
         <map:Map
             x:Name="map"
             ZoomLevel="5"
-            MaxZoomLevel="{Binding Source={x:Static albprop:Settings.Default}, Path=OpenStreetMapZoom, Mode=OneWay}"
+            MaxZoomLevel="15"
             Center="{Binding MapCenter}"
-            TileLayer="{StaticResource OpenStreetMap}"
             MouseLeftButtonDown="MapMouseLeftButtonDown"
             MouseRightButtonDown="MapMouseRightButtonDown"
             ManipulationInertiaStarting="MapManipulationInertiaStarting"
@@ -157,7 +97,7 @@
                         HorizontalAlignment="Center"
                         SmallChange="0.01"
                         Orientation="Vertical"
-                        Maximum="{Binding Source={x:Static albprop:Settings.Default}, Path=OpenStreetMapZoom, Mode=OneWay}"
+                        Maximum="15"
                         Minimum="{Binding MinZoomLevel, ElementName=map}"
                         Value="{Binding TargetZoomLevel, ElementName=map}"
                         ValueChanged="slzoom_ValueChanged" />
