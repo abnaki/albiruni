@@ -2,41 +2,182 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Diagnostics;
+using System.Windows.Threading;
+
+using MapControl.Caching;
+
+using Abnaki.Albiruni.TileHost;
+using Abnaki.Windows;
+using Abnaki.Windows.Software.Wpf.Diplomat;
 
 namespace Abnaki.Albiruni
 {
     /// <summary>
-    /// Creates an ImageFileCache for map
+    /// Creates a cache of tiles
     /// </summary>
-    class MapCache
+    public class MapCache
     {
-        public static void Init()
-        {
-            if (tried)
-                return;
+        /// <summary>Usage accounting
+        /// </summary>
+        public static readonly TimeSpan AgeCutoff = TimeSpan.FromDays(1);
 
-            tried = true;
+        public MapCache(LocatorTemplate loctemp, bool testing)
+        {
             try
             {
+                // may want to be configurable; an organization could use a shared network location.
                 DirectoryInfo diAppd = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
-                DirectoryInfo diSub = diAppd.CreateSubdirectory("Albiruni");
-                string cacheName = "ImageCache";
-                var imgCache = new MapControl.Caching.ImageFileCache(cacheName, diSub.FullName);
 
-                Cache = imgCache;
-                CacheDir = Abnaki.Windows.AbnakiFile.CombinedDirectoryPath(diSub, cacheName);
+                DirectoryInfo diSub = diAppd.CreateSubdirectory("Albiruni");
+                DirectoryInfo diDeep = diSub;
+
+                foreach ( string part in SiteQualifiers(loctemp))
+                {
+                    diDeep = diDeep.CreateSubdirectory(part);
+                }
+
+                Cache = new AlbiruniFileCache(diDeep, loctemp, testing);
+
             }
             catch (Exception ex)
             {
                 Cache = null;
-                Abnaki.Windows.AbnakiLog.Exception(ex, "MapCache");
+                Notifier.Error(ex);
             }
         }
 
-        public static System.Runtime.Caching.ObjectCache Cache { get; private set; }
+        /// <summary>
+        /// Is a System.Runtime.Caching.ObjectCache, per TileImageLoader.Cache
+        /// </summary>
+        internal AlbiruniFileCache Cache { get; private set; }
 
-        static bool tried = false;
+        //public DirectoryInfo CacheDir { get; private set; }
 
-        public static DirectoryInfo CacheDir { get; private set; }
+        public static IEnumerable<string> SiteQualifiers(LocatorTemplate loctemp)
+        {
+            yield return loctemp.Org.Domain.Host; // sufficiently precise domain
+
+            if (false == string.IsNullOrWhiteSpace(loctemp.Subdirectory))
+                yield return loctemp.Subdirectory;
+
+        }
+
+        internal class AlbiruniFileCache : ImageFileCache
+        {
+            public AlbiruniFileCache(DirectoryInfo di, LocatorTemplate loctemp, bool testing)
+                : base(di.Name, di.Parent.FullName)
+            {
+                RootDir = di;
+                CountTriggers = Enumerable.Empty<long>();
+
+                RecountCache();
+
+                // timer.Interval = AgeCutoff;
+                recountTimer.Interval = testing ? TimeSpan.FromSeconds(20) : AgeCutoff;
+                recountTimer.Tick += (s, e) => RecountCache();
+
+                lazy = loctemp.Org.Public;
+            }
+
+            /// <summary>Need to do this after setting CountTriggers and CountSurpassed
+            /// </summary>
+            internal void Complete()
+            {
+                DoTriggers();
+            }
+
+            DirectoryInfo RootDir { get; set; }
+
+            /// <summary>
+            /// How many files were cached in last AgeCutoff period
+            /// </summary>
+            public long Count { get; set; }
+
+            public bool Enable
+            {
+                set
+                {
+                    recountTimer.IsEnabled = value;
+                }
+            }
+
+            public IEnumerable<long> CountTriggers { get; set; }
+
+            Dictionary<long, bool> countsTriggered = new Dictionary<long, bool>();
+
+            public event Action<long> CountAchieved;
+
+            DispatcherTimer recountTimer = new DispatcherTimer();
+
+            //public override bool Add(string key, object value, System.Runtime.Caching.CacheItemPolicy policy, string regionName = null)
+            //{
+            //    bool b = base.Add(key, value, policy, regionName);
+            //    return b;
+            //}
+
+            bool lazy = false;
+
+            public override void Set(string key, object value, System.Runtime.Caching.CacheItemPolicy policy, string regionName = null)
+            {
+                base.Set(key, value, policy, regionName);  // heart of ImageFileCache
+
+                if (lazy)
+                    System.Threading.Thread.Sleep(50);
+
+                Count++;
+                DoTriggers();
+            }
+
+            void DoTriggers()
+            {
+                if (Count % 10 != 0)
+                    return;
+                // limited to every 10th change
+
+                var han = CountAchieved;
+                if (han == null)
+                    return;
+
+                Diagnostic();
+
+                // raise event(s) newly triggered
+                IEnumerable<long> surpCounts = 
+                    CountTriggers.Where(k => Count >= k && false == countsTriggered.ContainsKey(k))
+                    .OrderBy(k => k);
+
+                foreach ( long k in surpCounts )
+                {
+                    countsTriggered[k] = true;
+                    han(k);
+                }
+
+            }
+
+            void RecountCache()
+            {
+                countsTriggered.Clear();
+
+                DateTime unow = DateTime.UtcNow;
+
+                IEnumerable<FileInfo> recentFiles = RootDir.GetFiles("*", SearchOption.AllDirectories)
+                    .Where(fi => unow - fi.LastWriteTimeUtc < AgeCutoff);
+
+                this.Count = recentFiles.Count();
+
+                Debug.WriteLine(GetType().Name + " Recounted " + Count);
+            }
+
+            void Diagnostic()
+            {
+                Debug.WriteLine(GetType().FullName + " Count " + Count);
+            }
+
+            public override string ToString()
+            {
+                return GetType().Name + " " + RootDir.FullName;
+            }
+        }
     }
 }
