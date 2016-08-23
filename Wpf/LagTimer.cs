@@ -14,6 +14,10 @@ namespace Abnaki.Albiruni
 
         public bool Running { get { return vptimer.IsEnabled; } }
 
+        /// <summary>
+        /// True to bypass the lag.  Changed event is immediately followed by Settled.
+        /// </summary>
+        public bool Bypass { get; set; }
     }
 
     /// <summary>
@@ -42,27 +46,38 @@ namespace Abnaki.Albiruni
         public event Action<object, Targ> Settled;
 
         Targ LastArg { get; set; }
+        object LastSender { get; set; }
 
         void vptimer_Tick(object sender, EventArgs e)
+        {
+            Complete();
+        }
+
+        void Complete()
         {
             vptimer.Stop();
 
             var h = Settled;
             if (h != null)
-                h(sender, LastArg);
+                h(LastSender, LastArg);
 
             LastArg = null;
+            LastSender = null;
         }
 
 
         public void OnChanged(object sender, Targ e)
         {
             LastArg = e;
+            LastSender = sender;
             vptimer.Stop(); vptimer.Start(); // MS idea of Reset
 
             var h = Changed;
             if (h != null)
                 h(sender, e);
+
+            if (Bypass)
+                Complete();
         }
     }
 }
