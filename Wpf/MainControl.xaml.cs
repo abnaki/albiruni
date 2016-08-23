@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 
 using Abnaki.Windows.GUI;
 using Abnaki.Windows.Software.Wpf.Ultimate;
+using Abnaki.Windows.Software.Wpf.PreferredControls.Docking;
 using Abnaki.Windows.Software.Wpf;
 using Abnaki.Albiruni.Message;
 
@@ -35,11 +36,12 @@ namespace Abnaki.Albiruni
 
         Menu.FileMenuBus fmbus;
         Menu.OptionMenuBus optbus;
+        TileHost.Governor tileGovernor = new TileHost.Governor();
         ProcessLauncher procLauncher = new ProcessLauncher();
 
         IDockSystem IMainControl.DockingSystem
         {
-            get { return new Abnaki.Windows.Software.Wpf.PreferredControls.Docking.AvalonDockSystem(this.Docky, 2); }
+            get { return new AvalonDockSystem(this.Docky, ver: 4); }
         }
 
         void IMainControl.ConfigureMenu(IMainMenu menu)
@@ -63,7 +65,12 @@ namespace Abnaki.Albiruni
             MainTitle("Albiruni " + path);
         }
 
-        public event Action<string> MainTitle; // IMainControl
+        public event Action<string> MainTitle;  // IMainControl
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            tileGovernor.Complete();
+        } 
 
     }
 }
