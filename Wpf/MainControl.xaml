@@ -7,6 +7,7 @@
     xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     mc:Ignorable="d"
+    Loaded="UserControl_Loaded"
     d:DesignHeight="300"
     d:DesignWidth="300">
     <xcad:DockingManager
@@ -30,6 +31,13 @@
                             ContentId="sourcedetail"
                             Title="Details">
                             <Albiruni:SourceDetailer  VerticalAlignment="Stretch" Height="auto"/>
+                        </xcad:LayoutAnchorable>
+                        <xcad:LayoutAnchorable
+                            ContentId="tilehost"
+                            Title="Map Servers">
+                            <Albiruni:TileHostGrid
+                                VerticalAlignment="Stretch"
+                                Height="auto" />
                         </xcad:LayoutAnchorable>
                     </xcad:LayoutAnchorGroup>
                 </xcad:LayoutAnchorSide>
