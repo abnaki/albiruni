@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using MapControl;
 using Abnaki.Albiruni;
 using Abnaki.Albiruni.Graphic;
 using Abnaki.Albiruni.Tree;
-using MapControl;
-using System.Collections.Generic;
 using Abnaki.Albiruni.Providers;
+using Abnaki.Albiruni.TileHost;
 
 namespace Abnaki.Albiruni.Tests.Map
 {
@@ -134,6 +135,25 @@ namespace Abnaki.Albiruni.Tests.Map
             {
                 get { yield break; }
             }
+        }
+
+        [TestMethod]
+        public void TestMapCache()
+        {
+            foreach (LocatorTemplate loctemp in LocatorTemplate.Predefined())
+            {
+                Debug.WriteLine(loctemp);
+                Debug.Indent();
+                foreach (string line in MapCache.SiteQualifiers(loctemp))
+                {
+                    Debug.WriteLine(line);
+                }
+                Debug.Unindent();
+
+                //MapCache mc = new MapCache(loctemp);
+            }
+
+            MapCache mc = new MapCache(LocatorTemplate.StamenToner, testing: true);
         }
     }
 }
