@@ -28,10 +28,16 @@ namespace Abnaki.Albiruni.TileHost
         public static readonly LocatorTemplate StamenToner = new LocatorTemplate(Organization.Stamen, "png", "toner");
         public static readonly LocatorTemplate StamenWatercolor = new LocatorTemplate(Organization.Stamen, "jpg", "watercolor");
 
+        public static readonly LocatorTemplate MapXyz = new LocatorTemplate(Organization.MapXyz, "png");
+
+        public static readonly LocatorTemplate WmfLabs = new LocatorTemplate(Organization.WmfLabs, "png", "osm");
+
         public static IEnumerable<LocatorTemplate> Predefined()
         {
             yield return CartoLight;
             yield return CartoDark;
+            yield return WmfLabs;
+            yield return MapXyz;
             yield return Osm;
             yield return StamenToner;
             yield return StamenTerrain;

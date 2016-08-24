@@ -61,5 +61,17 @@ namespace Abnaki.Albiruni.TileHost
             Copyright = "[OpenStreetMap Contributors](http://www.openstreetmap.org/copyright)"
         };
 
+        public static readonly Organization MapXyz = new Organization("http://osm.maptiles.xyz", "abc")
+        {
+            Copyright = "[OpenStreetMap Contributors](http://www.openstreetmap.org/copyright)"
+        };
+
+        public static readonly Organization WmfLabs = new Organization("http://tiles.wmflabs.org", "abc")
+        {
+            Copyright = "[wmflabs](http://wmflabs.org/), Data by [OpenStreetMap](http://openstreetmap.org/)"
+        };
+
+
+
     }
 }
