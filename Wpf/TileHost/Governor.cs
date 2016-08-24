@@ -8,17 +8,20 @@ using System.Diagnostics;
 using MapControl;
 using Abnaki.Albiruni.Message;
 using Abnaki.Windows.Software.Wpf;
+using Abnaki.Windows.Software.Wpf.Ultimate;
+using Abnaki.Windows.Software.Wpf.Profile;
 
 namespace Abnaki.Albiruni.TileHost
 {
     /// <summary>
     /// Choices of tile hosts and caches; governs usage and TileImageLoader properties
     /// </summary>
-    class Governor
+    public class Governor
     {
         public Governor()
         {
             MessageTube.Subscribe<TileHostMessage>(HandleTileHost);
+            MessageTube.Subscribe<FarewellMessage>(Farewell);
 
             if (testing)
             {
@@ -43,21 +46,35 @@ namespace Abnaki.Albiruni.TileHost
 
         public void Complete()
         {
-            //if (completed)
-            //    return;
+            if (completed)
+                return;
 
             // no default; users might overwhelm it
+            // InitializeLocator(LocatorTemplate.CartoLight);
 
-            //LocatorTemplate locDefault = LocatorTemplate.CartoLight;
-            //TileHostMessage msg = new TileHostMessage(locDefault);
-            //ChangeCache(locDefault);
-            //MessageTube.Publish(msg);
-            //completed = true;
+            Pref pref = Preference.ReadClassPrefs<Governor, Pref>();
+            if ( pref != null )
+            {
+                // in the future, may support deserialized LocatorTemplate where UserDefined=true
+                var prefLocator = LocatorTemplate.Predefined().FirstOrDefault(loc => loc.Template == pref.Template);
+                if (prefLocator != null)
+                    InitializeLocator(prefLocator);
+            }
+
+            completed = true;
         }
 
-        //bool completed = false;
+        bool completed = false;
+
+        void InitializeLocator(LocatorTemplate locDefault)
+        {
+            ChangeCache(locDefault);
+            TileHostMessage msg = new TileHostMessage(locDefault);
+            MessageTube.Publish(msg);
+        }
 
         MemoryCache defaultMemCache = null;
+        LocatorTemplate CurrentLocator { get; set; }
 
         void HandleTileHost(TileHostMessage msg)
         {
@@ -68,6 +85,8 @@ namespace Abnaki.Albiruni.TileHost
 
         void ChangeCache(LocatorTemplate loctemp)
         {
+            CurrentLocator = loctemp;
+
             if (loctemp.Org.Public)
             {
                 // Server usage is far more critical than timeliness, hence large timespan.
@@ -138,5 +157,26 @@ namespace Abnaki.Albiruni.TileHost
         /// Goes to server, a required courtesy.
         /// </summary>
         Dictionary<long, string> mapCountAgent = new Dictionary<long, string>();
+
+
+        private void Farewell(FarewellMessage msg)
+        {
+            if (CurrentLocator != null)
+            {
+                // in the future, may serialize LocatorTemplate where UserDefined=true
+                Pref pref = new Pref()
+                {
+                    Template = CurrentLocator.Template
+                };
+
+                Preference.WriteClassPrefs<Governor, Pref>(pref);
+            }
+        }
+
+        public class Pref
+        {
+            /// <summary>For lookup of a static LocatorTemplate</summary>
+            public string Template { get; set; }
+        }
     }
 }
