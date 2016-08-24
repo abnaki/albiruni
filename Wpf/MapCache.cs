@@ -31,14 +31,14 @@ namespace Abnaki.Albiruni
                 DirectoryInfo diAppd = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
 
                 DirectoryInfo diSub = diAppd.CreateSubdirectory("Albiruni");
-                DirectoryInfo diDeep = diSub;
 
-                foreach ( string part in SiteQualifiers(loctemp))
-                {
-                    diDeep = diDeep.CreateSubdirectory(part);
-                }
+                //DirectoryInfo diDeep = diSub;  
+                //foreach ( string part in SiteQualifiers(loctemp))  // redundant with ImageFileCache keys
+                //{
+                //    diDeep = diDeep.CreateSubdirectory(part);
+                //}
 
-                Cache = new AlbiruniFileCache(diDeep, loctemp, testing);
+                Cache = new AlbiruniFileCache(diSub, loctemp, testing);
 
             }
             catch (Exception ex)
