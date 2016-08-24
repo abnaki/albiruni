@@ -108,6 +108,14 @@ namespace Abnaki.Albiruni
                     other.Select = false;
             }
         }
+
+        private void HyperlinkNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            using ( var p = System.Diagnostics.Process.Start(e.Uri.ToString()))
+            {
+                // right
+            }
+        }
         
     }
 }
