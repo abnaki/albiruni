@@ -71,7 +71,7 @@ namespace Abnaki.Albiruni.TileHost
             Copyright = "[wmflabs](http://wmflabs.org/), Data by [OpenStreetMap](http://openstreetmap.org/)"
         };
 
-
+        // public static readonly Organization Usgs = new Organization("http://basemap.nationalmap.gov");
 
     }
 }
