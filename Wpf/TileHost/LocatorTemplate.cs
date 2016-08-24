@@ -95,6 +95,9 @@ namespace Abnaki.Albiruni.TileHost
 
         public string Subdirectory { get; private set; }
 
+        /// <summary>True implies it should be serialized.  False implies application owns it.</summary>
+        public bool UserDefined { get; set; }
+
         //public IEnumerable<string> Subdomains { get; private set; }
 
         LocatorInstance GetInstance(object subdomain)
