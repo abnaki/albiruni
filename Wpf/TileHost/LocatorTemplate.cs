@@ -32,6 +32,8 @@ namespace Abnaki.Albiruni.TileHost
 
         public static readonly LocatorTemplate WmfLabs = new LocatorTemplate(Organization.WmfLabs, "png", "osm");
 
+        // public static readonly LocatorTemplate UsgsBase = new LocatorTemplate(Organization.Usgs, null, "arcgis/rest/services/USGSTopo/MapServer/tile");
+
         public static IEnumerable<LocatorTemplate> Predefined()
         {
             yield return CartoLight;
@@ -42,6 +44,7 @@ namespace Abnaki.Albiruni.TileHost
             yield return StamenToner;
             yield return StamenTerrain;
             yield return StamenWatercolor;
+            //yield return UsgsBase;
         }
 
         /// <summary>
@@ -69,7 +72,10 @@ namespace Abnaki.Albiruni.TileHost
             if (subdirectory != null)
                 subdir = subdirectory + "/";
 
-            string relativeUrl = "{z}/{x}/{y}." + imageExt;
+            string relativeUrl = "{z}/{x}/{y}";
+
+            if (false == string.IsNullOrEmpty(imageExt))
+                relativeUrl += "." + imageExt;
 
             string port = null;
             if (false == org.Domain.IsDefaultPort)
