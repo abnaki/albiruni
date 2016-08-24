@@ -26,7 +26,7 @@ namespace Abnaki.Albiruni.TileHost
 
         public static readonly LocatorTemplate StamenTerrain = new LocatorTemplate(Organization.Stamen, "jpg", "terrain");
         public static readonly LocatorTemplate StamenToner = new LocatorTemplate(Organization.Stamen, "png", "toner");
-        public static readonly LocatorTemplate StamenWatercolor = new LocatorTemplate(Organization.Stamen, "jpg", "watercolor");
+        //public static readonly LocatorTemplate StamenWatercolor = new LocatorTemplate(Organization.Stamen, "jpg", "watercolor"); // not informative
 
         public static readonly LocatorTemplate MapXyz = new LocatorTemplate(Organization.MapXyz, "png");
 
@@ -43,7 +43,7 @@ namespace Abnaki.Albiruni.TileHost
             yield return Osm;
             yield return StamenToner;
             yield return StamenTerrain;
-            yield return StamenWatercolor;
+            //yield return StamenWatercolor;
             //yield return UsgsBase;
         }
 
