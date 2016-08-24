@@ -43,17 +43,20 @@ namespace Abnaki.Albiruni.TileHost
 
         public void Complete()
         {
-            if (completed)
-                return;
+            //if (completed)
+            //    return;
 
-            LocatorTemplate locDefault = LocatorTemplate.CartoLight;
-            TileHostMessage msg = new TileHostMessage(locDefault);
-            ChangeCache(locDefault);
-            MessageTube.Publish(msg);
-            completed = true;
+            // no default; users might overwhelm it
+
+            //LocatorTemplate locDefault = LocatorTemplate.CartoLight;
+            //TileHostMessage msg = new TileHostMessage(locDefault);
+            //ChangeCache(locDefault);
+            //MessageTube.Publish(msg);
+            //completed = true;
         }
 
-        bool completed = false;
+        //bool completed = false;
+
         MemoryCache defaultMemCache = null;
 
         void HandleTileHost(TileHostMessage msg)
