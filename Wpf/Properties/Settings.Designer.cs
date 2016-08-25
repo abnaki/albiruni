@@ -22,5 +22,29 @@ namespace Abnaki.Albiruni.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("albiruni-s8pport1@abnakili.com")]
+        public string TroubleshooterEmail {
+            get {
+                return ((string)(this["TroubleshooterEmail"]));
+            }
+            set {
+                this["TroubleshooterEmail"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://github.com/abnaki/albiruni/releases/latest")]
+        public string UpgradeUri {
+            get {
+                return ((string)(this["UpgradeUri"]));
+            }
+            set {
+                this["UpgradeUri"] = value;
+            }
+        }
     }
 }
