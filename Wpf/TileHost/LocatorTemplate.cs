@@ -21,8 +21,8 @@ namespace Abnaki.Albiruni.TileHost
 
         public static readonly LocatorTemplate Osm = new LocatorTemplate(Organization.Osm, "png");
 
-        public static readonly LocatorTemplate CartoLight = new LocatorTemplate(Organization.Carto, "png", "light_all");
-        public static readonly LocatorTemplate CartoDark = new LocatorTemplate(Organization.Carto, "png", "dark_all");
+        public static readonly LocatorTemplate CartoLight = new LocatorTemplate(Organization.Carto, "png", "light_all") { Style = "positron" };
+        public static readonly LocatorTemplate CartoDark = new LocatorTemplate(Organization.Carto, "png", "dark_all") { Style = "dark matter" };
 
         public static readonly LocatorTemplate StamenTerrain = new LocatorTemplate(Organization.Stamen, "jpg", "terrain");
         public static readonly LocatorTemplate StamenToner = new LocatorTemplate(Organization.Stamen, "png", "toner");
@@ -94,6 +94,11 @@ namespace Abnaki.Albiruni.TileHost
         internal Organization Org { get; private set; }
 
         public string Subdirectory { get; private set; }
+
+        /// <summary>
+        /// Optional style of colors etc., no logical purpose
+        /// </summary>
+        public string Style { get; set; }
 
         /// <summary>True implies it should be serialized.  False implies application owns it.</summary>
         public bool UserDefined { get; set; }
