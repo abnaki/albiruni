@@ -32,6 +32,10 @@ namespace Abnaki.Albiruni.TileHost
 
         public static readonly LocatorTemplate WmfLabs = new LocatorTemplate(Organization.WmfLabs, "png", "osm");
 
+        public static readonly LocatorTemplate TfLandscape = new LocatorTemplate(Organization.Thunderforest, "png", "landscape");
+        public static readonly LocatorTemplate TfOutdoors = new LocatorTemplate(Organization.Thunderforest, "png", "outdoors");
+
+        //public static readonly LocatorTemplate OpenPt = new LocatorTemplate(Organization.OpenPublicTransport, "png", "tiles") { Style = "public transport" };
         // public static readonly LocatorTemplate UsgsBase = new LocatorTemplate(Organization.Usgs, null, "arcgis/rest/services/USGSTopo/MapServer/tile");
 
         public static IEnumerable<LocatorTemplate> Predefined()
@@ -40,9 +44,12 @@ namespace Abnaki.Albiruni.TileHost
             yield return CartoDark;
             yield return WmfLabs;
             yield return MapXyz;
+            yield return TfLandscape;
+            yield return TfOutdoors;
             yield return Osm;
             yield return StamenToner;
             yield return StamenTerrain;
+            //yield return OpenPt;
             //yield return StamenWatercolor;
             //yield return UsgsBase;
         }
