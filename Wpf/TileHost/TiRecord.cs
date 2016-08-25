@@ -21,7 +21,7 @@ namespace Abnaki.Albiruni.TileHost
 
         public string Host { get { return this.LocatorTemplate.Org.Domain.Host;  } }
 
-        public string Style { get { return this.LocatorTemplate.Subdirectory;  } }
+        public string Style { get { return LocatorTemplate.Style ?? LocatorTemplate.Subdirectory;  } }
 
         public bool Select { get; set; }
 
