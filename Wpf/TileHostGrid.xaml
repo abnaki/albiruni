@@ -25,8 +25,7 @@
                 Use these free resources economically or you may cause failure.   
                 If you work for an organization, you may register with a tile provider.  Browse list below, 
                 see <Hyperlink
-                    NavigateUri="http://wiki.openstreetmap.org/wiki/Commercial_OSM_Software_and_Services"
-                    ToolTip="find the word: tile"
+                    NavigateUri="http://wiki.openstreetmap.org/wiki/Tiles"
                     RequestNavigate="HyperlinkNavigate">OSM wiki</Hyperlink>,  
                 <Hyperlink
                     NavigateUri="https://www.mapbox.com/pricing/"
