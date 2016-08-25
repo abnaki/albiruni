@@ -30,13 +30,17 @@ namespace Abnaki.Albiruni
         {
             InitializeComponent();
 
-            //this.LayoutUpdated += TileHostGrid_LayoutUpdated;
-            Griddy.Loaded += Griddy_Loaded;
-
             Griddy.GridEditCommitted += GridEditCommitted;
 
             MessageTube.Subscribe<TileHostMessage>(HandleTileHost);
 
+        }
+
+        protected override void OnVisualParentChanged(DependencyObject oldParent)
+        {
+            base.OnVisualParentChanged(oldParent);
+            if (Parent is FrameworkElement)
+                ((FrameworkElement)Parent).Loaded += Griddy_Loaded; // seemingly magical requirement for Xceed DataGrid columns to exist
         }
 
         bool init = false;
