@@ -9,6 +9,8 @@ namespace Abnaki.Albiruni
         [STAThread]
         public static int Main(string[] args)
         {
+            Abnaki.Windows.Software.Wpf.Diplomat.Troubleshooter.Email = "albiruni-s8pport1@abnakili.com";
+
             return Abnaki.Windows.Software.Wpf.Ultimate.UltimateStarter<MainControl>.Start(args);
         }
     }
