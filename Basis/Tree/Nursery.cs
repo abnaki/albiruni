@@ -55,6 +55,8 @@ namespace Abnaki.Albiruni.Tree
 
             public event Action<int> SourceFileCounted;
 
+            public bool StillAbleToWrite = true;
+
             //public readonly System.Threading.AutoResetEvent Done = new System.Threading.AutoResetEvent(false);
         }
 
@@ -133,29 +135,39 @@ namespace Abnaki.Albiruni.Tree
 
                             // AbnakiLog.Exception(ex, "Error due to " + fi.FullName);
                             guidance.FilesExceptions[fi.FullName] = ex;
+                            needWrite = false;
                         }
 
                     }
 
-                    if ( needWrite )
+                    if ( needWrite && guidance.StillAbleToWrite )
                     {
-                        // write firoot to a relative file under ditarget
-                        foreach (DirectoryInfo disub in AbnakiFile.DirectorySequence(outfile))
+                        try
                         {
-                            if (false == disub.Exists)
-                                disub.Create();
+                            // write firoot to a relative file under ditarget
+                            foreach (DirectoryInfo disub in AbnakiFile.DirectorySequence(outfile))
+                            {
+                                if (false == disub.Exists)
+                                    disub.Create();
+                            }
+
+                            using (Stream outstream = outfile.OpenWrite())
+                            using (InputOutput.IBinaryWrite tbw = new TreeBinaryWrite())
+                            {
+                                tbw.Init(outstream, guidance.MinimumMesh);
+
+                                tbw.WriteSources(firoot);
+
+                                firoot.Write(tbw);
+
+                                Debug.WriteLine("Wrote " + outfile + ", size " + outstream.Position);
+                            }
                         }
-
-                        using (Stream outstream = outfile.OpenWrite())
-                        using (InputOutput.IBinaryWrite tbw = new TreeBinaryWrite())
+                        catch ( Exception ex )
                         {
-                            tbw.Init(outstream, guidance.MinimumMesh);
-
-                            tbw.WriteSources(firoot);
-
-                            firoot.Write(tbw);
-
-                            Debug.WriteLine("Wrote " + outfile + ", size " + outstream.Position);
+                            AbnakiLog.Exception(ex);
+                            guidance.StillAbleToWrite = false;
+                            guidance.FilesExceptions[fi.FullName] = ex;
                         }
                     }
                 }
