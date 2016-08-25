@@ -68,10 +68,11 @@ namespace Abnaki.Albiruni.Menu
                     string question = string.Format("Read {0} possible file(s) totaling {1:N0} bytes ?", 
                         guidance.PotentialSourceFileCount, guidance.PotentialSourceFileBytes);
 
-                    if (MessageBoxResult.OK ==
-                        MessageBox.Show(Application.Current.MainWindow, question, "Confirm", MessageBoxButton.OKCancel, MessageBoxImage.Question)
-                        )
+                    if ( MessageBox.Show(Application.Current.MainWindow, question, "Confirm", MessageBoxButton.OKCancel, MessageBoxImage.Question)
+                        == MessageBoxResult.OK)
                     {
+                        AbnakiLog.Comment(question, di.FullName);
+
                         OpenTreeState state = new OpenTreeState() { RootDirectory = di, Guidance = guidance };
                         GuiOpenDirectory(state);
                     }
