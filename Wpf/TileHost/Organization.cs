@@ -48,7 +48,7 @@ namespace Abnaki.Albiruni.TileHost
 
         public static readonly Organization Carto = new Organization("http://basemaps.cartocdn.com", "abcd")
         {
-            Copyright = "[OpenStreetMap](http://www.openstreetmap.org/copyright) contributors and [CARTO](https://carto.com/attributions)"
+            Copyright = "[CARTO](https://carto.com/attributions), CC BY 3.0, Data by [OpenStreetMap](http://www.openstreetmap.org/copyright), ODbL"
         };
 
         public static readonly Organization Stamen = new Organization("http://tile.stamen.com")
