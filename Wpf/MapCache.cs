@@ -32,13 +32,13 @@ namespace Abnaki.Albiruni
 
                 DirectoryInfo diSub = diAppd.CreateSubdirectory("Albiruni");
 
-                //DirectoryInfo diDeep = diSub;  
-                //foreach ( string part in SiteQualifiers(loctemp))  // redundant with ImageFileCache keys
-                //{
-                //    diDeep = diDeep.CreateSubdirectory(part);
-                //}
+                DirectoryInfo diSpecific = diSub;
+                foreach (string part in SiteQualifiers(loctemp))
+                {
+                    diSpecific = diSpecific.CreateSubdirectory(part);
+                }
 
-                Cache = new AlbiruniFileCache(diSub, loctemp, testing);
+                Cache = new AlbiruniFileCache(diSub, diSpecific, loctemp, testing);
 
             }
             catch (Exception ex)
@@ -66,10 +66,14 @@ namespace Abnaki.Albiruni
 
         internal class AlbiruniFileCache : ImageFileCache
         {
-            public AlbiruniFileCache(DirectoryInfo di, LocatorTemplate loctemp, bool testing)
+            public AlbiruniFileCache(DirectoryInfo di, DirectoryInfo diSpecific, LocatorTemplate loctemp, bool testing)
                 : base(di.Name, di.Parent.FullName)
             {
                 RootDir = di;
+                SiteDir = diSpecific;
+                //  note ImageFileCache keys imply site-specific location relative to RootDir.
+                //  SiteDir is needed for housekeeping here.
+
                 CountTriggers = Enumerable.Empty<long>();
 
                 RecountCache();
@@ -89,6 +93,7 @@ namespace Abnaki.Albiruni
             }
 
             DirectoryInfo RootDir { get; set; }
+            DirectoryInfo SiteDir { get; set; }
 
             /// <summary>
             /// How many files were cached in last AgeCutoff period
@@ -161,17 +166,17 @@ namespace Abnaki.Albiruni
 
                 DateTime unow = DateTime.UtcNow;
 
-                IEnumerable<FileInfo> recentFiles = RootDir.GetFiles("*", SearchOption.AllDirectories)
+                IEnumerable<FileInfo> recentFiles = SiteDir.GetFiles("*", SearchOption.AllDirectories)
                     .Where(fi => unow - fi.LastWriteTimeUtc < AgeCutoff);
 
                 this.Count = recentFiles.Count();
 
-                Debug.WriteLine(GetType().Name + " Recounted " + Count);
+                Diagnostic();
             }
 
             void Diagnostic()
             {
-                Debug.WriteLine(GetType().FullName + " Count " + Count);
+                Debug.WriteLine(GetType().Name + " Count " + Count);
             }
 
             public override string ToString()
