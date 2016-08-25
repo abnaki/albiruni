@@ -45,31 +45,42 @@ namespace Abnaki.Albiruni.TileHost
         /// </summary>
         public bool Public { get { return string.IsNullOrEmpty(UserKey); } }
 
+        const string citeosm = "[OpenStreetMap Contributors](http://openstreetmap.org/copyright)";
 
         public static readonly Organization Carto = new Organization("http://basemaps.cartocdn.com", "abcd")
         {
-            Copyright = "[CARTO](https://carto.com/attributions), CC BY 3.0, Data by [OpenStreetMap](http://www.openstreetmap.org/copyright), ODbL"
+            Copyright = "[CARTO](https://carto.com/attributions), CC BY 3.0, Data by " + citeosm + ", ODbL"
         };
 
         public static readonly Organization Stamen = new Organization("http://tile.stamen.com")
         {
-            Copyright = "[Stamen Design](http://stamen.com/), Data by [OpenStreetMap](http://openstreetmap.org/)"
+            Copyright = "[Stamen Design](http://stamen.com/), Data by " + citeosm
         };
 
         public static readonly Organization Osm = new Organization("http://tile.openstreetmap.org", "abc")
         {
-            Copyright = "[OpenStreetMap Contributors](http://www.openstreetmap.org/copyright)"
+            Copyright = citeosm
         };
 
         public static readonly Organization MapXyz = new Organization("http://osm.maptiles.xyz", "abc")
         {
-            Copyright = "[OpenStreetMap Contributors](http://www.openstreetmap.org/copyright)"
+            Copyright = citeosm
         };
 
         public static readonly Organization WmfLabs = new Organization("http://tiles.wmflabs.org", "abc")
         {
-            Copyright = "[wmflabs](http://wmflabs.org/), Data by [OpenStreetMap](http://openstreetmap.org/)"
+            Copyright = "[wmflabs](http://wmflabs.org/), Data by " + citeosm
         };
+
+        public static readonly Organization Thunderforest = new Organization("http://tile.thunderforest.com", "abc")
+        {
+            Copyright = citeosm
+        };
+
+        //public static readonly Organization OpenPublicTransport = new Organization("http://www.openptmap.org")
+        //{
+        //    Copyright = citeosm
+        //};
 
         // public static readonly Organization Usgs = new Organization("http://basemap.nationalmap.gov");
 
