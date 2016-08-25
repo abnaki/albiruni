@@ -41,7 +41,8 @@ namespace Abnaki.Albiruni.TileHost
 
         static string WellBehavedAgent()
         {
-            return "Albiruni " + Assembly.GetEntryAssembly().GetName().Version;
+            var tuple = Abnaki.Windows.AbnakiReflection.ApplicationNameVersionSplit();
+            return tuple.Item1 + " " + tuple.Item2 + "." + tuple.Item3;
         }
 
         public void Complete()
