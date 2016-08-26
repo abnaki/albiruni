@@ -18,6 +18,7 @@ using Abnaki.Albiruni.TileHost;
 using Abnaki.Albiruni.Message;
 using Abnaki.Windows.Software.Wpf.PreferredControls.Grid;
 using Abnaki.Windows.Software.Wpf;
+using Abnaki.Windows.Software.Wpf.Ultimate;
 
 namespace Abnaki.Albiruni
 {
@@ -33,7 +34,7 @@ namespace Abnaki.Albiruni
             Griddy.GridEditCommitted += GridEditCommitted;
 
             MessageTube.Subscribe<TileHostMessage>(HandleTileHost);
-
+            MessageTube.Subscribe<FarewellMessage>(Farewell);
         }
 
         protected override void OnVisualParentChanged(DependencyObject oldParent)
@@ -56,6 +57,8 @@ namespace Abnaki.Albiruni
 
         void Bind()
         {
+            Griddy.RestorePreferences<TileHostGrid>();
+
             IEnumerable<TiRecord> records = LocatorTemplate.Predefined().Select(t => new TiRecord(t)).ToList();
 
             Griddy.BindGrid(records);
@@ -74,7 +77,6 @@ namespace Abnaki.Albiruni
                 rec.Select = true;
                 ExclusiveSelection(rec);
             }
-
         }
 
         void GridEditCommitted(object sender, Xceed.Wpf.DataGrid.DataGridItemEventArgs e, string field)
@@ -121,5 +123,9 @@ namespace Abnaki.Albiruni
             }
         }
         
+        void Farewell(FarewellMessage msg)
+        {
+            Griddy.SavePreferences<TileHostGrid>();
+        }
     }
 }
