@@ -17,6 +17,7 @@ using System.Diagnostics;
 using Abnaki.Windows.Software.Wpf;
 using Abnaki.Windows.Software.Wpf.PreferredControls.Grid;
 using Abnaki.Windows;
+using Abnaki.Windows.Software.Wpf.Ultimate;
 
 namespace Abnaki.Albiruni
 {
@@ -30,13 +31,20 @@ namespace Abnaki.Albiruni
 
             MessageTube.SubscribeCostly<Message.SourceRecordMessage>(UpdateSources);
             MessageTube.SubscribeCostly<Message.RootNodeMessage>(HandleTree);
+            MessageTube.Subscribe<FarewellMessage>(Farewell);
 
+            Loaded += SourceDetailer_Loaded;
             this.grid.DoubleClickedRecord += grid_DoubleClickedRecord;
+        }
+
+        void SourceDetailer_Loaded(object sender, RoutedEventArgs e)
+        {
+            grid.RestorePreferences<SourceDetailer>();
         }
 
         private void HandleTree(Message.RootNodeMessage msg)
         {
-            this.grid.Clear();
+            this.grid.ClearData();
             // no old data
         }
 
@@ -63,6 +71,11 @@ namespace Abnaki.Albiruni
             Message.InvokeSourceMessage msg = new Message.InvokeSourceMessage(record);
             MessageTube.Publish(msg);
 
+        }
+
+        void Farewell(FarewellMessage msg)
+        {
+            grid.SavePreferences<SourceDetailer>();
         }
 
     }
