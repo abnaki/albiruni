@@ -68,6 +68,7 @@ namespace Abnaki.Albiruni
                 new Col("Select"),
                 new Col("Host"),
                 new Col("Style"),
+                new Col("PartialKey"){ Caption= "User Key", Tooltip = "access token, abbreviated, if defined in " + TileHostSupply.ConfigFilename }
             });
 
             // initial selected record
