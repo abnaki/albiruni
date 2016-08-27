@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Threading;
 
@@ -58,7 +59,9 @@ namespace Abnaki.Albiruni
             vptimer.Stop();
 
             var h = Settled;
-            if (h != null)
+            if ( LastArg == null )
+                Debug.WriteLine(GetType().Name + " null LastArg");
+            else if (h != null)
                 h(LastSender, LastArg);
 
             LastArg = null;
