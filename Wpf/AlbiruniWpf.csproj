@@ -137,6 +137,7 @@
     <Compile Include="TileHostGrid.xaml.cs">
       <DependentUpon>TileHostGrid.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TileHost\TileHostSupply.cs" />
     <Compile Include="TileHost\TiRecord.cs" />
     <Compile Include="TileHost\Governor.cs" />
     <Compile Include="TileHost\LocatorInstance.cs" />
@@ -204,6 +205,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Abnaki.Windows.Software.Wpf.Ultimate.MainWindow.Layout.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MapTileHosts.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
