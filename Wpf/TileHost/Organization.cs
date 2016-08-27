@@ -2,48 +2,88 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Serialization;
 
 namespace Abnaki.Albiruni.TileHost
 {
     /// <summary>
     /// Independent legal entity that serves up map tiles
     /// </summary>
-    class Organization
+    public class Organization
     {
         public Organization(string partUri, IEnumerable subdoms = null)
         {
-            this.Domain = new Uri(partUri);
+            this.Domain = new Abnaki.Windows.Xml.Yuri(partUri);
 
             if (subdoms == null)
-                this.Subdomains = Enumerable.Empty<object>();
+                this.Subdomains = new string[] { };
             else
-                this.Subdomains = subdoms.Cast<object>();
+                this.Subdomains = subdoms.Cast<object>().Select(v => Convert.ToString(v)).ToArray();
+        }
+
+        public Organization() // serializ.
+        {
+
+        }
+
+        public void SquareUp(Organization userInput)
+        {
+            if (this.FileKey != userInput.FileKey)
+                throw new ArgumentException("Cannot SquareUp " + GetType().Name + " of mismatching FileKey, " + userInput.FileKey + ", with existing " + this.FileKey);
+
+            this.Domain = userInput.Domain;
+            this.Subdomains = userInput.Subdomains;
+            this.UserKey = userInput.UserKey;
         }
 
         /// <summary>
         /// Significant parts are scheme, host, port.
         /// Does not specify any subdomain(s) or local path.
         /// </summary>
-        public Uri Domain { get; private set; }
+        public Abnaki.Windows.Xml.Yuri Domain { get; set; }
 
         /// <summary>
         /// Optional strings or chars of subdomains of org
         /// </summary>
-        public IEnumerable<object> Subdomains { get; private set; }
+        public string[] Subdomains { get; set; }
 
         /// <summary>
         /// Markdown format.  Words/urls only.  Don't include (c) symbol.
         /// </summary>
+        [XmlIgnore]
         public string Copyright { get; set; }
+
+        /// <summary>
+        /// Access token
+        /// </summary>
+        public string UserKey { get; set; }
+
+        /// <summary>
+        /// Will appear file path in uri, before UserKey, e.g. ?access_token=
+        /// </summary>
+        [XmlIgnore]
+        public string UriDelimitUserKey { get; set; }
+
+        /// <summary>
+        /// ID of Organization within a configuration file, if necssary
+        /// </summary>
+        public string FileKey { get; set; }
+
+        /// <summary>Open to the world
+        /// </summary>
+        // does not yet consider a local server needing no key
+        public bool Public { get { return string.IsNullOrEmpty(UserKey); } }
 
         /// <summary>
         /// Future
         /// </summary>
-        public string UserKey { get; set; }
+        [XmlIgnore]
+        public bool AllowMultiUserCache = true;
 
-        /// <summary>Open to the world
-        /// </summary>
-        public bool Public { get { return string.IsNullOrEmpty(UserKey); } }
+        public override string ToString()
+        {
+            return Domain.ToString();
+        }
 
         const string citeosm = "[OpenStreetMap Contributors](http://openstreetmap.org/copyright)";
 
@@ -76,6 +116,20 @@ namespace Abnaki.Albiruni.TileHost
         {
             Copyright = citeosm
         };
+
+        public static readonly Organization Mapbox = new Organization("https://tiles.mapbox.com", "abcd")
+        {
+            Copyright = "[Mapbox](https://www.mapbox.com/about/maps/), " + citeosm,
+            FileKey = "mapbox",
+            AllowMultiUserCache = false, // terms of service
+            UserKey = "undefined", // you can put it in a file
+            UriDelimitUserKey = "?access_token="
+        };
+
+        public static IEnumerable<Organization> CommercialProviders()
+        {
+            yield return Mapbox;
+        }
 
         //public static readonly Organization OpenPublicTransport = new Organization("http://www.openptmap.org")
         //{
