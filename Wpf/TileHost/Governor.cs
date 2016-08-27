@@ -39,6 +39,15 @@ namespace Abnaki.Albiruni.TileHost
 
         bool testing = false;
 
+        TileHostSupply hostSupply;
+
+        void RestoreTileHostSupply()
+        {
+            hostSupply = TileHostSupply.Read();
+            if (hostSupply != null)
+                hostSupply.SquareUpStatics();
+        }
+
         static string WellBehavedAgent()
         {
             var tuple = Abnaki.Windows.AbnakiReflection.ApplicationNameVersionSplit();
@@ -50,13 +59,15 @@ namespace Abnaki.Albiruni.TileHost
             if (completed)
                 return;
 
+            RestoreTileHostSupply();
+
             // no default; users might overwhelm it
             // InitializeLocator(LocatorTemplate.CartoLight);
 
             Pref pref = Preference.ReadClassPrefs<Governor, Pref>();
             if ( pref != null )
             {
-                // in the future, may support deserialized LocatorTemplate where UserDefined=true
+                // note, invokes LocatorTemplate constructors
                 var prefLocator = LocatorTemplate.Predefined().FirstOrDefault(loc => loc.Template == pref.Template);
                 if (prefLocator != null)
                     InitializeLocator(prefLocator);
