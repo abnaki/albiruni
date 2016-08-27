@@ -57,7 +57,7 @@ namespace Abnaki.Albiruni
 
         public static IEnumerable<string> SiteQualifiers(LocatorTemplate loctemp)
         {
-            yield return loctemp.Org.Domain.Host; // sufficiently precise domain
+            yield return loctemp.Org.Domain.Uri.Host; // sufficiently precise domain
 
             if (false == string.IsNullOrWhiteSpace(loctemp.Subdirectory))
                 yield return loctemp.Subdirectory;
