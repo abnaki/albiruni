@@ -22,7 +22,7 @@
                 TextWrapping="Wrap">
             Select one.  Public servers offer different styles of maps.  
                 They are not always guaranteed to be available or fast.  
-                Use these free resources economically or you may cause failure.   
+                Use free resources economically. 
                 If you work for an organization, you may register with a tile provider.  Browse list below, 
                 see <Hyperlink
                     NavigateUri="http://wiki.openstreetmap.org/wiki/Tiles"
