@@ -13,7 +13,7 @@ namespace Abnaki.Albiruni
     {
         public MapTiLayer(Abnaki.Albiruni.TileHost.LocatorTemplate loctemp)
         {
-            this.SourceName = loctemp.Org.Domain.Host + "/" + loctemp.Subdirectory;
+            this.SourceName = loctemp.Org.Domain.Uri.Host + "/" + loctemp.Subdirectory;
 
             this.Description = "Maps © " + loctemp.Org.Copyright;
 
@@ -21,17 +21,19 @@ namespace Abnaki.Albiruni
 
             if (loctemp.Org.Public)
             {
-                this.MaxParallelDownloads = 1;
+                this.MaxParallelDownloads = 2;
                 this.MaxZoomLevel = 16;
                 // Obey host's terms such as http://wiki.openstreetmap.org/wiki/Tile_usage_policy 
             }
             else
             {
-                this.MaxParallelDownloads = 4;
+                this.MaxParallelDownloads = 6;
                 this.MaxZoomLevel = 19;
             }
 
         }
+
+        // possibly tune public's MaxParallelDownloads to time of day
 
         internal void ClearUpdate()
         {
