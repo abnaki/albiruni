@@ -35,6 +35,11 @@ namespace Abnaki.Albiruni.TileHost
         public static readonly LocatorTemplate TfLandscape = new LocatorTemplate(Organization.Thunderforest, "png", "landscape");
         public static readonly LocatorTemplate TfOutdoors = new LocatorTemplate(Organization.Thunderforest, "png", "outdoors");
 
+        public static readonly LocatorTemplate MapBoxStreets = new LocatorTemplate(Organization.Mapbox, "png", "v4/mapbox.streets") { Style = "streets" };
+        public static readonly LocatorTemplate MapBoxOutdoors = new LocatorTemplate(Organization.Mapbox, "png", "v4/mapbox.outdoors") { Style = "outdoors" };
+        public static readonly LocatorTemplate MapBoxSatellite = new LocatorTemplate(Organization.Mapbox, "png", "v4/mapbox.satellite") { Style = "satellite" };
+        //public static readonly LocatorTemplate MapBoxTerrain = new LocatorTemplate(Organization.Mapbox, "png", "v4/mapbox.terrain") { Style = "terrain" };
+
         //public static readonly LocatorTemplate OpenPt = new LocatorTemplate(Organization.OpenPublicTransport, "png", "tiles") { Style = "public transport" };
         // public static readonly LocatorTemplate UsgsBase = new LocatorTemplate(Organization.Usgs, null, "arcgis/rest/services/USGSTopo/MapServer/tile");
 
@@ -49,6 +54,10 @@ namespace Abnaki.Albiruni.TileHost
             yield return Osm;
             yield return StamenToner;
             yield return StamenTerrain;
+            yield return MapBoxStreets;
+            yield return MapBoxSatellite;
+            yield return MapBoxOutdoors;
+            //yield return MapBoxTerrain;
             //yield return OpenPt;
             //yield return StamenWatercolor;
             //yield return UsgsBase;
@@ -84,12 +93,15 @@ namespace Abnaki.Albiruni.TileHost
             if (false == string.IsNullOrEmpty(imageExt))
                 relativeUrl += "." + imageExt;
 
-            string port = null;
-            if (false == org.Domain.IsDefaultPort)
-                port = ":" + org.Domain.Port;
+            if (false == string.IsNullOrEmpty(org.UserKey))
+                relativeUrl += org.UriDelimitUserKey + org.UserKey;
 
-            this.Template = string.Format("{0}://{1}{2}{3}/{4}{5}", org.Domain.Scheme,
-                subdom, org.Domain.Host, port,
+            string port = null;
+            if (false == org.Domain.Uri.IsDefaultPort)
+                port = ":" + org.Domain.Uri.Port;
+
+            this.Template = string.Format("{0}://{1}{2}{3}/{4}{5}", org.Domain.Uri.Scheme,
+                subdom, org.Domain.Uri.Host, port,
                 subdir, relativeUrl);
         }
 
@@ -103,12 +115,13 @@ namespace Abnaki.Albiruni.TileHost
         public string Subdirectory { get; private set; }
 
         /// <summary>
-        /// Optional style of colors etc., no logical purpose
+        /// Optional style of colors etc., if not obvious from Subdirectory; 
+        /// no logical purpose
         /// </summary>
         public string Style { get; set; }
 
         /// <summary>True implies it should be serialized.  False implies application owns it.</summary>
-        public bool UserDefined { get; set; }
+        //public bool UserDefined { get; set; }
 
         //public IEnumerable<string> Subdomains { get; private set; }
 
