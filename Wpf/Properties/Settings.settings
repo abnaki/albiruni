@@ -8,5 +8,8 @@
     <Setting Name="UpgradeUri" Type="System.String" Scope="User">
       <Value Profile="(Default)">https://github.com/abnaki/albiruni/releases/latest</Value>
     </Setting>
+    <Setting Name="WikiUri" Type="System.String" Scope="User">
+      <Value Profile="(Default)">https://github.com/abnaki/albiruni/wiki</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

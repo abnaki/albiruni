@@ -46,5 +46,17 @@ namespace Abnaki.Albiruni.Properties {
                 this["UpgradeUri"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://github.com/abnaki/albiruni/wiki")]
+        public string WikiUri {
+            get {
+                return ((string)(this["WikiUri"]));
+            }
+            set {
+                this["WikiUri"] = value;
+            }
+        }
     }
 }
