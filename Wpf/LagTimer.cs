@@ -11,9 +11,9 @@ namespace Abnaki.Albiruni
     /// </summary>
     class LagTimer
     {
-        protected DispatcherTimer vptimer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(200) };
+        protected DispatcherTimer dtimer = new DispatcherTimer() { Interval = TimeSpan.FromMilliseconds(200) };
 
-        public bool Running { get { return vptimer.IsEnabled; } }
+        public bool Running { get { return dtimer.IsEnabled; } }
 
         /// <summary>
         /// True to bypass the lag.  Changed event is immediately followed by Settled.
@@ -35,7 +35,7 @@ namespace Abnaki.Albiruni
     {
         public LagTimer()
         {
-            vptimer.Tick += vptimer_Tick;
+            dtimer.Tick += vptimer_Tick;
         }
 
         /// <summary>Watched.  Do not add costly handlers.
@@ -56,7 +56,7 @@ namespace Abnaki.Albiruni
 
         void Complete()
         {
-            vptimer.Stop();
+            dtimer.Stop();
 
             var h = Settled;
             if ( LastArg == null )
@@ -73,7 +73,7 @@ namespace Abnaki.Albiruni
         {
             LastArg = e;
             LastSender = sender;
-            vptimer.Stop(); vptimer.Start(); // MS idea of Reset
+            dtimer.Stop(); dtimer.Start(); // MS idea of Reset
 
             var h = Changed;
             if (h != null)
