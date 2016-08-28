@@ -18,12 +18,13 @@
         </Grid.RowDefinitions>
         <ScrollViewer
             Grid.Row="0">
-            <TextBlock Margin="3"
+            <TextBlock
+                Margin="3"
                 TextWrapping="Wrap">
-            Select one.  Public servers offer different styles of maps.  
-                They are not always guaranteed to be available or fast.  
-                Use free resources economically. 
-                If you work for an organization, you may register with a tile provider.  Browse list below, 
+            Select one.  Servers offer different styles of maps.  
+                Public sites are not always guaranteed to be available or fast.  
+                Use free resources economically.  For enthusiastic usage, 
+                register with a tile provider, especially if you work for an organization.  Browse below, 
                 see <Hyperlink
                     NavigateUri="http://wiki.openstreetmap.org/wiki/Tiles"
                     RequestNavigate="HyperlinkNavigate">OSM wiki</Hyperlink>,  
@@ -34,7 +35,7 @@
                 <Hyperlink
                     NavigateUri="https://switch2osm.org/serving-tiles/"
                     RequestNavigate="HyperlinkNavigate">set up an OpenStreetMap server</Hyperlink> 
-                for your own speed and privacy.  Albiruni will enable you to use your own choice.</TextBlock>
+                for speed and privacy.  Also see Help / Reference.</TextBlock>
         </ScrollViewer>
         <Grid:GridControl
             Name="Griddy"
