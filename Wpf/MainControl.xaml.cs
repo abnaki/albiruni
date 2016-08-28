@@ -36,6 +36,7 @@ namespace Abnaki.Albiruni
 
         Menu.FileMenuBus fmbus;
         Menu.OptionMenuBus optbus;
+        Menu.HelpMenuBus helpbus;
         TileHost.Governor tileGovernor = new TileHost.Governor();
         ProcessLauncher procLauncher = new ProcessLauncher();
 
@@ -48,6 +49,7 @@ namespace Abnaki.Albiruni
         {
             fmbus = new Menu.FileMenuBus(menu);
             optbus = new Menu.OptionMenuBus(menu);
+            helpbus = new Menu.HelpMenuBus(menu);
         }
 
         void IMainControl.EmplacedInWindow()
