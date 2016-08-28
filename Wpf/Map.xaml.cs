@@ -42,7 +42,7 @@ namespace Abnaki.Albiruni
             vptimer.Changed += (s, e) => layer.InvalidateVisual();
             vptimer.Settled += (s, e) =>
             {
-                CompleteZoom(s, e: null);
+                CompleteZoom();
                 ViewportChangeSettled();
                 layer.InvalidateVisual();
             };
@@ -68,6 +68,7 @@ namespace Abnaki.Albiruni
         {
             hovtimer.Stop();
             hovPoint = new Point();
+            priorZoom = 0;
         }
 
         protected override void OnInitialized(EventArgs e)
@@ -200,6 +201,7 @@ namespace Abnaki.Albiruni
 
         #endregion
 
+        double priorZoom;
         LagTimer<EventArgs> vptimer = new LagTimer<EventArgs>();
 
         LagTimer<RoutedPropertyChangedEventArgs<double>> slprecTimer = new LagTimer<RoutedPropertyChangedEventArgs<double>>();
@@ -207,6 +209,7 @@ namespace Abnaki.Albiruni
         bool syncingZoomPrecision = false;
         bool outdatedMesh = false;
         double? precisionMinusZoomSynced;
+        bool flexibleSync = false;
 
         protected override void OnRender(DrawingContext drawingContext)
         {
@@ -239,10 +242,22 @@ namespace Abnaki.Albiruni
             //InvalidateVisual(); // implied by slprecision Value change
         }
 
-        void CompleteZoom(object sender, RoutedPropertyChangedEventArgs<double> e)
+        void CompleteZoom()
         {
-            ChangeBoundedBySlider(slprecision, slprecTimer, e, precisionMinusZoomSynced + slzoom.Value, p => slprecision.Value = p);
+            var ezoom = new RoutedPropertyChangedEventArgs<double>(priorZoom, slzoom.Value, Slider.ValueChangedEvent)
+            {
+                Source = slzoom
+            };
+            CompleteZoom(ezoom);
+            priorZoom = slzoom.Value;
         }
+
+        void CompleteZoom(RoutedPropertyChangedEventArgs<double> ezoom)
+        {
+            ChangeBoundedBySlider(slprecision, slprecTimer, ezoom, precisionMinusZoomSynced + slzoom.Value, p => slprecision.Value = p);
+            priorZoom = ezoom.OldValue;
+        }
+
 
         void ChangeBoundedBySlider(Slider slitarget,
             LagTimer lagTimer,
@@ -264,13 +279,16 @@ namespace Abnaki.Albiruni
 
             try
             {
-                allowed = (slitarget.Minimum <= proposed && proposed <= slitarget.Maximum);
-
-                if (allowed)
+                if (slitarget.Minimum <= proposed && proposed <= slitarget.Maximum)
                 {
                     actset(proposed.Value);
                 }
-                else if ( e != null )
+                else if (flexibleSync)
+                {
+                    double vbound = MapExtensions.Bounded(slitarget.Minimum, proposed.Value, slitarget.Maximum);
+                    actset(vbound);
+                }
+                else if (e != null) // expect true
                 {  // reject
                     Slider slisource = (Slider)e.Source;
                     slisource.Value = e.OldValue;
@@ -319,23 +337,34 @@ namespace Abnaki.Albiruni
 
         private void BuZoomFit_Click(object sender, RoutedEventArgs e)
         {
-            PointSummary summary = DataContext.GetRootPointSummary();
-            if (summary.Points > 0)
+            try
             {
-                slprecision.Value = slprecision.Minimum;
-                if (precisionMinusZoomSynced.HasValue)
-                    EstablishSync();
+                flexibleSync = true;
+                PointSummary summary = DataContext.GetRootPointSummary();
+                if (summary.Points > 0)
+                {
+                    slprecision.Value = slprecision.Minimum;
+                    if (precisionMinusZoomSynced.HasValue)
+                        EstablishSync();
 
-                Location sw = new Location((double)summary.MinLatitude, (double)summary.MinLongitude);
-                Location ne = new Location((double)summary.MaxLatitude, (double)summary.MaxLongitude);
-                if (sw.EqualCoordinates(ne)) // unusual
-                    this.DataContext.MapCenter = sw; 
-                else  // usual
-                    this.map.ZoomToBounds(sw, ne);
+                    Location sw = new Location((double)summary.MinLatitude, (double)summary.MinLongitude);
+                    Location ne = new Location((double)summary.MaxLatitude, (double)summary.MaxLongitude);
+                    if (sw.EqualCoordinates(ne)) // unusual
+                        this.DataContext.MapCenter = sw;
+                    else  // usual
+                        this.map.ZoomToBounds(sw, ne);
 
-                CompleteZoom(sender, e: null);
-                //Debug.WriteLine(string.Format("Fit zoomed to {0} while slzoom is [{1}, {2}, {3}]", map.ZoomLevel,
-                //    slzoom.Minimum, slzoom.Value, slzoom.Maximum));
+                    CompleteZoom();
+                    //Debug.WriteLine(string.Format("Fit zoomed to {0} while slzoom is [{1}, {2}, {3}]", map.ZoomLevel,
+                    //    slzoom.Minimum, slzoom.Value, slzoom.Maximum));
+
+                    if (precisionMinusZoomSynced.HasValue) // sometimes may be revised
+                        EstablishSync();
+                }
+            }
+            finally
+            {
+                flexibleSync = false;
             }
         }
 
