@@ -120,7 +120,7 @@
                         Name="slprecision"
                         Orientation="Vertical"
                         HorizontalAlignment="Center"
-                        ToolTip="Cell size. &#10;Changes by multiples of 2. &#10;Up for smaller cells."
+                        ToolTip="Cell size. &#10;Changes by factor of 2. &#10;Up for smaller cells."
                         Height="70"
                         Maximum="{Binding MeshMaximumPower}"
                         Minimum="8"
