@@ -33,7 +33,7 @@ namespace Abnaki.Albiruni.Graphic
             return NewMapRectangle((double)west, (double)east, (double)south, (double)north);
         }
 
-        static double Bounded(double min, double x, double max)
+        public static double Bounded(double min, double x, double max)
         {
             return Math.Max(min, Math.Min(x, max));
         }
