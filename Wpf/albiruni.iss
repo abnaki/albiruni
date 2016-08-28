@@ -25,7 +25,8 @@ OutputDir=SetupOutput
 Source: "bin\Release\*"; Excludes: "*.pdb,*vshost*"; DestDir: "{app}"; Flags: recursesubdirs ignoreversion
 Source: "..\Other\OtherLicenses\*"; DestDir: "{app}\OtherLicenses"; Flags: recursesubdirs
 Source: "..\Sample\*"; DestDir: "{app}\Sample"; Excludes: "*.albiruni*,*.abt"; Flags: recursesubdirs
+Source: "..\Documents\Tutorial.html"; DestDir: "{app}\Documents"
 
 [Icons]
 Name: "{group}\Albiruni"; Filename: "{app}\Albiruni.exe"
-
+Name: "{group}\Tutorial"; Filename: "{app}\Documents\Tutorial.html"
