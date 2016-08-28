@@ -95,96 +95,102 @@ namespace Abnaki.Albiruni.Tree
                 if ( ditarget != null )
                     outfile = AbnakiFile.CombinedFilePath(ditarget, relpath, Path.ChangeExtension(fi.Name, FileExt));
 
-                Node firoot = null;
-
-                try
-                {
-                    bool needWrite = (outfile != null);
-
-                    if (outfile != null && outfile.Exists && outfile.LastWriteTimeUtc > fi.LastWriteTimeUtc) // outfile from valid previously created Node
-                    {
-                        //Debug.WriteLine("Existing " + outfile.FullName);
-                        firoot = ReadNodeFile(outfile, guidance);
-
-                        // firoot tree having excess detail (smaller minimum delta than guidance) should be fathomed and rewritten
-                        // to avoid perpetual unwanted memory/CPU usage.
-                        if (firoot != null)
-                        {
-                            Node.FathomResult fathom = firoot.Fathom(guidance.MinimumMesh.Delta);
-                            needWrite = (fathom != Node.FathomResult.None);
-                        }
-                    }
-                    
-                    if ( firoot == null ) // no existing file satisfies guidance
-                    {
-                        //Debug.WriteLine("Reading " + fi.FullName);
-
-                        firoot = Node.NewGlobalRoot();
-
-                        try
-                        {
-                            Source source = new Source(fi, disource);
-
-                            firoot.Populate(source, guidance.MinimumMesh);
-                        }
-                        catch (Exception ex)
-                        {
-                            // expected to be a sporadic bad file, not a systematic Albiruni bug.
-                            // firoot will survive anyway, and may be childless, trivial, or incomplete,
-                            // but want to avoid reading the exact source again.
-
-                            // AbnakiLog.Exception(ex, "Error due to " + fi.FullName);
-                            guidance.FilesExceptions[fi.FullName] = ex;
-                            needWrite = false;
-                        }
-
-                    }
-
-                    if ( needWrite && guidance.StillAbleToWrite )
-                    {
-                        try
-                        {
-                            // write firoot to a relative file under ditarget
-                            foreach (DirectoryInfo disub in AbnakiFile.DirectorySequence(outfile))
-                            {
-                                if (false == disub.Exists)
-                                    disub.Create();
-                            }
-
-                            using (Stream outstream = outfile.OpenWrite())
-                            using (InputOutput.IBinaryWrite tbw = new TreeBinaryWrite())
-                            {
-                                tbw.Init(outstream, guidance.MinimumMesh);
-
-                                tbw.WriteSources(firoot);
-
-                                firoot.Write(tbw);
-
-                                Debug.WriteLine("Wrote " + outfile + ", size " + outstream.Position);
-                            }
-                        }
-                        catch ( Exception ex )
-                        {
-                            AbnakiLog.Exception(ex);
-                            guidance.StillAbleToWrite = false;
-                            guidance.FilesExceptions[fi.FullName] = ex;
-                        }
-                    }
-                }
-                finally
-                {
-                    guidance.CountSourceFile();
-                }
-
-                if (firoot != null)
-                    root.Graft(null, firoot);
-
+                GrowByFile(root, fi,  disource, outfile, guidance);
             }
 
             foreach ( DirectoryInfo disub in di.GetDirectories())
             {
                 GrowSub(root, disource, disub, ditarget, guidance);
             }
+        }
+
+        static void GrowByFile(Node root, FileInfo fi, DirectoryInfo disource, FileInfo outfile, Guidance guidance)
+        {
+            Node firoot = null;
+
+            try
+            {
+                bool needWrite = (outfile != null);
+
+                if (outfile != null && outfile.Exists && outfile.LastWriteTimeUtc > fi.LastWriteTimeUtc) // outfile from valid previously created Node
+                {
+                    //Debug.WriteLine("Existing " + outfile.FullName);
+                    firoot = ReadNodeFile(outfile, guidance);
+
+                    // firoot tree having excess detail (smaller minimum delta than guidance) should be fathomed and rewritten
+                    // to avoid perpetual unwanted memory/CPU usage.
+                    if (firoot != null)
+                    {
+                        Node.FathomResult fathom = firoot.Fathom(guidance.MinimumMesh.Delta);
+                        needWrite = (fathom != Node.FathomResult.None);
+                    }
+                }
+
+                if (firoot == null) // no existing file satisfies guidance
+                {
+                    //Debug.WriteLine("Reading " + fi.FullName);
+
+                    firoot = Node.NewGlobalRoot();
+
+                    try
+                    {
+                        Source source = new Source(fi, disource);
+
+                        firoot.Populate(source, guidance.MinimumMesh);
+                    }
+                    catch (Exception ex)
+                    {
+                        // expected to be a sporadic bad file, not a systematic Albiruni bug.
+                        // firoot will survive anyway, and may be childless, trivial, or incomplete,
+                        // but want to avoid reading the exact source again.
+
+                        // AbnakiLog.Exception(ex, "Error due to " + fi.FullName);
+                        guidance.FilesExceptions[fi.FullName] = ex;
+                        needWrite = false;
+                    }
+
+                }
+
+                if (needWrite && guidance.StillAbleToWrite)
+                {
+                    try
+                    {
+                        // write firoot to a relative file under ditarget
+                        foreach (DirectoryInfo disub in AbnakiFile.DirectorySequence(outfile))
+                        {
+                            if (false == disub.Exists)
+                                disub.Create();
+                        }
+
+                        using (Stream outstream = outfile.OpenWrite())
+                        using (InputOutput.IBinaryWrite tbw = new TreeBinaryWrite())
+                        {
+                            tbw.Init(outstream, guidance.MinimumMesh);
+
+                            tbw.WriteSources(firoot);
+
+                            firoot.Write(tbw);
+
+                            Debug.WriteLine("Wrote " + outfile + ", size " + outstream.Position);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        AbnakiLog.Exception(ex);
+                        guidance.StillAbleToWrite = false;
+                        guidance.FilesExceptions[fi.FullName] = ex;
+                    }
+                }
+            }
+            finally
+            {
+                guidance.CountSourceFile();
+            }
+
+            if (firoot != null)
+                root.Graft(null, firoot);
+
+
         }
 
         /// <summary>
