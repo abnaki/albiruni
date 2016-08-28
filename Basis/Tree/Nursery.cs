@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Diagnostics;
+using System.Threading;
 
 using Abnaki.Windows;
 using Abnaki.Albiruni.Providers;
+using Abnaki.Windows.Thread;
 
 namespace Abnaki.Albiruni.Tree
 {
@@ -115,7 +117,10 @@ namespace Abnaki.Albiruni.Tree
                 if (outfile != null && outfile.Exists && outfile.LastWriteTimeUtc > fi.LastWriteTimeUtc) // outfile from valid previously created Node
                 {
                     //Debug.WriteLine("Existing " + outfile.FullName);
-                    firoot = ReadNodeFile(outfile, guidance);
+                    using (var fileTimer = new DiagnosticTimer(outfile, "reading"))
+                    {
+                        firoot = ReadNodeFile(outfile, guidance);
+                    }
 
                     // firoot tree having excess detail (smaller minimum delta than guidance) should be fathomed and rewritten
                     // to avoid perpetual unwanted memory/CPU usage.
@@ -134,9 +139,16 @@ namespace Abnaki.Albiruni.Tree
 
                     try
                     {
-                        Source source = new Source(fi, disource);
+                        Source source;
+                        using (var fileTimer = new DiagnosticTimer(fi, "reading"))
+                        {
+                            source = new Source(fi, disource);
+                        }
 
-                        firoot.Populate(source, guidance.MinimumMesh);
+                        using (var fileTimer = new DiagnosticTimer(fi, "populating new Node"))
+                        {
+                            firoot.Populate(source, guidance.MinimumMesh);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -240,5 +252,22 @@ namespace Abnaki.Albiruni.Tree
             return firoot;
         }
 
+        class DiagnosticTimer : Abnaki.Windows.Thread.PayloadTimer<FileInfo>
+        {
+            public DiagnosticTimer(FileInfo fi, string verb)
+                : base(payload: fi, due: DueTimeSpan)
+            {
+                this.Expire += exfi => AbnakiLog.Comment(GetLogComment(verb), exfi.FullName);
+            }
+
+            static TimeSpan DueTimeSpan { get { return TimeSpan.FromMinutes(3);  } }
+
+            static string GetLogComment(string verb)
+            {
+                return "Exceeded " 
+                    + DueTimeSpan.ToString("G", System.Globalization.CultureInfo.InvariantCulture)
+                    + " while " + verb;
+            }
+        }
     }
 }
