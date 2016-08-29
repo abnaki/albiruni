@@ -22,7 +22,7 @@ test -d old || mkdir old
 mv *.exe old/
 popd
 
-/cygdrive/c/progra~2/innose~1/Compil32.exe /cc albiruni.iss
+/cygdrive/c/progra~2/innose~1/ISCC.exe albiruni.iss
 
 ../Build/sign.bat SetupOutput/*.exe
 
