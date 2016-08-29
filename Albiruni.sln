@@ -30,6 +30,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Forks", "Forks", "{DCC94747
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "photo.exif", "..\forks\photo\src\photo.exif\photo.exif.csproj", "{13800742-9FFF-4ED1-8D5D-259EC188BD6B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{0E2A32A5-A4C2-4E2C-99A1-37242C3ABDA5}"
+	ProjectSection(SolutionItems) = preProject
+		Build\release.csh = Build\release.csh
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{3F388577-8367-492F-9A52-964C5A85A284}"
+	ProjectSection(SolutionItems) = preProject
+		..\windows\Build\release.csh = ..\windows\Build\release.csh
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,5 +97,6 @@ Global
 		{4B21D9F8-3EAF-4C29-AE6A-8C73C99393EC} = {FB2A540B-96A6-434C-8C77-0B331333DEE4}
 		{DCC94747-AE51-45E0-B8F0-32F1C3807867} = {392AD13C-BEBF-4929-8299-B48F56778BED}
 		{13800742-9FFF-4ED1-8D5D-259EC188BD6B} = {DCC94747-AE51-45E0-B8F0-32F1C3807867}
+		{3F388577-8367-492F-9A52-964C5A85A284} = {FB2A540B-96A6-434C-8C77-0B331333DEE4}
 	EndGlobalSection
 EndGlobal
