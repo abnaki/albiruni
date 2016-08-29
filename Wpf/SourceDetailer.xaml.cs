@@ -50,6 +50,8 @@ namespace Abnaki.Albiruni
 
         void UpdateSources(Message.SourceRecordMessage msg)
         {
+            Abnaki.Windows.Software.Wpf.PreferredControls.Docking.Paneling.ShowPanel(this);
+
             this.grid.BindGrid(msg.SourceRecords);
 
             this.grid.ConfigureColumns(new Col[] {
