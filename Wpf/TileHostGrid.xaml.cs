@@ -42,23 +42,29 @@ namespace Abnaki.Albiruni
             base.OnVisualParentChanged(oldParent);
             if (Parent is FrameworkElement)
             {  // seemingly magical requirement for Xceed DataGrid columns to exist
-                FrameworkElement feparent = (FrameworkElement)Parent;
-                if (feparent.IsLoaded)
-                    Bind();
-
                 // and yet a second Loaded may be necessary for the columns to exist
-                feparent.Loaded += (s, e) => Bind();
+                FrameworkElement feparent = (FrameworkElement)Parent;
+
+                if (feparent.IsLoaded)
+                    DelayBind();
+                else
+                    feparent.Loaded += (s, e) => DelayBind();
             }
         }
 
-        bool init = false;
+        //bool init = false;
+
+        void DelayBind()
+        {
+            Dispatcher.InvokeAsync(Bind, System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+        }
 
         void Bind()
         {
             //if (init)
             //    return;
 
-            init = true;
+            //init = true;
             Griddy.RestorePreferences<TileHostGrid>();
 
             IEnumerable<TiRecord> records = LocatorTemplate.Predefined().Select(t => new TiRecord(t)).ToList();
