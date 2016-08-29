@@ -10,6 +10,20 @@ popd
 
 gitfetchtagbuild $1 Albiruni.sln
 
-echo Now want to sign exe and dll files
+# maybe refactor into ../windows/Build
+
+./Build/sign.bat Wpf/bin/Release/Abnaki*dll Wpf/bin/Release/Albiruni.exe
+
 echo Then inno setup
-echo Then sign newest SetupOutput exe
+pushd Wpf
+test -d SetupOutput || mkdir SetupOutput
+pushd SetupOutput
+test -d old || mkdir old
+mv *.exe old/
+popd
+
+/cygdrive/c/progra~2/innose~1/Compil32.exe /cc albiruni.iss
+
+../Build/sign.bat SetupOutput/*.exe
+
+popd
