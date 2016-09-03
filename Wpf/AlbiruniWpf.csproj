@@ -42,6 +42,10 @@
     <ApplicationIcon>albiruni.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoDependencyPropertyMarker">
+      <HintPath>..\packages\AutoDependencyProperty.Fody.1.2.2.0\lib\net40\AutoDependencyPropertyMarker.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="ImageFileCache.WPF">
       <HintPath>..\packages\XAML.MapControl.2.9.0\lib\net45\ImageFileCache.WPF.dll</HintPath>
     </Reference>
