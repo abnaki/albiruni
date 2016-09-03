@@ -371,6 +371,7 @@ namespace Abnaki.Albiruni
         private void HandleInvalidate(Message.InvalidateMessage msg)
         {
             this.map.InvalidateVisual();
+            InvalidateMapPanels();
         }
 
         #region Tiles
