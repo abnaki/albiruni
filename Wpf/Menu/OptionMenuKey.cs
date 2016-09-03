@@ -30,6 +30,15 @@ namespace Abnaki.Albiruni.Menu
 
         Map, // parent
 
+        [Label("Scale")]
+        MapScale,
+
+        [Label("Kilometers", Detail="SI or metric units, km, m")]
+        MapScaleMetric,
+
+        [Label("Miles", Detail="US customary or Imperial units")]
+        MapScaleImperial,
+
         [Label("Cell Color")]
         MapCellColor,
 
