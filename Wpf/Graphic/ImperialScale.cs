@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using AutoDependencyPropertyMarker;
 
 namespace Abnaki.Albiruni
 {
@@ -15,30 +14,33 @@ namespace Abnaki.Albiruni
     /// </summary>
     class ImperialScale : MapControl.MapScale
     {
-        private double length;
+        private double meters;
         private Size size;
+
+        [AutoDependencyProperty]
+        public bool Metric { get; set; }
 
         protected override Size MeasureOverride(Size availableSize)
         {
             if (ParentMap != null && ParentMap.CenterScale > 0d)
             {
-                length = MinWidth / ParentMap.CenterScale;
-                var magnitude = Math.Pow(10d, Math.Floor(Math.Log10(length)));
+                meters = MinWidth / ParentMap.CenterScale;
+                var magnitude = Math.Pow(10d, Math.Floor(Math.Log10(meters)));
 
-                if (length / magnitude < 2d)
+                if (meters / magnitude < 2d)
                 {
-                    length = 2d * magnitude;
+                    meters = 2d * magnitude;
                 }
-                else if (length / magnitude < 5d)
+                else if (meters / magnitude < 5d)
                 {
-                    length = 5d * magnitude;
+                    meters = 5d * magnitude;
                 }
                 else
                 {
-                    length = 10d * magnitude;
+                    meters = 10d * magnitude;
                 }
 
-                size.Width = length * ParentMap.CenterScale + StrokeThickness + Padding.Left + Padding.Right;
+                size.Width = meters * ParentMap.CenterScale + WasteWidth;
                 size.Height = FontSize * FontFamily.LineSpacing + StrokeThickness + Padding.Top + Padding.Bottom;
             }
             else
@@ -53,21 +55,57 @@ namespace Abnaki.Albiruni
         {
             if (ParentMap != null)
             {
-                var x1 = Padding.Left + StrokeThickness / 2d;
-                var x2 = size.Width - Padding.Right - StrokeThickness / 2d;
-                var y1 = size.Height / 2d;
-                var y2 = size.Height - Padding.Bottom - StrokeThickness / 2d;
-                var text = new FormattedText(
-                    length >= 1000d ? string.Format("{0:0} km", length / 1000d) : string.Format("{0:0} m", length),
-                    CultureInfo.InvariantCulture, FlowDirection.LeftToRight, Typeface, FontSize, Foreground);
+                string label;
+                Size rsize;
+                if (Metric)
+                {
+                    rsize = this.size;
+                    label = meters >= 1000d ? string.Format("{0:0} km", meters / 1000d) : string.Format("{0:0} m", meters);
+                }
+                else
+                {
+                    // expanding round km lengths into miles
+                    rsize = new Size((this.size.Width - WasteWidth) * 1.609 + WasteWidth, this.size.Height);
+                    
+                    double lengths = meters / 1000;
 
-                drawingContext.DrawRectangle(Background ?? ParentMap.Background, null, new Rect(size));
-                drawingContext.DrawLine(Pen, new Point(x1, y1), new Point(x1, y2));
-                drawingContext.DrawLine(Pen, new Point(x2, y1), new Point(x2, y2));
-                drawingContext.DrawLine(Pen, new Point(x1, y2), new Point(x2, y2));
-                drawingContext.DrawText(text, new Point((size.Width - text.Width) / 2d, 0d));
+                    if (lengths < 0.1)
+                        label = lengths.ToString("G");
+                    if (lengths < 1)
+                        label = lengths.ToString("0.0");
+                    else
+                        label = lengths.ToString("0");
+
+                    label += " mile(s)";
+                }
+                Render(drawingContext, label, rsize);
             }
         }
 
+        void Render(DrawingContext drawingContext, string label, Size bounds)
+        {
+            var x1 = Padding.Left + StrokeThickness / 2d;
+            var x2 = bounds.Width - Padding.Right - StrokeThickness / 2d;
+            // that means x2 - x1 = bounds.Width - WasteWidth
+            var y1 = bounds.Height / 2d;
+            var y2 = bounds.Height - Padding.Bottom - StrokeThickness / 2d;
+
+            var text = new FormattedText(label,
+                CultureInfo.InvariantCulture, FlowDirection.LeftToRight, Typeface, FontSize, Foreground);
+
+            drawingContext.DrawRectangle(Background ?? ParentMap.Background, null, new Rect(bounds));
+            drawingContext.DrawLine(Pen, new Point(x1, y1), new Point(x1, y2));
+            drawingContext.DrawLine(Pen, new Point(x2, y1), new Point(x2, y2));
+            drawingContext.DrawLine(Pen, new Point(x1, y2), new Point(x2, y2)); // represents length
+            drawingContext.DrawText(text, new Point((bounds.Width - text.Width) / 2d, 0d));
+        }
+
+        double WasteWidth
+        {
+            get
+            {
+                return Padding.Left + Padding.Right + StrokeThickness;
+            }
+        }
     }
 }
