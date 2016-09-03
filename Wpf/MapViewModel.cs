@@ -55,6 +55,8 @@ namespace Abnaki.Albiruni
 
         public bool ScaleMetric { get; set; }
 
+        public bool GraticuleEnabled { get; set; }
+
         public List<MapRectangle> Rectangles { get; private set; }
         
         // with MapItems want to use BulkObservableCollection or similar
@@ -521,21 +523,8 @@ namespace Abnaki.Albiruni
 
         private void HandleOption(ButtonMessage<Menu.OptionMenuKey> msg)
         {
-            if (false == msg.Checked)
-                return;
-
             switch (msg.Key)
             {
-                case Menu.OptionMenuKey.MapCellColorRed:
-                    SetCellBrush(cellHueLevel, 0, 0);
-                    break;
-                case Menu.OptionMenuKey.MapCellColorGreen:
-                    SetCellBrush(0, cellHueLevel, 0);
-                    break;
-                case Menu.OptionMenuKey.MapCellColorBlue:
-                    SetCellBrush(0, 0, cellHueLevel);
-                    break;
-
                 case Menu.OptionMenuKey.MapScaleMetric:
                     ScaleMetric = msg.Checked == true;
                     MessageTube.Publish(new Message.InvalidateMessage());
@@ -545,8 +534,27 @@ namespace Abnaki.Albiruni
                     MessageTube.Publish(new Message.InvalidateMessage());
                     break;
 
+                case Menu.OptionMenuKey.MapGraticule:
+                    GraticuleEnabled = msg.Checked == true;
+                    MessageTube.Publish(new Message.InvalidateMessage());
+                    break;
             }
 
+            if (true == msg.Checked )
+            {
+                switch (msg.Key)
+                {
+                    case Menu.OptionMenuKey.MapCellColorRed:
+                        SetCellBrush(cellHueLevel, 0, 0);
+                        break;
+                    case Menu.OptionMenuKey.MapCellColorGreen:
+                        SetCellBrush(0, cellHueLevel, 0);
+                        break;
+                    case Menu.OptionMenuKey.MapCellColorBlue:
+                        SetCellBrush(0, 0, cellHueLevel);
+                        break;
+                }
+            }
             Menu.OptionMenuBus.GetMeshFromOption(msg.Key, p => MeshMaximumPower = p);
             
         }
