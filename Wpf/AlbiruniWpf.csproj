@@ -93,6 +93,7 @@
       <Link>AlbiruniAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Graphic\Curve\OutlineRectangle.cs" />
+    <Compile Include="Graphic\ImperialScale.cs" />
     <Compile Include="MapCache.cs" />
     <Compile Include="MapNodeLayer.cs" />
     <Compile Include="MapTiLayer.cs" />
@@ -210,6 +211,7 @@
     </Content>
     <Content Include="MapTileHosts.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
