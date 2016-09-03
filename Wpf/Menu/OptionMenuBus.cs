@@ -31,6 +31,7 @@ namespace Abnaki.Albiruni.Menu
 
             menu.AddCommandChild<OptionMenuKey>(OptionMenuKey.Map, OptionMenuKey.MapCellColor);
 
+            menu.AddCommandChild<OptionMenuKey>(OptionMenuKey.Map, OptionMenuKey.MapGraticule, defaultCheck: true);
 
             AddExclusiveCommands(menu, OptionMenuKey.MapCellColor, 
                 new[]{OptionMenuKey.MapCellColorRed, OptionMenuKey.MapCellColorGreen, OptionMenuKey.MapCellColorBlue});

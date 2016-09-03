@@ -49,6 +49,9 @@ namespace Abnaki.Albiruni.Menu
         MapCellColorGreen,
 
         [Label("Blue")]
-        MapCellColorBlue
+        MapCellColorBlue,
+
+        [Label("Graticule", Detail="lines of latitude and longitude")]
+        MapGraticule
     }
 }
