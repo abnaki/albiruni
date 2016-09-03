@@ -53,6 +53,8 @@ namespace Abnaki.Albiruni
         /// </summary>
         public int MeshMaximumPower { get; set; }
 
+        public bool ScaleMetric { get; set; }
+
         public List<MapRectangle> Rectangles { get; private set; }
         
         // with MapItems want to use BulkObservableCollection or similar
@@ -532,6 +534,15 @@ namespace Abnaki.Albiruni
                     break;
                 case Menu.OptionMenuKey.MapCellColorBlue:
                     SetCellBrush(0, 0, cellHueLevel);
+                    break;
+
+                case Menu.OptionMenuKey.MapScaleMetric:
+                    ScaleMetric = msg.Checked == true;
+                    MessageTube.Publish(new Message.InvalidateMessage());
+                    break;
+                case Menu.OptionMenuKey.MapScaleImperial:
+                    ScaleMetric = msg.Checked != true;
+                    MessageTube.Publish(new Message.InvalidateMessage());
                     break;
 
             }
