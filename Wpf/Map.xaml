@@ -33,6 +33,7 @@
                 Margin="4"
                 Opacity="0.8"
                 HorizontalAlignment="Left"
+                Metric="{Binding ScaleMetric}"
                 Background="Transparent" />
             <!-- use ItemTemplate or ItemContainerStyle alternatively -->
             <!--<map:MapItemsControl
