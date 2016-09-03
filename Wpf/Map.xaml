@@ -1,4 +1,4 @@
-﻿<UserControl
+﻿<UserControl xmlns:Graphic="clr-namespace:Abnaki.Albiruni.Graphic" 
     xmlns:Albiruni="clr-namespace:Abnaki.Albiruni"
     xmlns:albprop="clr-namespace:Abnaki.Albiruni.Properties"
     x:Class="Abnaki.Albiruni.Map"
@@ -27,7 +27,8 @@
             MouseLeave="map_MouseLeave"
             MouseMove="map_MouseMove">
             <Albiruni:MapNodeLayer />
-            <map:MapGraticule
+            <Graphic:Graticule
+                IsEnabled="{Binding GraticuleEnabled}"
                 Opacity="0.6" />
             <Albiruni:ImperialScale
                 Margin="4"
