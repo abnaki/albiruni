@@ -97,6 +97,7 @@
       <Link>AlbiruniAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Graphic\Curve\OutlineRectangle.cs" />
+    <Compile Include="Graphic\Graticule.cs" />
     <Compile Include="Graphic\ImperialScale.cs" />
     <Compile Include="MapCache.cs" />
     <Compile Include="MapNodeLayer.cs" />
