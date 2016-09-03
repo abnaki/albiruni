@@ -25,7 +25,12 @@ namespace Abnaki.Albiruni.Menu
             });
 
             menu.AddCommandChild<OptionMenuKey>(TopMenuKey.Option, OptionMenuKey.Map);
+            menu.AddCommandChild<OptionMenuKey>(OptionMenuKey.Map, OptionMenuKey.MapScale);
+            AddExclusiveCommands(menu, OptionMenuKey.MapScale,
+                new[] { OptionMenuKey.MapScaleMetric, OptionMenuKey.MapScaleImperial });
+
             menu.AddCommandChild<OptionMenuKey>(OptionMenuKey.Map, OptionMenuKey.MapCellColor);
+
 
             AddExclusiveCommands(menu, OptionMenuKey.MapCellColor, 
                 new[]{OptionMenuKey.MapCellColorRed, OptionMenuKey.MapCellColorGreen, OptionMenuKey.MapCellColorBlue});
