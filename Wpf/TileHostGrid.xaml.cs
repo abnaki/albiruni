@@ -76,7 +76,10 @@ namespace Abnaki.Albiruni
                 new Col("Select"),
                 new Col("Host"),
                 new Col("Style"),
-                new Col("PartialKey"){ Caption= "User Key", Tooltip = "access token, abbreviated, if defined in " + TileHostSupply.ConfigFilename }
+                new Col("PartialKey"){
+                    Caption= "User Key",
+                    Tooltip = "If your account with server has a key or access token, paste here (shown abbreviated)"
+                }
             });
 
             // initial selected record
@@ -90,20 +93,44 @@ namespace Abnaki.Albiruni
 
         void GridEditCommitted(object sender, Xceed.Wpf.DataGrid.DataGridItemEventArgs e, string field)
         {
-            if (field == "Select")
+            TiRecord cur = (TiRecord)e.Item;
+
+            switch (field)
             {
-                TiRecord cur = (TiRecord)e.Item;
+                case "Select":
+                    ApplySelection(cur);
+                    ExclusiveSelection(cur);
+                    break;
 
-                var records = e.CollectionView.Cast<TiRecord>();
+                case "PartialKey":
+                    // multiple records may need change event but there is no logic in TiRecord to raise them,
+                    // unless there were transitive PropertyChanged handlers
+                    Griddy.Refresh();
 
-                if ( cur.Select )
+                    if (cur.Select && false == cur.LocatorTemplate.Org.Public)
+                    {
+                        ApplySelection(cur);
+                    }
+
+                    break;
+            }
+        }
+
+        void ApplySelection(TiRecord cur)
+        {
+            if (cur.Select)
+            {
+                if (cur.LocatorTemplate.Valid)
                 {
                     TileHostMessage msg = new TileHostMessage(cur.LocatorTemplate);
                     MessageTube.Publish(msg);
                 }
-
-                ExclusiveSelection(cur);
+                else
+                {
+                    Abnaki.Windows.AbnakiLog.Comment("Selected invalid or underspecified server", cur.LocatorTemplate);
+                }
             }
+
         }
 
         LocatorTemplate defaultLocatorTemplate;
