@@ -6,6 +6,7 @@ using System.Runtime.Caching;
 using System.Diagnostics;
 
 using MapControl;
+using CodeRed.Serialization;
 using Abnaki.Albiruni.Message;
 using Abnaki.Windows.Software.Wpf;
 using Abnaki.Windows.Software.Wpf.Ultimate;
@@ -68,9 +69,20 @@ namespace Abnaki.Albiruni.TileHost
             if ( pref != null )
             {
                 // note, invokes LocatorTemplate constructors
-                var prefLocator = LocatorTemplate.Predefined().FirstOrDefault(loc => loc.Template == pref.Template);
+                var prefLocator = LocatorTemplate.Predefined().FirstOrDefault(loc => loc.FileKey == pref.CurrentLocatorKey);
+
+                var joinOrg = from prefPair in pref.OrganizationUserKeys
+                              join ogroup in LocatorTemplate.PredefinedOrganizationGroups() on prefPair.Key equals ogroup.Key.FileKey
+                              select new { Org = ogroup.Key, UserKey = prefPair.Value };
+
+                foreach ( var pair in joinOrg )
+                {
+                    pair.Org.UserKey = pair.UserKey;
+                }
+
                 if (prefLocator != null)
                     InitializeLocator(prefLocator);
+
             }
 
             completed = true;
@@ -173,22 +185,32 @@ namespace Abnaki.Albiruni.TileHost
 
         private void Farewell(FarewellMessage msg)
         {
-            if (CurrentLocator != null)
-            {
-                // in the future, may serialize LocatorTemplate where UserDefined=true
-                Pref pref = new Pref()
-                {
-                    Template = CurrentLocator.Template
-                };
+            // in the future, may serialize LocatorTemplate where UserDefined=true
+            Pref pref = new Pref();
 
-                Preference.WriteClassPrefs<Governor, Pref>(pref);
+            if (CurrentLocator != null)
+                pref.CurrentLocatorKey = CurrentLocator.FileKey;
+
+            foreach (var g in LocatorTemplate.PredefinedOrganizationGroups())
+            {
+                Organization org = g.Key;
+
+                if (org.UserKey != null && org.UserKey != Organization.UndefinedKey
+                    && org.FileKey != null )
+                {
+                    pref.OrganizationUserKeys[org.FileKey] = org.UserKey;
+                }
             }
+
+            Preference.WriteClassPrefs<Governor, Pref>(pref);
         }
 
         public class Pref
         {
             /// <summary>For lookup of a static LocatorTemplate</summary>
-            public string Template { get; set; }
+            public string CurrentLocatorKey { get; set; }
+
+            public SerializableDictionary<string, string> OrganizationUserKeys = new SerializableDictionary<string, string>();
         }
     }
 }
