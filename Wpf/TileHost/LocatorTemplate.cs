@@ -110,6 +110,14 @@ namespace Abnaki.Albiruni.TileHost
         /// </summary>
         public string Template { get; private set; }
 
+        public string FileKey
+        {
+            get
+            {
+                return this.Org + "/" + Subdirectory;
+            }
+        }
+
         internal Organization Org { get; private set; }
 
         public string Subdirectory { get; private set; }
@@ -119,6 +127,14 @@ namespace Abnaki.Albiruni.TileHost
         /// no logical purpose
         /// </summary>
         public string Style { get; set; }
+
+        public bool Valid
+        {
+            get
+            {
+                return this.Org.Public || this.Org.UserKey != Organization.UndefinedKey;
+            }
+        }
 
         /// <summary>True implies it should be serialized.  False implies application owns it.</summary>
         //public bool UserDefined { get; set; }
@@ -153,6 +169,11 @@ namespace Abnaki.Albiruni.TileHost
         public int CompareTo(LocatorTemplate other)
         {
             return this.Template.CompareTo(other.Template);
+        }
+
+        public static IEnumerable<IGrouping<Organization,LocatorTemplate>> PredefinedOrganizationGroups()
+        {
+            return Predefined().GroupBy(loctemp => loctemp.Org);
         }
     }
 }
