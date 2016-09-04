@@ -72,7 +72,7 @@ namespace Abnaki.Albiruni.TileHost
         /// <summary>Open to the world
         /// </summary>
         // does not yet consider a local server needing no key
-        public bool Public { get { return string.IsNullOrEmpty(UserKey); } }
+        public bool Public { get { return string.IsNullOrEmpty(UriDelimitUserKey); } }
 
         /// <summary>
         /// Future
@@ -86,6 +86,8 @@ namespace Abnaki.Albiruni.TileHost
         }
 
         const string citeosm = "[OpenStreetMap Contributors](http://openstreetmap.org/copyright)";
+
+        public const string UndefinedKey = "undefined";
 
         public static readonly Organization Carto = new Organization("http://basemaps.cartocdn.com", "abcd")
         {
@@ -122,7 +124,7 @@ namespace Abnaki.Albiruni.TileHost
             Copyright = "[Mapbox](https://www.mapbox.com/about/maps/), " + citeosm,
             FileKey = "mapbox",
             AllowMultiUserCache = false, // terms of service
-            UserKey = "undefined", // you can put it in a file
+            UserKey = UndefinedKey,
             UriDelimitUserKey = "?access_token="
         };
 
