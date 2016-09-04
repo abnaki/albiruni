@@ -35,6 +35,10 @@ namespace Abnaki.Albiruni.TileHost
 
                 return string.Join("",key.Take(12)) + "..."; // confidential
             }
+            set
+            {
+                this.LocatorTemplate.Org.UserKey = value;
+            }
         }
 
         // want a tested sample image
