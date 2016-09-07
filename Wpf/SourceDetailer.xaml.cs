@@ -18,6 +18,8 @@ using Abnaki.Windows.Software.Wpf;
 using Abnaki.Windows.Software.Wpf.PreferredControls.Grid;
 using Abnaki.Windows;
 using Abnaki.Windows.Software.Wpf.Ultimate;
+using Abnaki.Windows.Software.Wpf.Menu;
+using System.Globalization;
 
 namespace Abnaki.Albiruni
 {
@@ -32,6 +34,8 @@ namespace Abnaki.Albiruni
             MessageTube.SubscribeCostly<Message.SourceRecordMessage>(UpdateSources);
             MessageTube.SubscribeCostly<Message.RootNodeMessage>(HandleTree);
             MessageTube.Subscribe<FarewellMessage>(Farewell);
+
+            ButtonBus<Menu.OptionMenuKey>.HookupSubscriber(HandleOption);
 
             Loaded += SourceDetailer_Loaded;
             this.grid.DoubleClickedRecord += grid_DoubleClickedRecord;
@@ -54,16 +58,25 @@ namespace Abnaki.Albiruni
 
             this.grid.BindGrid(msg.SourceRecords);
 
+            ReconfigureColumns();
+        }
+
+        void ReconfigureColumns()
+        {
+            if (this.grid.DataContext == null)
+                return;
+
             this.grid.ConfigureColumns(new Col[] {
                 new Col("Path"){ Caption = "File"}, // Tooltip="Double-click to open externally"
                 new Col("Waypoints"),
                 new Col("Trackpoints"){ Caption = "Track points"},
                 new Col("Routepoints"){ Caption = "Route points"},
-                new Col("MinTime"){ Caption = "First UTC" },
-                new Col("MaxTime"){ Caption = "Last UTC"}
+                new Col("MinTime"){ Caption = "First UTC", Format = DateTimeFormat },
+                new Col("MaxTime"){ Caption = "Last UTC", Format = DateTimeFormat}
             });
-            
+
             // in the future, want a generalized optional way for grid to display non-null DateTime ToLocalTime.
+
         }
 
         void grid_DoubleClickedRecord(object weakRecord)
@@ -78,6 +91,31 @@ namespace Abnaki.Albiruni
         void Farewell(FarewellMessage msg)
         {
             grid.SavePreferences<SourceDetailer>();
+        }
+
+        string DateTimeFormat { get; set; }
+
+        void UpdateDateTimeFormat(string timeFmt)
+        {
+            DateTimeFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern
+                + " " + timeFmt;
+
+            ReconfigureColumns();
+        }
+
+
+        private void HandleOption(ButtonMessage<Menu.OptionMenuKey> msg)
+        {
+            switch (msg.Key)
+            {
+                case Menu.OptionMenuKey.DetailTimeShort:
+                    UpdateDateTimeFormat(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern);
+                    break;
+
+                case Menu.OptionMenuKey.DetailTimeLong:
+                    UpdateDateTimeFormat(CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern);
+                    break;
+            }
         }
 
     }
