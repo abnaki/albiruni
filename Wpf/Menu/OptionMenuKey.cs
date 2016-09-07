@@ -52,6 +52,20 @@ namespace Abnaki.Albiruni.Menu
         MapCellColorBlue,
 
         [Label("Graticule", Detail="lines of latitude and longitude")]
-        MapGraticule
+        MapGraticule,
+
+        Detail,
+
+        [Label("Time",
+            Detail = "Time units from your Windows Region / Formats.\n"
+                + "It uses 12 or 24 hour time as setup in Windows.\n"
+                + "(Short date format is used regardless.)")]
+        DetailTime,
+
+        [Label("Minutes or Short", Detail="Your Windows Region / Formats / Short time format")]
+        DetailTimeShort,
+
+        [Label("Seconds or Long", Detail="Your Windows Region / Formats / Long time format")]
+        DetailTimeLong
     }
 }
