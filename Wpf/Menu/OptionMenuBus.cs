@@ -36,6 +36,10 @@ namespace Abnaki.Albiruni.Menu
             AddExclusiveCommands(menu, OptionMenuKey.MapCellColor, 
                 new[]{OptionMenuKey.MapCellColorRed, OptionMenuKey.MapCellColorGreen, OptionMenuKey.MapCellColorBlue});
 
+            menu.AddCommandChild(TopMenuKey.Option, OptionMenuKey.Detail);
+            menu.AddCommandChild(OptionMenuKey.Detail, OptionMenuKey.DetailTime);
+            AddExclusiveCommands(menu, OptionMenuKey.DetailTime,
+                new[] { OptionMenuKey.DetailTimeShort, OptionMenuKey.DetailTimeLong });
         }
 
         public static void GetMeshFromOption(OptionMenuKey key, Action<int> onpower)
