@@ -18,6 +18,7 @@ using Abnaki.Windows.Software.Wpf.Ultimate;
 using Abnaki.Windows.Software.Wpf.PreferredControls.Docking;
 using Abnaki.Windows.Software.Wpf;
 using Abnaki.Albiruni.Message;
+using System.Diagnostics;
 
 namespace Abnaki.Albiruni
 {
@@ -32,6 +33,9 @@ namespace Abnaki.Albiruni
             InitializeComponent();
 
             MessageTube.Subscribe<RootNodeMessage>(HandleRoot);
+
+
+            // EventManager.RegisterClassHandler(typeof(Control), Control.KeyDownEvent, new KeyEventHandler(GlobalKeyUp));
         }
 
         Menu.FileMenuBus fmbus;
@@ -72,7 +76,17 @@ namespace Abnaki.Albiruni
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             tileGovernor.Complete();
-        } 
+        }
+
+        Key m_lastKey = Key.None;
+
+        void GlobalKeyUp(object sender, KeyEventArgs e)
+        {
+            if (m_lastKey != e.Key)
+                Debug.WriteLine(e.Key + " from " + e.OriginalSource.GetType().FullName);
+
+            m_lastKey = e.Key;
+        }
 
     }
 }
