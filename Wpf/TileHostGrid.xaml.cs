@@ -65,14 +65,17 @@ namespace Abnaki.Albiruni
             //    return;
 
             //init = true;
-            Griddy.RestorePreferences<TileHostGrid>();
 
-            IEnumerable<TiRecord> records = LocatorTemplate.Predefined().Select(t => new TiRecord(t)).ToList();
-
-            Griddy.BindGrid(records);
-
-            Griddy.ConfigureColumns(new Col[]
+            using (new WaitCursor())
             {
+                Griddy.RestorePreferences<TileHostGrid>();
+
+                IEnumerable<TiRecord> records = LocatorTemplate.Predefined().Select(t => new TiRecord(t)).ToList();
+
+                Griddy.BindGrid(records);
+
+                Griddy.ConfigureColumns(new Col[]
+                {
                 new Col("Select"),
                 new Col("Host"),
                 new Col("Style"),
@@ -80,14 +83,15 @@ namespace Abnaki.Albiruni
                     Caption= "User Key",
                     Tooltip = "If your account with server has a key or access token, paste here (shown abbreviated)"
                 }
-            });
+                });
 
-            // initial selected record
-            var rec = records.FirstOrDefault(r => r.LocatorTemplate == defaultLocatorTemplate);
-            if (rec != null)
-            {
-                rec.Select = true;
-                ExclusiveSelection(rec);
+                // initial selected record
+                var rec = records.FirstOrDefault(r => r.LocatorTemplate == defaultLocatorTemplate);
+                if (rec != null)
+                {
+                    rec.Select = true;
+                    ExclusiveSelection(rec);
+                }
             }
         }
 
