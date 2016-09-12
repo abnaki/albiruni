@@ -94,7 +94,7 @@
                         FontSize="10" />
                     <Slider
                         Name="slzoom"
-                        ToolTip="Up is closer - smaller area.&#10;Down is farther - larger area."
+                        ToolTip="Up is closer; smaller area (Ctrl =)&#10;Down is farther; larger area (Ctrl -)"
                         Height="100"
                         HorizontalAlignment="Center"
                         SmallChange="0.01"
