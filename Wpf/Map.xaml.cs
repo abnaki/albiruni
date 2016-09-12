@@ -119,6 +119,41 @@ namespace Abnaki.Albiruni
             this.DataContext.SetViewPort(viewRect, unitRect);
         }
 
+        protected override void OnMouseEnter(MouseEventArgs e)
+        {
+            base.OnMouseEnter(e);
+            slzoom.Focus(); // only way to assure KeyUp is raised by something within Map visual tree
+        }
+
+        protected override void OnKeyUp(KeyEventArgs e)
+        {
+            // never happens before focus
+
+            base.OnKeyUp(e);
+
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+            {
+                switch (e.Key)
+                {
+                    case Key.OemPlus:
+                        SafeChangeZoom(1, e);
+                        break;
+
+                    case Key.OemMinus:
+                        SafeChangeZoom(-1, e);
+                        break;
+                }
+            }
+        }
+
+        void SafeChangeZoom(double delta, KeyEventArgs e)
+        {
+            map.ZoomLevel = MapExtensions.Bounded(slzoom.Minimum, map.ZoomLevel + delta, slzoom.Maximum);
+            e.Handled = true;
+            PostZoomInvalidate();
+            Debug.WriteLine("Zoomed " + delta);
+        }
+
         #region Originally from xamlmapcontrol/SampleApps/WpfApplication/MainWindow.xaml.cs
 
         private void MapMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -230,6 +265,11 @@ namespace Abnaki.Albiruni
             double deltaPrecision = e.NewValue - e.OldValue;
             ChangeBoundedBySlider(slzoom, vptimer, e, slzoom.Value + deltaPrecision, z => map.ZoomLevel = z);
 
+            PostZoomInvalidate();
+        }
+
+        void PostZoomInvalidate()
+        {
             outdatedMesh = true;
             InvalidateVisual();
         }
