@@ -345,6 +345,7 @@ namespace Abnaki.Albiruni
         void EstablishSync()
         {
             precisionMinusZoomSynced = slprecision.Value - slzoom.Value;
+            UpdateSlidersWithSync();
         }
 
         private void ChkSync_Checked(object sender, RoutedEventArgs e)
@@ -355,6 +356,24 @@ namespace Abnaki.Albiruni
         private void ChkSync_Unchecked(object sender, RoutedEventArgs e)
         {
             precisionMinusZoomSynced = null;
+            UpdateSlidersWithSync();
+        }
+
+        void UpdateSlidersWithSync()
+        {
+            // Slider Selection implies range of agreeable values
+            bool enableRange = precisionMinusZoomSynced.HasValue && (ChkSync.IsChecked == true);
+
+            slprecision.IsSelectionRangeEnabled = enableRange;
+            slzoom.IsSelectionRangeEnabled = enableRange;
+
+            if ( enableRange )
+            {
+                slzoom.SelectionStart = Math.Max(slzoom.Minimum, slprecision.Minimum - precisionMinusZoomSynced.Value);
+                slzoom.SelectionEnd = Math.Min(slzoom.Maximum, slprecision.Maximum - precisionMinusZoomSynced.Value);
+                slprecision.SelectionStart = Math.Max(slprecision.Minimum, slzoom.Minimum + precisionMinusZoomSynced.Value);
+                slprecision.SelectionEnd = Math.Min(slprecision.Maximum, slzoom.Maximum + precisionMinusZoomSynced.Value);
+            }
         }
 
         void InvalidateMapPanels()
