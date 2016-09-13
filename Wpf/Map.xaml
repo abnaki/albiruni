@@ -102,6 +102,7 @@
                         Maximum="15"
                         Minimum="{Binding MinZoomLevel, ElementName=map}"
                         Value="{Binding TargetZoomLevel, ElementName=map}"
+                        TickPlacement="BottomRight"
                         ValueChanged="slzoom_ValueChanged" />
                 </StackPanel>
                 <CheckBox
@@ -127,7 +128,8 @@
                         Maximum="{Binding MeshMaximumPower}"
                         Minimum="8"
                         Value="{Binding DisplayMeshPower}"
-                        SmallChange="1">
+                        SmallChange="1"
+                        TickPlacement="BottomRight">
                         <!--maybe want Tick properties -->
                     </Slider>
                 </StackPanel>
