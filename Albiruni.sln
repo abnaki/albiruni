@@ -32,11 +32,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "photo.exif", "..\forks\phot
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{0E2A32A5-A4C2-4E2C-99A1-37242C3ABDA5}"
 	ProjectSection(SolutionItems) = preProject
+		AlbiruniAssemblyInfo.cs = AlbiruniAssemblyInfo.cs
 		Build\release.csh = Build\release.csh
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{3F388577-8367-492F-9A52-964C5A85A284}"
 	ProjectSection(SolutionItems) = preProject
+		..\windows\Abnaki.Windows.AssemblyInfo.cs = ..\windows\Abnaki.Windows.AssemblyInfo.cs
 		..\windows\Build\release.csh = ..\windows\Build\release.csh
 	EndProjectSection
 EndProject
