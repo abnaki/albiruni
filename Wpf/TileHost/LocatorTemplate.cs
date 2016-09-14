@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Serialization;
 
 namespace Abnaki.Albiruni.TileHost
 {
@@ -15,59 +16,8 @@ namespace Abnaki.Albiruni.TileHost
     /// 
     /// May allow for an access key in the future.
     /// </remarks>
-    public class LocatorTemplate : IComparable<LocatorTemplate>
+    public partial class LocatorTemplate : IComparable<LocatorTemplate>
     {
-        public static readonly LocatorTemplate Osm = new LocatorTemplate(Organization.Osm, "png");
-
-        public static readonly LocatorTemplate CartoLight = new LocatorTemplate(Organization.Carto, "png", "light_all") { Style = "positron" };
-        public static readonly LocatorTemplate CartoDark = new LocatorTemplate(Organization.Carto, "png", "dark_all") { Style = "dark matter" };
-
-        public static readonly LocatorTemplate StamenTerrain = new LocatorTemplate(Organization.Stamen, "jpg", "terrain");
-        public static readonly LocatorTemplate StamenToner = new LocatorTemplate(Organization.Stamen, "png", "toner");
-        //public static readonly LocatorTemplate StamenWatercolor = new LocatorTemplate(Organization.Stamen, "jpg", "watercolor"); // not informative
-
-        public static readonly LocatorTemplate MapXyz = new LocatorTemplate(Organization.MapXyz, "png");
-
-        public static readonly LocatorTemplate WmfLabs = new LocatorTemplate(Organization.WmfLabs, "png", "osm");
-
-        public static readonly LocatorTemplate TfLandscape = new LocatorTemplate(Organization.Thunderforest, "png", "landscape");
-        public static readonly LocatorTemplate TfOutdoors = new LocatorTemplate(Organization.Thunderforest, "png", "outdoors");
-
-        public static readonly LocatorTemplate MapBoxStreets = new LocatorTemplate(Organization.Mapbox, "png", "v4/mapbox.streets") { Style = "streets" };
-        public static readonly LocatorTemplate MapBoxOutdoors = new LocatorTemplate(Organization.Mapbox, "png", "v4/mapbox.outdoors") { Style = "outdoors" };
-        public static readonly LocatorTemplate MapBoxSatellite = new LocatorTemplate(Organization.Mapbox, "png", "v4/mapbox.satellite") { Style = "satellite" };
-        //public static readonly LocatorTemplate MapBoxTerrain = new LocatorTemplate(Organization.Mapbox, "png", "v4/mapbox.terrain") { Style = "terrain" };
-
-        const string hereSuffix = "/256/png8";
-        const string hereSubdir = "maptile/2.1/maptile/newest/";
-        public static readonly LocatorTemplate HereNormal = new LocatorTemplate(Organization.Here, hereSuffix, hereSubdir + "normal.day") { Subdomain = "base", Style = "basemap" };
-        public static readonly LocatorTemplate HereHybrid = new LocatorTemplate(Organization.Here, hereSuffix, hereSubdir + "hybrid.day") { Subdomain = "aerial", Style = "aerial" };
-
-        //public static readonly LocatorTemplate OpenPt = new LocatorTemplate(Organization.OpenPublicTransport, "png", "tiles") { Style = "public transport" };
-        // public static readonly LocatorTemplate UsgsBase = new LocatorTemplate(Organization.Usgs, null, "arcgis/rest/services/USGSTopo/MapServer/tile");
-
-        public static IEnumerable<LocatorTemplate> Predefined()
-        {
-            yield return CartoLight;
-            yield return CartoDark;
-            yield return WmfLabs;
-            yield return MapXyz;
-            yield return TfLandscape;
-            yield return TfOutdoors;
-            yield return Osm;
-            yield return StamenToner;
-            yield return StamenTerrain;
-            yield return MapBoxStreets;
-            yield return MapBoxSatellite;
-            yield return MapBoxOutdoors;
-            yield return HereNormal;
-            yield return HereHybrid;
-            //yield return MapBoxTerrain;
-            //yield return OpenPt;
-            //yield return StamenWatercolor;
-            //yield return UsgsBase;
-        }
-
         /// <summary>
         /// </summary>
         /// <param name="org"></param>
@@ -176,6 +126,27 @@ namespace Abnaki.Albiruni.TileHost
         //public bool UserDefined { get; set; }
 
         //public IEnumerable<string> Subdomains { get; private set; }
+
+        public Func<LocatorTemplate,string> CopyrightFunc { get; private set; }
+
+        [XmlIgnore]
+        public string FullCopyright
+        {
+            get
+            {
+                var sb = new System.Text.StringBuilder();
+                sb.Append("Maps © ");
+                sb.Append(this.Org.Copyright);
+                if (CopyrightFunc != null)
+                {
+                    if (sb.Length > 0)
+                        sb.Append(", ");
+
+                    sb.Append(CopyrightFunc(this));
+                }
+                return sb.ToString();
+            }
+        }
 
         LocatorInstance GetInstance(object subdomain)
         {
