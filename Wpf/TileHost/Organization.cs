@@ -60,6 +60,9 @@ namespace Abnaki.Albiruni.TileHost
         /// </summary>
         public string UserKey { get; set; }
 
+        // wish to refactor UriDelimitUserKey and UserKey into a class responsible
+        // for multiple named key parameters, http GET format, and help/information to user.
+
         /// <summary>
         /// Will appear file path in uri, before UserKey, e.g. ?access_token=
         /// </summary>
@@ -140,7 +143,7 @@ namespace Abnaki.Albiruni.TileHost
             FileKey = "here.com",
             AllowMultiUserCache = false, // terms of service
             UserKey = UndefinedKey,
-            UriDelimitUserKey = "?"
+            UriDelimitUserKey = "?" // requires 2 explicit parameters
             // Copyright will require query involving UserKey
         };
 
