@@ -9,7 +9,7 @@ namespace Abnaki.Albiruni.TileHost
     /// <summary>
     /// Independent legal entity that serves up map tiles
     /// </summary>
-    public class Organization
+    public class Organization : IComparable<Organization>
     {
         public Organization(string partUri, IEnumerable subdoms = null)
         {
@@ -43,9 +43,11 @@ namespace Abnaki.Albiruni.TileHost
         public Abnaki.Windows.Xml.Yuri Domain { get; set; }
 
         /// <summary>
-        /// Optional strings or chars of subdomains of org
+        /// Optional strings or chars of subdomains of org.
         /// </summary>
         public string[] Subdomains { get; set; }
+
+        //public string SubdomainTemplate { get; set; }
 
         /// <summary>
         /// Markdown format.  Words/urls only.  Don't include (c) symbol.
@@ -83,6 +85,11 @@ namespace Abnaki.Albiruni.TileHost
         public override string ToString()
         {
             return Domain.ToString();
+        }
+
+        public int CompareTo(Organization other)
+        {
+            return this.Domain.CompareTo(other.Domain);
         }
 
         const string citeosm = "[OpenStreetMap Contributors](http://openstreetmap.org/copyright)";
@@ -128,9 +135,19 @@ namespace Abnaki.Albiruni.TileHost
             UriDelimitUserKey = "?access_token="
         };
 
+        public static readonly Organization Here = new Organization("https://maps.cit.api.here.com","1234")
+        {
+            FileKey = "here.com",
+            AllowMultiUserCache = false, // terms of service
+            UserKey = UndefinedKey,
+            UriDelimitUserKey = "?"
+            // Copyright will require query involving UserKey
+        };
+
         public static IEnumerable<Organization> CommercialProviders()
         {
             yield return Mapbox;
+            yield return Here;
         }
 
         //public static readonly Organization OpenPublicTransport = new Organization("http://www.openptmap.org")
@@ -139,6 +156,7 @@ namespace Abnaki.Albiruni.TileHost
         //};
 
         // public static readonly Organization Usgs = new Organization("http://basemap.nationalmap.gov");
+
 
     }
 }
