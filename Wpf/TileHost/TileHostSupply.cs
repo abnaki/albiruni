@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Diagnostics;
 
 using Abnaki.Windows.Xml;
 using Abnaki.Windows;
@@ -27,6 +28,7 @@ namespace Abnaki.Albiruni.TileHost
         {
             FileInfo fi = XmlFileInfo();
             AbnakiXml.Write(fi.FullName, this, Subtypes());
+            Debug.WriteLine("Wrote " + fi.FullName);
         }
 
         public static TileHostSupply Read()
