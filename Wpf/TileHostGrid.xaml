@@ -31,7 +31,12 @@
                 <Hyperlink
                     NavigateUri="https://www.mapbox.com/pricing/"
                     RequestNavigate="HyperlinkNavigate"
-                    ToolTip="Not an endorsement, no affiliation">MapBox</Hyperlink>, or 
+                    ToolTip="Not an endorsement, no affiliation">MapBox.com</Hyperlink>, 
+                <Hyperlink
+                    NavigateUri="https://developer.here.com/"
+                    RequestNavigate="HyperlinkNavigate"
+                    ToolTip="Not an endorsement, no affiliation">Here.com</Hyperlink>, 
+                or 
                 <Hyperlink
                     NavigateUri="https://switch2osm.org/serving-tiles/"
                     RequestNavigate="HyperlinkNavigate">set up an OpenStreetMap server</Hyperlink> 
