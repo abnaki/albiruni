@@ -122,6 +122,7 @@ namespace Abnaki.Albiruni.TileHost
             {
                 TileImageLoader.MinimumCacheExpiration = TimeSpan.FromDays(15);
                 TileImageLoader.DefaultCacheExpiration = TimeSpan.FromDays(30);
+                // depends on commerical provider.  here.com said 30 days max.
             }
 
             if (TileImageLoader.Cache is MemoryCache)
