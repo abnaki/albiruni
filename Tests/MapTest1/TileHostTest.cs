@@ -22,7 +22,8 @@ namespace MapTest1
             try
             {
                 TileHostSupply supply = new TileHostSupply();
-                supply.Organizations.Add(Organization.Mapbox);
+
+                supply.Organizations.AddRange(Organization.CommercialProviders());
 
                 supply.Write();
 
