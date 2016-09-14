@@ -15,7 +15,7 @@ namespace Abnaki.Albiruni
         {
             this.SourceName = loctemp.Org.Domain.Uri.Host + "/" + loctemp.Subdirectory;
 
-            this.Description = "Maps © " + loctemp.Org.Copyright;
+            this.Description = loctemp.FullCopyright;
 
             this.TileSource = new TileSource() { UriFormat = loctemp.Template };
 
