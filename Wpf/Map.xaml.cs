@@ -364,15 +364,28 @@ namespace Abnaki.Albiruni
             // Slider Selection implies range of agreeable values
             bool enableRange = precisionMinusZoomSynced.HasValue && (ChkSync.IsChecked == true);
 
-            slprecision.IsSelectionRangeEnabled = enableRange;
-            slzoom.IsSelectionRangeEnabled = enableRange;
+            UpdateSliderSelection(enableRange, slzoom, slprecision, -1);
+            UpdateSliderSelection(enableRange, slprecision, slzoom, 1);
+        }
 
-            if ( enableRange )
+        /// <summary>
+        /// Change slider Selection to otherSlider [Minimum,Maximum] + sign*precisionMinusZoomSynced
+        /// </summary>
+        void UpdateSliderSelection(bool enable, Slider slider, Slider otherSlider, double sign)
+        {
+            slider.IsSelectionRangeEnabled = enable;
+            try
             {
-                slzoom.SelectionStart = Math.Max(slzoom.Minimum, slprecision.Minimum - precisionMinusZoomSynced.Value);
-                slzoom.SelectionEnd = Math.Min(slzoom.Maximum, slprecision.Maximum - precisionMinusZoomSynced.Value);
-                slprecision.SelectionStart = Math.Max(slprecision.Minimum, slzoom.Minimum + precisionMinusZoomSynced.Value);
-                slprecision.SelectionEnd = Math.Min(slprecision.Maximum, slzoom.Maximum + precisionMinusZoomSynced.Value);
+                if ( enable )
+                {
+                    double offset = sign * precisionMinusZoomSynced.Value;
+                    slider.SelectionStart = MapExtensions.Bounded(slider.Minimum, otherSlider.Minimum + offset, slider.Maximum);
+                    slider.SelectionEnd = MapExtensions.Bounded(slider.SelectionStart, otherSlider.Maximum + offset, slider.Maximum);
+                }
+            }
+            catch
+            {
+                slider.IsSelectionRangeEnabled = false;
             }
         }
 
