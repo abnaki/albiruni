@@ -74,15 +74,25 @@ namespace Abnaki.Albiruni
 
                 Griddy.BindGrid(records);
 
+                // this implies that, when 1 key is involved, 
+                // Organization.UriDelimitUserKey can be "?paramname=" and UserKey is simply data.
+                //   That requires fewer user inputs/tricks.
+                // But when more than 1 key is involved, UriDelimitUserKey is "?" 
+                //    and various paramnames must be lumped into Organization.UserKey.
+                string keyTips = string.Join(Environment.NewLine,
+                    "If your account with server",
+                    "has a single key (or access token)",
+                    "paste here.  For example, pk.geus783s37",
+                    "If there are multiple keys,",
+                    "paste as formatted http GET parameters.",
+                    "For example, app_id=puWHx&app_code=luNuE31");
+
                 Griddy.ConfigureColumns(new Col[]
                 {
                 new Col("Select"),
                 new Col("Host"),
                 new Col("Style"),
-                new Col("PartialKey"){
-                    Caption= "User Key",
-                    Tooltip = "If your account with server has a key or access token, paste here (shown abbreviated)"
-                }
+                new Col("PartialKey"){ Caption= "User Key", Tooltip = keyTips }
                 });
 
                 // initial selected record
