@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <TileHostSupply xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Organizations>
     <Organization>
@@ -11,6 +11,18 @@
       </Subdomains>
       <UserKey>undefined</UserKey>
       <FileKey>mapbox</FileKey>
+    </Organization>
+    <Organization>
+      <Domain>https://maps.cit.api.here.com/</Domain>
+      <Subdomains>
+        <string>1</string>
+        <string>2</string>
+        <string>3</string>
+        <string>4</string>
+      </Subdomains>
+      <!-- you may replace undefined with proper substitutions of app_id=YOURID&amp;app_code=YOURCODE -->
+      <UserKey>undefined</UserKey>
+      <FileKey>here.com</FileKey>
     </Organization>
   </Organizations>
 </TileHostSupply>
