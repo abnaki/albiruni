@@ -17,8 +17,6 @@ namespace Abnaki.Albiruni.TileHost
     /// </remarks>
     public class LocatorTemplate : IComparable<LocatorTemplate>
     {
-        const string SubdomainTemplate = "{c}";  // for TileSource
-
         public static readonly LocatorTemplate Osm = new LocatorTemplate(Organization.Osm, "png");
 
         public static readonly LocatorTemplate CartoLight = new LocatorTemplate(Organization.Carto, "png", "light_all") { Style = "positron" };
@@ -40,6 +38,11 @@ namespace Abnaki.Albiruni.TileHost
         public static readonly LocatorTemplate MapBoxSatellite = new LocatorTemplate(Organization.Mapbox, "png", "v4/mapbox.satellite") { Style = "satellite" };
         //public static readonly LocatorTemplate MapBoxTerrain = new LocatorTemplate(Organization.Mapbox, "png", "v4/mapbox.terrain") { Style = "terrain" };
 
+        const string hereSuffix = "/256/png8";
+        const string hereSubdir = "maptile/2.1/maptile/newest/";
+        public static readonly LocatorTemplate HereNormal = new LocatorTemplate(Organization.Here, hereSuffix, hereSubdir + "normal.day") { Subdomain = "base", Style = "basemap" };
+        public static readonly LocatorTemplate HereHybrid = new LocatorTemplate(Organization.Here, hereSuffix, hereSubdir + "hybrid.day") { Subdomain = "aerial", Style = "aerial" };
+
         //public static readonly LocatorTemplate OpenPt = new LocatorTemplate(Organization.OpenPublicTransport, "png", "tiles") { Style = "public transport" };
         // public static readonly LocatorTemplate UsgsBase = new LocatorTemplate(Organization.Usgs, null, "arcgis/rest/services/USGSTopo/MapServer/tile");
 
@@ -57,6 +60,8 @@ namespace Abnaki.Albiruni.TileHost
             yield return MapBoxStreets;
             yield return MapBoxSatellite;
             yield return MapBoxOutdoors;
+            yield return HereNormal;
+            yield return HereHybrid;
             //yield return MapBoxTerrain;
             //yield return OpenPt;
             //yield return StamenWatercolor;
@@ -72,43 +77,70 @@ namespace Abnaki.Albiruni.TileHost
         {
             this.Subdirectory = subdirectory;
             this.Org = org;
-
-            string subdom = null;
-            if (org.Subdomains == null)
-            {
-                //Subdomains = Enumerable.Empty<string>();
-            }
-            else
-            {
-                subdom = SubdomainTemplate + ".";
-                //Subdomains = subdoms.Cast<object>().Select(s => Convert.ToString(s));
-            }
-
-            string subdir = null;
-            if (subdirectory != null)
-                subdir = subdirectory + "/";
-
-            string relativeUrl = "{z}/{x}/{y}";
-
-            if (false == string.IsNullOrEmpty(imageExt))
-                relativeUrl += "." + imageExt;
-
-            if (false == string.IsNullOrEmpty(org.UserKey))
-                relativeUrl += org.UriDelimitUserKey + org.UserKey;
-
-            string port = null;
-            if (false == org.Domain.Uri.IsDefaultPort)
-                port = ":" + org.Domain.Uri.Port;
-
-            this.Template = string.Format("{0}://{1}{2}{3}/{4}{5}", org.Domain.Uri.Scheme,
-                subdom, org.Domain.Uri.Host, port,
-                subdir, relativeUrl);
+            this.ImageSuffix = imageExt;
         }
 
         /// <summary>
         /// In some cases may be passed to MapControl.TileSource(uriFormat)
         /// </summary>
-        public string Template { get; private set; }
+        public string Template
+        {
+            get
+            {
+                // The specific host logic is uniform with an Organization.
+                string subdom = null;
+                //if (Org.SubdomainTemplate != null)
+                //{
+                //    subdom = Org.SubdomainTemplate;
+                //}
+                //else
+                if (Org.Subdomains == null)
+                {
+                    // nothing
+                }
+                // Template logic follows TileSource.cs.
+                else if (Org.Subdomains.FirstOrDefault() == "a")
+                {
+                    subdom = "{c}.";
+                }
+                else if (Org.Subdomains.FirstOrDefault() == "1")
+                {
+                    subdom = "{n}.";
+                }
+
+                // More general subdomain of a style of map
+                if (false == string.IsNullOrEmpty(this.Subdomain))
+                {
+                    subdom += Subdomain + ".";
+                }
+
+                string subdir = null;
+                if (Subdirectory != null)
+                    subdir = Subdirectory + "/";
+
+                string relativeUrl = "{z}/{x}/{y}";
+
+                if (false == string.IsNullOrEmpty(ImageSuffix))
+                {
+                    if (false == ImageSuffix.StartsWith("/"))
+                        relativeUrl += ".";
+
+                    relativeUrl += ImageSuffix;
+                }
+
+                if (false == string.IsNullOrEmpty(Org.UserKey))
+                    relativeUrl += Org.UriDelimitUserKey + Org.UserKey;
+
+                string port = null;
+                if (false == Org.Domain.Uri.IsDefaultPort)
+                    port = ":" + Org.Domain.Uri.Port;
+
+                return string.Format("{0}://{1}{2}{3}/{4}{5}", Org.Domain.Uri.Scheme,
+                    subdom, Org.Domain.Uri.Host, port,
+                    subdir, relativeUrl);
+
+            }
+        }
 
         public string FileKey
         {
@@ -118,7 +150,11 @@ namespace Abnaki.Albiruni.TileHost
             }
         }
 
+        string ImageSuffix { get; set; }
+
         internal Organization Org { get; private set; }
+
+        public string Subdomain { get; set; }
 
         public string Subdirectory { get; private set; }
 
@@ -143,11 +179,13 @@ namespace Abnaki.Albiruni.TileHost
 
         LocatorInstance GetInstance(object subdomain)
         {
+            throw new NotImplementedException();
             string uri;
             if (subdomain == null)
                 uri = this.Template;
             else
-                uri = this.Template.Replace(SubdomainTemplate, subdomain.ToString());
+                //uri = this.Template.Replace(DefaultSubdomainTemplate, subdomain.ToString());
+                throw new NotImplementedException();
 
             return new LocatorInstance(uri);
         }
@@ -168,7 +206,17 @@ namespace Abnaki.Albiruni.TileHost
 
         public int CompareTo(LocatorTemplate other)
         {
-            return this.Template.CompareTo(other.Template);
+            int cmp = this.Org.CompareTo(other.Org);
+            if (cmp != 0)
+                return cmp;
+
+            // need nullable compare
+            cmp = Abnaki.Windows.Compare.CompareNullPossible(this.Subdirectory, other.Subdirectory);
+            if (cmp != 0)
+                return cmp;
+
+            cmp = Abnaki.Windows.Compare.CompareNullPossible(this.Subdomain, other.Subdomain);
+            return cmp;
         }
 
         public static IEnumerable<IGrouping<Organization,LocatorTemplate>> PredefinedOrganizationGroups()
