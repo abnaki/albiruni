@@ -148,6 +148,7 @@
     <Compile Include="TileHostGrid.xaml.cs">
       <DependentUpon>TileHostGrid.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TileHost\LocatorTemplate.Statics.cs" />
     <Compile Include="TileHost\TileHostSupply.cs" />
     <Compile Include="TileHost\TiRecord.cs" />
     <Compile Include="TileHost\Governor.cs" />
