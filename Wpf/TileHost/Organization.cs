@@ -53,7 +53,7 @@ namespace Abnaki.Albiruni.TileHost
         /// Markdown format.  Words/urls only.  Don't include (c) symbol.
         /// </summary>
         [XmlIgnore]
-        public string Copyright { get; set; }
+        public string Copyright { get; private set; }
 
         /// <summary>
         /// Access token
@@ -140,11 +140,11 @@ namespace Abnaki.Albiruni.TileHost
 
         public static readonly Organization Here = new Organization("https://maps.cit.api.here.com","1234")
         {
+            Copyright = "[HERE](http://developer.here.com)",
             FileKey = "here.com",
             AllowMultiUserCache = false, // terms of service
             UserKey = UndefinedKey,
             UriDelimitUserKey = "?" // requires 2 explicit parameters
-            // Copyright will require query involving UserKey
         };
 
         public static IEnumerable<Organization> CommercialProviders()
