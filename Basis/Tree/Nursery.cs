@@ -154,11 +154,10 @@ namespace Abnaki.Albiruni.Tree
                     {
                         // expected to be a sporadic bad file, not a systematic Albiruni bug.
                         // firoot will survive anyway, and may be childless, trivial, or incomplete,
-                        // but want to avoid reading the exact source again.
+                        // but want to avoid reading the exact source again, so needWrite remains true.
 
                         // AbnakiLog.Exception(ex, "Error due to " + fi.FullName);
                         guidance.FilesExceptions[fi.FullName] = ex;
-                        needWrite = false;
                     }
 
                 }
