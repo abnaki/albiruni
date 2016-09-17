@@ -102,9 +102,12 @@ namespace Abnaki.Albiruni.TileHost
 
         void HandleTileHost(TileHostMessage msg)
         {
-            Debug.WriteLine(GetType().Name + " handles " + msg.LocatorTemplate);
+            using (WaitCursor.InProgress())
+            {
+                Debug.WriteLine(GetType().Name + " handles " + msg.LocatorTemplate);
 
-            ChangeCache(msg.LocatorTemplate);
+                ChangeCache(msg.LocatorTemplate);
+            }
         }
 
         void ChangeCache(LocatorTemplate loctemp)
