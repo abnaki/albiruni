@@ -35,9 +35,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MapControl.WPF, Version=2.9.0.0, Culture=neutral, PublicKeyToken=f26fcf0059638459, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\XAML.MapControl.2.9.0\lib\net45\MapControl.WPF.dll</HintPath>
+    <Reference Include="ImageFileCache.WPF">
+      <HintPath>..\..\packages\XAML.MapControl.2.12.0\lib\net45\ImageFileCache.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="MapControl.WPF">
+      <HintPath>..\..\packages\XAML.MapControl.2.12.0\lib\net45\MapControl.WPF.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -81,6 +83,9 @@
       <Project>{ebd4b6f8-505e-44e1-87b6-305588444e0f}</Project>
       <Name>ProviderTest1</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
