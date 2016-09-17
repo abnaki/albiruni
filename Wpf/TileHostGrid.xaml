@@ -31,7 +31,7 @@
                 <Hyperlink
                     NavigateUri="https://www.mapbox.com/pricing/"
                     RequestNavigate="HyperlinkNavigate"
-                    ToolTip="Not an endorsement, no affiliation">MapBox.com</Hyperlink>, 
+                    ToolTip="Not an endorsement, no affiliation">Mapbox.com</Hyperlink>, 
                 <Hyperlink
                     NavigateUri="https://developer.here.com/"
                     RequestNavigate="HyperlinkNavigate"
