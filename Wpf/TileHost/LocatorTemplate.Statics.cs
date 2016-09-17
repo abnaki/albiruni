@@ -25,10 +25,11 @@ namespace Abnaki.Albiruni.TileHost
             yield return MapBoxOutdoors;
             yield return HereNormal;
             yield return HereHybrid;
+            yield return UsgsBase;
+            yield return UsgsImageryTopo;
             //yield return MapBoxTerrain;
             //yield return OpenPt;
             //yield return StamenWatercolor;
-            //yield return UsgsBase;
         }
 
         public static readonly LocatorTemplate Osm = new LocatorTemplate(Organization.Osm, "png");
@@ -64,7 +65,19 @@ namespace Abnaki.Albiruni.TileHost
             new LocatorTemplate(Organization.Here, hereSuffix, hereSubdir + "hybrid.day") { Subdomain = "aerial", Style = "aerial", CopyrightFunc = hereCopyright };
 
         //public static readonly LocatorTemplate OpenPt = new LocatorTemplate(Organization.OpenPublicTransport, "png", "tiles") { Style = "public transport" };
-        // public static readonly LocatorTemplate UsgsBase = new LocatorTemplate(Organization.Usgs, null, "arcgis/rest/services/USGSTopo/MapServer/tile");
 
+        const string wmsCoord = "{z}/{y}/{x}";
+
+        public static readonly LocatorTemplate UsgsBase = new LocatorTemplate(Organization.Usgs, null, "arcgis/rest/services/USGSTopo/MapServer/tile")
+        {
+            CoordinateSystem = wmsCoord,
+            Style = "USGS topo base"
+        };
+
+        public static readonly LocatorTemplate UsgsImageryTopo = new LocatorTemplate(Organization.Usgs, null, "arcgis/rest/services/USGSImageryTopo/MapServer/tile")
+        {
+            CoordinateSystem = wmsCoord,
+            Style = "USGS imagery hybrid"
+        };
     }
 }
