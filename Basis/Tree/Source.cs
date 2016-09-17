@@ -22,11 +22,8 @@ namespace Abnaki.Albiruni.Tree
 
         public Source(FileInfo fi, DirectoryInfo dibase) : this()
         {
-            Providers.FileReader filer = Providers.FileReader.SelectFileReader(fi);
-            this.PointProvider = filer;
-            filer.Deserialize(fi);
-
             this.Path = AbnakiFile.RelativePath(fi, dibase);
+            RefreshIFileFromSource(dibase);
         }
 
         /// <summary>Less often used
@@ -43,7 +40,23 @@ namespace Abnaki.Albiruni.Tree
 
         public string Path { get; private set; }
 
+        public bool Draw { get; set; }
+
         public Providers.PointReader PointProvider { get; private set; }
+
+        Providers.IFile IFile { get; set; }
+
+        public Providers.IFile RefreshIFileFromSource(DirectoryInfo dibase)
+        {
+            if ( this.IFile == null )
+            {
+                FileInfo fi = AbnakiFile.CombinedFilePath(dibase, this.Path);
+                Providers.FileReader filer = Providers.FileReader.SelectFileReader(fi);
+                this.PointProvider = filer;
+                this.IFile = filer.Deserialize(fi);
+            }
+            return this.IFile;
+        }
 
         public override string ToString()
         {
