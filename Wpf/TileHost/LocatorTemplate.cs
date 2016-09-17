@@ -28,6 +28,8 @@ namespace Abnaki.Albiruni.TileHost
             this.Subdirectory = subdirectory;
             this.Org = org;
             this.ImageSuffix = imageExt;
+
+            this.CoordinateSystem = "{z}/{x}/{y}"; // TMS
         }
 
         /// <summary>
@@ -68,7 +70,7 @@ namespace Abnaki.Albiruni.TileHost
                 if (Subdirectory != null)
                     subdir = Subdirectory + "/";
 
-                string relativeUrl = "{z}/{x}/{y}";
+                string relativeUrl = CoordinateSystem;
 
                 if (false == string.IsNullOrEmpty(ImageSuffix))
                 {
@@ -107,6 +109,12 @@ namespace Abnaki.Albiruni.TileHost
         public string Subdomain { get; set; }
 
         public string Subdirectory { get; private set; }
+
+        /// <summary>
+        /// Part of URL denoting matrix z, column x, and row y.  For example,
+        /// {z}/{x}/{y}
+        /// </summary>
+        public string CoordinateSystem { get; set; }
 
         /// <summary>
         /// Optional style of colors etc., if not obvious from Subdirectory; 
