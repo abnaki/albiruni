@@ -137,7 +137,9 @@ namespace Abnaki.Albiruni
                 if (cur.LocatorTemplate.Valid)
                 {
                     TileHostMessage msg = new TileHostMessage(cur.LocatorTemplate);
-                    MessageTube.Publish(msg);
+                    
+                    Dispatcher.InvokeAsync(() => MessageTube.Publish(msg), // want grid checkbox to take priority
+                        System.Windows.Threading.DispatcherPriority.Background);
                 }
                 else
                 {
