@@ -46,11 +46,13 @@
       <HintPath>..\packages\AutoDependencyProperty.Fody.1.2.2.0\lib\net40\AutoDependencyPropertyMarker.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="ImageFileCache.WPF">
-      <HintPath>..\packages\XAML.MapControl.2.9.0\lib\net45\ImageFileCache.WPF.dll</HintPath>
+    <Reference Include="ImageFileCache.WPF, Version=2.12.0.0, Culture=neutral, PublicKeyToken=f26fcf0059638459, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\XAML.MapControl.2.12.0\lib\net45\ImageFileCache.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="MapControl.WPF">
-      <HintPath>..\packages\XAML.MapControl.2.9.0\lib\net45\MapControl.WPF.dll</HintPath>
+    <Reference Include="MapControl.WPF, Version=2.12.0.0, Culture=neutral, PublicKeyToken=f26fcf0059638459, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\XAML.MapControl.2.12.0\lib\net45\MapControl.WPF.dll</HintPath>
     </Reference>
     <Reference Include="PropertyChanged">
       <HintPath>..\packages\PropertyChanged.Fody.1.51.0\Lib\portable-net4+sl4+wp8+win8+wpa81+MonoAndroid16+MonoTouch40\PropertyChanged.dll</HintPath>
@@ -76,6 +78,10 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="WPFFolderBrowser">
       <HintPath>..\packages\WPFFolderBrowser.1.0.2\lib\WPFFolderBrowser.dll</HintPath>
+    </Reference>
+    <Reference Include="WpfScreenHelper, Version=0.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WpfScreenHelper.0.3.0.0\lib\net40\WpfScreenHelper.dll</HintPath>
     </Reference>
     <Reference Include="Xceed.Wpf.AvalonDock">
       <HintPath>..\packages\Extended.Wpf.Toolkit.2.9\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
@@ -103,6 +109,8 @@
     <Compile Include="Graphic\Curve\OutlineRectangle.cs" />
     <Compile Include="Graphic\Graticule.cs" />
     <Compile Include="Graphic\ImperialScale.cs" />
+    <Compile Include="Graphic\SourceMapper.cs" />
+    <Compile Include="Graphic\Symbol\SolidPoint.cs" />
     <Compile Include="MapCache.cs" />
     <Compile Include="MapNodeLayer.cs" />
     <Compile Include="MapTiLayer.cs" />
@@ -120,6 +128,7 @@
     <Compile Include="Menu\HelpMenuBus.cs" />
     <Compile Include="Menu\OptionMenuBus.cs" />
     <Compile Include="Menu\OptionMenuKey.cs" />
+    <Compile Include="Message\DrawSourceMessage.cs" />
     <Compile Include="Message\InvalidateMessage.cs" />
     <Compile Include="Message\InvokeSourceMessage.cs" />
     <Compile Include="Message\RootNodeMessage.cs" />
