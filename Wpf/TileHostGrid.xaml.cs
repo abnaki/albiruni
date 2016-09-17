@@ -105,11 +105,11 @@ namespace Abnaki.Albiruni
             }
         }
 
-        void GridEditCommitted(object sender, Xceed.Wpf.DataGrid.DataGridItemEventArgs e, string field)
+        void GridEditCommitted(object sender, Abnaki.Windows.Software.Wpf.PreferredControls.Grid.Event.RecordCellEventArgs e)
         {
-            TiRecord cur = (TiRecord)e.Item;
+            TiRecord cur = (TiRecord)e.Record;
 
-            switch (field)
+            switch (e.Field)
             {
                 case "Select":
                     ApplySelection(cur);
