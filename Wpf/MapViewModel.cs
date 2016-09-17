@@ -13,6 +13,8 @@ using Abnaki.Windows.Software.Wpf;
 using Abnaki.Windows.Software.Wpf.Menu;
 using MapControl;
 using PropertyChanged;
+using Abnaki.Albiruni.Message;
+using System.Windows.Threading;
 
 namespace Abnaki.Albiruni
 {
@@ -22,7 +24,7 @@ namespace Abnaki.Albiruni
         public MapViewModel()
         {
             Rectangles = new List<MapRectangle>();
-            Symbols = new ObservableCollection<MapPath>();
+            Symbols = new ObservableCollection<FrameworkElement>();
             Tracks = new ObservableCollection<MapPath>();
             EmphasizedPaths = new ObservableCollection<MapPath>();
             ViewPortRect = new MapRectangle(); // unspecified
@@ -32,6 +34,7 @@ namespace Abnaki.Albiruni
             ClearLastNodesFound();
 
             MessageTube.SubscribeCostly<Message.RootNodeMessage>(HandleTree);
+            MessageTube.SubscribeCostly<DrawSourceMessage>(HandleDrawSource);
             ButtonBus<Menu.OptionMenuKey>.HookupSubscriber(HandleOption);
         }
 
@@ -59,8 +62,11 @@ namespace Abnaki.Albiruni
 
         public List<MapRectangle> Rectangles { get; private set; }
         
-        // with MapItems want to use BulkObservableCollection or similar
-        public ObservableCollection<MapPath> Symbols { get; private set; }
+        // may want to use BulkObservableCollection or similar...no luck.
+
+        /// <summary>such as waypoints</summary>
+        public ObservableCollection<FrameworkElement> Symbols { get; private set; }
+
         public ObservableCollection<MapPath> Tracks { get; private set; }
         public ObservableCollection<MapPath> EmphasizedPaths { get; private set; }
 
@@ -70,6 +76,8 @@ namespace Abnaki.Albiruni
 
         /// <summary>1 by 1 display units translated onto map</summary>
         MapRectangle DisplayUnitRect { get; set; }
+
+        SourceMapper sourceMapper = new SourceMapper();
 
         public void SetViewPort(MapRectangle viewRect, MapRectangle unitRect)
         {
@@ -119,6 +127,8 @@ namespace Abnaki.Albiruni
         public void HandleTree(Message.RootNodeMessage msg)
         {
             //root.DebugPrint();
+
+            sourceMapper.SourceDirectory = msg.SourceDirectory;
 
             ClearTreeDependentObjects();
             ClearLastNodesFound();
@@ -395,14 +405,15 @@ namespace Abnaki.Albiruni
         {
             // different sets will need to be created depending on intersection with viewport
             Rectangles.Clear();
-            Symbols.Clear();
-            Tracks.Clear();
         }
 
         void ClearTreeDependentObjects()
         {
             ClearViewPortDependentObjects();
             EmphasizedPaths.Clear();
+            Symbols.Clear();
+            Tracks.Clear();
+            sourceMapper.Clear();
         }
 
         Location lastLocation;
@@ -559,7 +570,19 @@ namespace Abnaki.Albiruni
             
         }
 
-
+        private void HandleDrawSource(DrawSourceMessage msg)
+        {
+            // sometimes very costly
+            Dispatcher.CurrentDispatcher.InvokeAsync( () =>
+            {
+                using (WaitCursor.InProgress())
+                {
+                    sourceMapper.UpdateSource(msg.SourceRecord, this);
+                }
+            }, 
+            DispatcherPriority.Background);
+            
+        }
 
         public void Testing()
         {
@@ -573,9 +596,9 @@ namespace Abnaki.Albiruni
             r.Fill = m_defaultFillBrush;
             Rectangles.Add(r);
 
-            var diamond = new Abnaki.Albiruni.Graphic.Symbol.Diamond(MapCenter, 0.01, 0.015);
-            diamond.Fill = new SolidColorBrush(Color.FromArgb((byte)64, (byte)0, (byte)0, (byte)255));
-            this.Symbols.Add(diamond);
+            //var diamond = new Abnaki.Albiruni.Graphic.Symbol.Diamond(MapCenter, 0.01, 0.015);
+            //diamond.Fill = new SolidColorBrush(Color.FromArgb((byte)64, (byte)0, (byte)0, (byte)255));
+            //this.Symbols.Add(diamond);
 
             var track = new Abnaki.Albiruni.Graphic.Curve.Track();
             track.Locations = new Location[]
