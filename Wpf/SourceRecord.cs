@@ -15,7 +15,8 @@ namespace Abnaki.Albiruni
             this.OverallPoints = summary.FinalSummary();
         }
 
-        Source Source { get; set; }
+        public Source Source { get; private set; }
+
         public SourceContentSummary Summary { get; private  set; }
         PointSummary OverallPoints { get; set; }
 
@@ -27,6 +28,12 @@ namespace Abnaki.Albiruni
 
         public DateTime? MinTime { get { return this.OverallPoints.MinTime; } }
         public DateTime? MaxTime { get { return this.OverallPoints.MaxTime; } }
+
+        public bool Draw
+        {
+            get { return this.Source.Draw; }
+            set { this.Source.Draw = value; }
+        }
 
         public override string ToString()
         {
