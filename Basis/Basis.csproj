@@ -63,9 +63,13 @@
     <Compile Include="Providers\IPoint.cs" />
     <Compile Include="Providers\Image\JpegFile.cs" />
     <Compile Include="Providers\Image\JpegReader.cs" />
+    <Compile Include="Providers\IPointCollection.cs" />
+    <Compile Include="Providers\IRoute.cs" />
+    <Compile Include="Providers\ITrack.cs" />
     <Compile Include="Providers\PointDump.cs" />
     <Compile Include="Providers\PointReader.cs" />
     <Compile Include="Providers\PurePoint.cs" />
+    <Compile Include="Providers\PureTrack.cs" />
     <Compile Include="Tree\InputOutput\IBinaryRead.cs" />
     <Compile Include="Tree\InputOutput\IBinaryWrite.cs" />
     <Compile Include="Tree\Enums.cs" />
