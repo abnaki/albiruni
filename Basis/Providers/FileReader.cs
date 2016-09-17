@@ -12,7 +12,7 @@ namespace Abnaki.Albiruni.Providers
     {
         protected abstract IFile OpenFile(FileInfo fi);
 
-        public void Deserialize(FileInfo fi)
+        public IFile Deserialize(FileInfo fi)
         {
             if (false == fi.Exists)
                 throw new FileNotFoundException("Nonexistent " + fi.FullName);
@@ -20,6 +20,7 @@ namespace Abnaki.Albiruni.Providers
             IFile filedat = OpenFile(fi);
             this.Points = new PointDump(filedat);
 
+            return filedat;
         }
 
         public static FileReader SelectFileReader(FileInfo fi)
