@@ -3,15 +3,15 @@
   <RootPanel Orientation="Vertical">
     <LayoutPanel Orientation="Horizontal">
       <LayoutDocumentPane>
-        <LayoutAnchorable CanHide="False" AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Map" IsSelected="True" IsLastFocusedDocument="True" ContentId="map" FloatingLeft="217.6" FloatingTop="-436.8" FloatingWidth="592.8" FloatingHeight="349.6" CanClose="False" LastActivationTimeStamp="08/23/2016 13:01:51" />
+        <LayoutAnchorable CanHide="False" AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Map" IsSelected="True" IsLastFocusedDocument="True" ContentId="map" FloatingLeft="217.6" FloatingTop="-436.8" FloatingWidth="592.8" FloatingHeight="349.6" CanClose="False" LastActivationTimeStamp="09/17/2016 14:36:23" />
       </LayoutDocumentPane>
     </LayoutPanel>
     <LayoutAnchorablePaneGroup Orientation="Horizontal" DockWidth="100" DockHeight="191.361666666667" DocMinWidth="100" FloatingWidth="424.8" FloatingHeight="208" FloatingLeft="428.8" FloatingTop="-154.4">
-      <LayoutAnchorablePane DockHeight="221.761666666667" DocMinWidth="100" FloatingWidth="424.8" FloatingHeight="208" FloatingLeft="270.4" FloatingTop="-294.4">
-        <LayoutAnchorable CanHide="False" AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Map Servers" IsSelected="True" ContentId="tilehost" FloatingLeft="270.4" FloatingTop="-294.4" FloatingWidth="424.8" FloatingHeight="208" CanClose="False" LastActivationTimeStamp="08/23/2016 13:02:42" />
+      <LayoutAnchorablePane Id="87648c99-57ff-4692-8c21-dce5ce08308b" DockHeight="191.361666666667" DocMinWidth="100" FloatingWidth="424.8" FloatingHeight="208" FloatingLeft="270.4" FloatingTop="-294.4">
+        <LayoutAnchorable CanHide="False" AutoHideHeight="355.2" AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Map Servers" IsSelected="True" ContentId="tilehost" FloatingLeft="270.4" FloatingTop="-294.4" FloatingWidth="424.8" FloatingHeight="208" CanClose="False" LastActivationTimeStamp="09/17/2016 14:36:04" />
       </LayoutAnchorablePane>
-      <LayoutAnchorablePane DockHeight="221.761666666667" DocMinWidth="100" FloatingWidth="424.8" FloatingHeight="208" FloatingLeft="340.8" FloatingTop="-294.4">
-        <LayoutAnchorable CanHide="False" AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Details" IsSelected="True" ContentId="sourcedetail" FloatingLeft="340.8" FloatingTop="-294.4" FloatingWidth="424.8" FloatingHeight="208" CanClose="False" LastActivationTimeStamp="08/23/2016 13:02:37" />
+      <LayoutAnchorablePane Id="7a03fe5f-8553-4cf1-ab17-703b99943028" DockHeight="221.761666666667" DocMinWidth="100" FloatingWidth="424.8" FloatingHeight="208" FloatingLeft="340.8" FloatingTop="-294.4">
+        <LayoutAnchorable CanHide="False" AutoHideHeight="220.8" AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Details" IsSelected="True" ContentId="sourcedetail" FloatingLeft="340.8" FloatingTop="-294.4" FloatingWidth="424.8" FloatingHeight="208" CanClose="False" LastActivationTimeStamp="09/17/2016 14:36:16" />
       </LayoutAnchorablePane>
     </LayoutAnchorablePaneGroup>
   </RootPanel>
