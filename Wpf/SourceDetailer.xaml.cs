@@ -39,6 +39,7 @@ namespace Abnaki.Albiruni
 
             Loaded += SourceDetailer_Loaded;
             this.grid.DoubleClickedRecord += grid_DoubleClickedRecord;
+            this.grid.GridEditCommitted += grid_GridEditCommitted;
         }
 
         void SourceDetailer_Loaded(object sender, RoutedEventArgs e)
@@ -67,7 +68,8 @@ namespace Abnaki.Albiruni
                 return;
 
             this.grid.ConfigureColumns(new Col[] {
-                new Col("Path"){ Caption = "File"}, // Tooltip="Double-click to open externally"
+                new Col("Draw"),
+                new Col("Path"){ Caption = "File", Tooltip = "Double-click to open externally" },
                 new Col("Waypoints"),
                 new Col("Trackpoints"){ Caption = "Track points"},
                 new Col("Routepoints"){ Caption = "Route points"},
@@ -86,6 +88,17 @@ namespace Abnaki.Albiruni
             Message.InvokeSourceMessage msg = new Message.InvokeSourceMessage(record);
             MessageTube.Publish(msg);
 
+        }
+
+        void grid_GridEditCommitted(object sender, Windows.Software.Wpf.PreferredControls.Grid.Event.RecordCellEventArgs e)
+        {
+            switch ( e.Field )
+            {
+                case "Draw":
+                    Message.DrawSourceMessage msg = new Message.DrawSourceMessage((SourceRecord)e.Record);
+                    MessageTube.Publish(msg);
+                    break;
+            }
         }
 
         void Farewell(FarewellMessage msg)
