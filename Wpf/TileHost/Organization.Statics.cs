@@ -70,7 +70,7 @@ namespace Abnaki.Albiruni.TileHost
         //    Copyright = citeosm
         //};
 
-        // public static readonly Organization Usgs = new Organization("http://basemap.nationalmap.gov");
+        public static readonly Organization Usgs = new Organization("http://basemap.nationalmap.gov");
 
     }
 }
