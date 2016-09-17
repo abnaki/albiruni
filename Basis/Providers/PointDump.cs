@@ -17,8 +17,8 @@ namespace Abnaki.Albiruni.Providers
         public PointDump(IFile filedat)
         {
             this.WayPoints = new List<IPoint>(filedat.WayPoints);
-            this.TrackPoints = new List<IPoint>(filedat.TrackPoints);
-            this.RoutePoints = new List<IPoint>(filedat.RoutePoints);
+            this.TrackPoints = new List<IPoint>(filedat.Tracks.SelectMany(t => t.Points));
+            this.RoutePoints = new List<IPoint>(filedat.Routes.SelectMany(r => r.Points));
         }
 
         public PointDump SuchThat(Func<IPoint,bool> allow)

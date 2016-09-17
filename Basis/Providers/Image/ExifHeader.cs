@@ -169,18 +169,25 @@ namespace Abnaki.Albiruni.Providers.Image
 
         IEnumerable<IPoint> IFile.WayPoints
         {
+            // if users demand it, this could yield return singlePoint.
             get { yield break; }
         }
 
-        IEnumerable<IPoint> IFile.TrackPoints
+        IEnumerable<ITrack> IFile.Tracks
         {
             // an image file will be considered like a frame of a video:  
             // and because a video will have a track, 
             // a single image will too, for consistency.
-            get { yield return singlePoint; }
+            get
+            {
+                yield return new PureTrack()
+                {
+                    Points = new IPoint[] { singlePoint }
+                };
+            }
         }
 
-        IEnumerable<IPoint> IFile.RoutePoints
+        IEnumerable<IRoute> IFile.Routes
         {
             get { yield break; }
         }

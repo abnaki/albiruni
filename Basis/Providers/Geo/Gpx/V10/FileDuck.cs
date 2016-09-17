@@ -20,25 +20,17 @@ namespace Abnaki.Albiruni.Providers.Geo.Gpx.V10
         {
             dynamic temp = Build<ExpandoObject>.NewObject(
                 WayPoints: PointsFromWaypoints(gfile.wpt),
-                TrackPoints: PointsFromTracks(gfile.trk),
-                RoutePoints: PointsFromRoutes(gfile.rte)
+                Tracks: GetTracks(gfile.trk),
+                Routes: GetRoutes(gfile.rte)
                 );
 
             return Impromptu.ActLike<IFile>(temp);
         }
 
-        static IPoint PointFromGpx(GpxPoint wpt)
-        {
-            // GeniusCode.Components.ProxyFactory.DuckInterface<IPoint>(wpt, m_pointProvider); loaded a new damn assembly every time
-            //return ProxyFactory.DuckInterface<IPoint>(wpt, m_pointProvider);
-
-            return PointDuck.PointFromGpx(wpt);
-        }
-
         static IPoint PointFromTrackPoint(GpxTrackPoint pt)
         {
             // note GpxTrackPoint also has course and speed
-            return PointFromGpx(pt);
+            return PointDuck.PointFromGpx(pt);
         }
 
         static IEnumerable<IPoint> PointsFromWaypoints(IEnumerable<GpxPoint> points)
@@ -46,33 +38,45 @@ namespace Abnaki.Albiruni.Providers.Geo.Gpx.V10
             if (points == null)
                 return Enumerable.Empty<IPoint>();
 
-            return points.Select(PointFromGpx).ToArray();
+            return points.Select(PointDuck.PointFromGpx).ToArray();
         }
 
-        static IEnumerable<IPoint> PointsFromTracks(IEnumerable<GpxTrack> tracks)
+        static IEnumerable<ITrack> GetTracks(IEnumerable<GpxTrack> tracks)
         {
             if (tracks == null)
-                return Enumerable.Empty<IPoint>();
+                return Enumerable.Empty<ITrack>();
 
-            IEnumerable<GpxTrackSegment> segs = tracks.Where(t => t.trkseg != null)
-                .SelectMany(t => t.trkseg)
-                .Where(seg => seg != null);
-
-            return segs.Where(seg => seg.trkpt != null)
-                .SelectMany(seg => seg.trkpt)
-                .Where(p => p != null)
-                .Select(PointFromTrackPoint).ToArray();
+            return tracks.Where(trk => trk != null && trk.trkseg != null).Select(TrackFromGpx).ToArray();
         }
 
-        static IEnumerable<IPoint> PointsFromRoutes(IEnumerable<GpxRoute> routes)
+        static ITrack TrackFromGpx(GpxTrack trk)
+        {
+            dynamic temp = Build<ExpandoObject>.NewObject(
+                Points: trk.trkseg.Where(seg => seg.trkpt != null)
+                .SelectMany(seg => seg.trkpt)
+                .Where(p => p != null)
+                .Select(PointDuck.PointFromGpx).ToArray()
+                );
+
+            return Impromptu.ActLike<ITrack>(temp);
+        }
+
+        static IEnumerable<IRoute> GetRoutes(IEnumerable<GpxRoute> routes)
         {
             if (routes == null)
-                return Enumerable.Empty<IPoint>();
+                return Enumerable.Empty<IRoute>();
 
-            return routes.Where(r => r.rtept != null)
-                .SelectMany(r => r.rtept)
-                .Where(p => p != null)
-                .Select(PointFromGpx).ToArray();
+            return routes.Where(r => r.rtept != null).Select(RouteFromGpx).ToArray();
+        }
+
+        static IRoute RouteFromGpx(GpxRoute gr)
+        {
+            dynamic temp = Build<ExpandoObject>.NewObject(
+                Points: gr.rtept.Where(p => p != null)
+                .Select(PointDuck.PointFromGpx).ToArray()
+                );
+
+            return Impromptu.ActLike<IRoute>(temp);
         }
     }
 }

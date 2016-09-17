@@ -12,8 +12,8 @@ namespace Abnaki.Albiruni.Providers
     {
         IEnumerable<IPoint> WayPoints { get; }
 
-        IEnumerable<IPoint> TrackPoints { get; }
+        IEnumerable<ITrack> Tracks { get; }
 
-        IEnumerable<IPoint> RoutePoints { get; }
+        IEnumerable<IRoute> Routes { get; }
     }
 }

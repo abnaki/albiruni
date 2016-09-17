@@ -126,12 +126,12 @@ namespace Abnaki.Albiruni.Tests.Map
                 }
             }
 
-            IEnumerable<IPoint> IFile.TrackPoints
+            IEnumerable<ITrack> IFile.Tracks
             {
                 get { yield break; }
             }
 
-            IEnumerable<IPoint> IFile.RoutePoints
+            IEnumerable<IRoute> IFile.Routes
             {
                 get { yield break; }
             }
