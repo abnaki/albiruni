@@ -31,23 +31,34 @@ namespace Abnaki.Albiruni.Providers.Image
             TimeSpan? gpsUtcTimeOfDay = null;
             DateTime? gpsUtcDate = null;
 
+            // minimal necessities
+            bool validLatRef = false, validLongRef = false, validLat = false, validLon = false;
+
             foreach ( ExifItem x in gpsItems )
             {
                 switch ( x.Id )
                 {
                     case 1:    // GPSLatitudeRef  N or S
                         if (Convert.ToString(x.Value).StartsWith("S"))
+                        {
                             p.Latitude *= -1;
+                        }
+                        validLatRef = true;
                         break;
                     case 2:    // GPSLatitude
                         p.Latitude = DegreesFromItem(x);
+                        validLat = true;
                         break;
                     case 3:    // GPSLongitudeRef  E or W
                         if (Convert.ToString(x.Value).StartsWith("W"))
+                        {
                             p.Longitude *= -1;
+                        }
+                        validLongRef = true;
                         break;
                     case 4:    // GPSLongitude
-                        p.Longitude = DegreesFromItem(x); 
+                        p.Longitude = DegreesFromItem(x);
+                        validLon = true;
                         break;
 
                     case 5: // GPSAltitudeRef  byte[1] of which 0 implies positive, 1 implies negative
@@ -133,7 +144,10 @@ namespace Abnaki.Albiruni.Providers.Image
                 }
             }
 
-            singlePoint = p;
+            if (validLat && validLatRef && validLon && validLongRef)
+            {
+                singlePoint = p;
+            }
         }
 
         static string StringFromExif(object v)
@@ -180,10 +194,13 @@ namespace Abnaki.Albiruni.Providers.Image
             // a single image will too, for consistency.
             get
             {
-                yield return new PureTrack()
-                {
-                    Points = new IPoint[] { singlePoint }
-                };
+                if (singlePoint == null)
+                    yield break;
+                else
+                    yield return new PureTrack()
+                    {
+                        Points = new IPoint[] { singlePoint }
+                    };
             }
         }
 
