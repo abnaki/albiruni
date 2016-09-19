@@ -12,7 +12,7 @@ namespace Abnaki.Albiruni.Tree
             private set;
         }
 
-        int? ReadVersion { get; set; }
+        public int? ReadVersion { get; set; }
 
         public Source ReadSource()
         {
