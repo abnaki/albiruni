@@ -21,32 +21,42 @@ namespace Abnaki.Albiruni.Providers.Geo.Gpx
     /// </remarks>
     class PointDuck
     {
-        public static IPoint PointFromGpx(GpxWaypointBase wpt)
+        /// <summary>
+        /// Conversion
+        /// </summary>
+        /// <param name="wpt"></param>
+        /// <param name="requireElevation">
+        ///   true requires consistency with actually visiting a waypoint;
+        ///   but may be false for tracks as they may have less frequent elevation recordings;
+        ///   software is likely to create waypoints with fictitious times, but not tracks.
+        /// </param>
+        public static IPoint PointFromGpx(GpxWaypointBase wpt, bool requireElevation)
         {
             dynamic temp = Build<ExpandoObject>.NewObject(
                 Latitude: wpt.lat,
                 Longitude: wpt.lon,
-                Time: DateTimeOfWpt(wpt),
+                Time: DateTimeOfWpt(wpt, requireElevation),
                 TimeReliable: wpt.timeSpecified && wpt.eleSpecified,
                 Elevation: wpt.eleSpecified ? (decimal?)wpt.ele : (decimal?)null);
 
             return Impromptu.ActLike<IPoint>(temp); // duck typing
         }
 
-        static DateTime? DateTimeOfWpt(GpxWaypointBase wpt)
+        static DateTime? DateTimeOfWpt(GpxWaypointBase wpt, bool requireElevation)
         {
             if (wpt.timeSpecified)
             {
                 DateTime dt = new DateTime(wpt.time.Ticks, DateTimeKind.Utc);  // undesired DateTimeKind.Unspecified from xml serializer
 
-                if (wpt.eleSpecified) // consistent with actually visiting the point.
+                if (wpt.eleSpecified || !requireElevation)
                 {
                     return dt;
                 }
-                else
+                else if (requireElevation)
                 {
-                    // time is unreliable if not measured by a gps.
-                    // It has been an unwanted output of desktop software, 
+                    // conclude that it is not measured by a gps;
+                    // that implies time is unreliable;
+                    // It was an unwanted output of desktop software, 
                     //  or waypoints created by browsing a map on GPSr.
                     if (false == string.IsNullOrWhiteSpace(wpt.name))
                     {
@@ -59,9 +69,14 @@ namespace Abnaki.Albiruni.Providers.Geo.Gpx
             return null;
         }
 
-        public static int CountSuspiciousTimes(IEnumerable<GpxWaypointBase> waypoints)
-        {
-            return waypoints.Count(wpt => wpt.timeSpecified && !wpt.eleSpecified);
-        }
+        //public static int CountSuspiciousTimes(IEnumerable<GpxWaypointBase> waypoints, object track)
+        //{
+        //    int nreport = waypoints.Count(wpt => wpt.timeSpecified && !wpt.eleSpecified);
+        //    if (nreport > 0)
+        //    {
+        //        Debug.WriteLine("Point(s) of " + track.GetType().Name + " having suspicious times = " + nreport);
+        //    }
+        //    return nreport;
+        //}
     }
 }
