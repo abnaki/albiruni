@@ -39,7 +39,7 @@ namespace Abnaki.Albiruni.Providers.Geo.Gpx.V10
             if (points == null)
                 return Enumerable.Empty<IPoint>();
 
-            return points.Select(PointDuck.PointFromGpx).ToArray();
+            return points.Select(w => PointDuck.PointFromGpx(w, requireElevation: true)).ToArray();
         }
 
         static IEnumerable<ITrack> GetTracks(IEnumerable<GpxTrack> tracks)
@@ -57,14 +57,11 @@ namespace Abnaki.Albiruni.Providers.Geo.Gpx.V10
                 .SelectMany(seg => seg.trkpt)
                 .Where(p => p != null).ToArray();
 
-            int nreport = PointDuck.CountSuspiciousTimes(trackPoints);
-            if ( nreport > 0 )
-            {
-                Debug.WriteLine("Point(s) of " + trk.GetType().Name + " having suspicious times = " + nreport);
-            }
+            //PointDuck.CountSuspiciousTimes(trackPoints, trk);
 
             dynamic temp = Build<ExpandoObject>.NewObject(
-                Points: trackPoints.Select(PointDuck.PointFromGpx).ToArray()
+                Points: trackPoints.Select(p => PointDuck.PointFromGpx(p, requireElevation: false))
+                .ToArray()
                 );
 
             return Impromptu.ActLike<ITrack>(temp);
@@ -82,7 +79,8 @@ namespace Abnaki.Albiruni.Providers.Geo.Gpx.V10
         {
             dynamic temp = Build<ExpandoObject>.NewObject(
                 Points: gr.rtept.Where(p => p != null)
-                .Select(PointDuck.PointFromGpx).ToArray()
+                .Select(p => PointDuck.PointFromGpx(p, requireElevation: true))
+                .ToArray()
                 );
 
             return Impromptu.ActLike<IRoute>(temp);
