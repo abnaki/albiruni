@@ -131,18 +131,41 @@ namespace Abnaki.Albiruni
 
             base.OnKeyUp(e);
 
-            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
-            {
-                switch (e.Key)
-                {
-                    case Key.OemPlus:
-                        SafeChangeZoom(1, e);
-                        break;
+            int sign = 0;
 
-                    case Key.OemMinus:
-                        SafeChangeZoom(-1, e);
-                        break;
-                }
+            switch (e.Key)
+            {
+                case Key.OemPlus:
+                    if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)
+                        || Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                    {
+                        sign = 1;
+                    }
+                    break;
+
+                case Key.OemMinus:
+                    if ( Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift) )
+                    {
+                        // no _
+                    }
+                    else 
+                    {
+                        sign = -1;
+                    }
+                    break;
+
+                case Key.Add:
+                    sign = 1;
+                    break;
+
+                case Key.Subtract:
+                    sign = -1;
+                    break;
+            }
+
+            if (sign != 0)
+            {
+                SafeChangeZoom(sign, e);
             }
         }
 
