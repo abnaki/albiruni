@@ -7,6 +7,7 @@ using ImpromptuInterface;
 using ImpromptuInterface.Dynamic;
 using global::Geo.Gps.Serialization.Xml.Gpx.Gpx10;
 using GeoGpxFile = global::Geo.Gps.Serialization.Xml.Gpx.Gpx10.GpxFile;
+using System.Diagnostics;
 
 namespace Abnaki.Albiruni.Providers.Geo.Gpx.V10
 {
@@ -27,11 +28,11 @@ namespace Abnaki.Albiruni.Providers.Geo.Gpx.V10
             return Impromptu.ActLike<IFile>(temp);
         }
 
-        static IPoint PointFromTrackPoint(GpxTrackPoint pt)
-        {
-            // note GpxTrackPoint also has course and speed
-            return PointDuck.PointFromGpx(pt);
-        }
+        //static IPoint PointFromTrackPoint(GpxTrackPoint pt)
+        //{
+        //    // note GpxTrackPoint also has course and speed
+        //    return PointDuck.PointFromGpx(pt);
+        //}
 
         static IEnumerable<IPoint> PointsFromWaypoints(IEnumerable<GpxPoint> points)
         {
@@ -51,11 +52,19 @@ namespace Abnaki.Albiruni.Providers.Geo.Gpx.V10
 
         static ITrack TrackFromGpx(GpxTrack trk)
         {
-            dynamic temp = Build<ExpandoObject>.NewObject(
-                Points: trk.trkseg.Where(seg => seg.trkpt != null)
+            IEnumerable<GpxTrackPoint> trackPoints = trk.trkseg
+                .Where(seg => seg.trkpt != null)
                 .SelectMany(seg => seg.trkpt)
-                .Where(p => p != null)
-                .Select(PointDuck.PointFromGpx).ToArray()
+                .Where(p => p != null).ToArray();
+
+            int nreport = PointDuck.CountSuspiciousTimes(trackPoints);
+            if ( nreport > 0 )
+            {
+                Debug.WriteLine("Point(s) of " + trk.GetType().Name + " having suspicious times = " + nreport);
+            }
+
+            dynamic temp = Build<ExpandoObject>.NewObject(
+                Points: trackPoints.Select(PointDuck.PointFromGpx).ToArray()
                 );
 
             return Impromptu.ActLike<ITrack>(temp);
