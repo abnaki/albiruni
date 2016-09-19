@@ -6,6 +6,7 @@ using System.Dynamic;
 using ImpromptuInterface;
 using ImpromptuInterface.Dynamic;
 using Geo.Gps.Serialization.Xml.Gpx;
+using System.Diagnostics;
 
 namespace Abnaki.Albiruni.Providers.Geo.Gpx
 {
@@ -26,7 +27,7 @@ namespace Abnaki.Albiruni.Providers.Geo.Gpx
                 Latitude: wpt.lat,
                 Longitude: wpt.lon,
                 Time: DateTimeOfWpt(wpt),
-                TimeReliable: true,
+                TimeReliable: wpt.timeSpecified && wpt.eleSpecified,
                 Elevation: wpt.eleSpecified ? (decimal?)wpt.ele : (decimal?)null);
 
             return Impromptu.ActLike<IPoint>(temp); // duck typing
@@ -35,10 +36,32 @@ namespace Abnaki.Albiruni.Providers.Geo.Gpx
         static DateTime? DateTimeOfWpt(GpxWaypointBase wpt)
         {
             if (wpt.timeSpecified)
-                return new DateTime(wpt.time.Ticks, DateTimeKind.Utc);
-            // got undesired DateTimeKind.Unspecified from xml serializer
+            {
+                DateTime dt = new DateTime(wpt.time.Ticks, DateTimeKind.Utc);  // undesired DateTimeKind.Unspecified from xml serializer
+
+                if (wpt.eleSpecified) // consistent with actually visiting the point.
+                {
+                    return dt;
+                }
+                else
+                {
+                    // time is unreliable if not measured by a gps.
+                    // It has been an unwanted output of desktop software, 
+                    //  or waypoints created by browsing a map on GPSr.
+                    if (false == string.IsNullOrWhiteSpace(wpt.name))
+                    {
+                        Debug.WriteLine("Disregarding non-gps time of point " + wpt.name + " " + dt);
+                    }
+                }
+            }
+
 
             return null;
+        }
+
+        public static int CountSuspiciousTimes(IEnumerable<GpxWaypointBase> waypoints)
+        {
+            return waypoints.Count(wpt => wpt.timeSpecified && !wpt.eleSpecified);
         }
     }
 }
