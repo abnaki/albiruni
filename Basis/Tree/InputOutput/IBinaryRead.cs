@@ -13,6 +13,10 @@ namespace Abnaki.Albiruni.Tree.InputOutput
         /// <summary>Exists after Init()</summary>
         int? MeshPower { get; }
 
+        /// <summary>Version number, normally exists after Init()
+        /// </summary>
+        int? ReadVersion { get; }
+
         void ReadSources();
 
         Source ReadSource();
