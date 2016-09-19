@@ -233,7 +233,11 @@ namespace Abnaki.Albiruni.Tree
             {
                 ibr.Init(stream);
 
-                if (ibr.MeshPower.HasValue && ibr.MeshPower >= guidance.MinimumMesh.Power)
+                if ( TreeBinaryWrite.ExpiredVersion(ibr.ReadVersion.Value))
+                {
+                    Debug.WriteLine(string.Format("Expired {0} version {1}", fi.FullName, ibr.ReadVersion));
+                }
+                else if (ibr.MeshPower.HasValue && ibr.MeshPower >= guidance.MinimumMesh.Power)
                 {
                     ibr.ReadSources();
 
