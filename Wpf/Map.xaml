@@ -147,7 +147,7 @@
                     Margin="8">
                     <Button
                         Name="BuZoomFit"
-                        Content="Fit"
+                        Content="Fi_t"
                         Click="BuZoomFit_Click" 
                         ToolTip="Zoom to fit data in all files"/>
                 </StackPanel>
@@ -161,7 +161,7 @@
                         FontSize="10" />
                     <Slider
                         Name="slzoom"
-                        ToolTip="Up is closer; smaller area (Ctrl =)&#10;Down is farther; larger area (Ctrl -)"
+                        ToolTip="Up is closer; smaller area (+ key)&#10;Down is farther; larger area (- key)"
                         Height="100"
                         HorizontalAlignment="Center"
                         SmallChange="0.01"
@@ -174,7 +174,7 @@
                 </StackPanel>
                 <CheckBox
                     Name="ChkSync"
-                    Content="Sync"
+                    Content="_Sync"
                     ToolTip="Change Zoom and Precision in unison.&#10;Cells will appear smaller as map zooms in."
                     Background="LightGray"
                     Foreground="Black"
