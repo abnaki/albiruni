@@ -8,12 +8,23 @@ namespace Abnaki.Albiruni.Tree
 {
     class TreeBinaryWrite : IBinaryWrite
     {
-        internal const int FileVersion = 3;
+        internal const int FileVersion = 4;
 
         public System.IO.BinaryWriter Writer
         {
             get;
             private set;
+        }
+
+        /// <summary>
+        /// True if code has evolved too much since version, so file should be ignored.
+        /// </summary>
+        /// <param name="version">may be from old file</param>
+        public static bool ExpiredVersion(int version)
+        {
+            // FileVersion and signifcant progress:
+            // 4 = Basis/Providers/Geo/Gpx/PointDuck.cs will not use a time lacking gps elevation.
+            return version < 4;
         }
 
         public void WriteSources(Node root)
