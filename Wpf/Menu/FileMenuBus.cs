@@ -187,6 +187,8 @@ namespace Abnaki.Albiruni.Menu
         void OpenTreeCompletion()
         {
             WaitCursor.Default();
+
+            System.Media.SystemSounds.Beep.Play();
         }
 
         private void HandleOption(ButtonMessage<OptionMenuKey> msg)
