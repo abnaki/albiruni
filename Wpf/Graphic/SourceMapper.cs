@@ -45,26 +45,33 @@ namespace Abnaki.Albiruni.Graphic
             MapSourceOption.Clear();
         }
 
-        internal void UpdateSource(SourceRecord record, MapViewModel mapvm)
-        {
-            if (MapSourceOption.ContainsKey(record.Source))
-            {
-                IEnumerable<FrameworkElement> things = mapvm.Tracks.Concat(mapvm.Symbols);
+        //internal void UpdateSource(Source source, MapViewModel mapvm)
+        //{
+        //    UpdateSources(new[] { source }, mapvm);
+        //}
 
-                foreach (var path in things.Where(t => t.Tag == record.Source))
+        internal void UpdateSources(IEnumerable<Source> sources, MapViewModel mapvm)
+        {
+            foreach (Source source in sources)
+            {
+                if (MapSourceOption.ContainsKey(source))
                 {
-                    path.Visibility = record.Source.Draw ? Visibility.Visible : Visibility.Hidden;
+                    IEnumerable<FrameworkElement> things = mapvm.Tracks.Concat(mapvm.Symbols);
+
+                    foreach (var item in things.Where(t => t.Tag == source))
+                    {
+                        item.Visibility = source.Draw ? Visibility.Visible : Visibility.Hidden;
+                    }
+                }
+                else
+                {
+                    LayerOption opt = new LayerOption();
+
+                    MapSourceOption[source] = opt;
+
+                    MakeMapDecorations(source, opt, mapvm);
                 }
             }
-            else
-            {
-                LayerOption opt = new LayerOption();
-
-                MapSourceOption[record.Source] = opt;
-
-                MakeMapDecorations(record.Source, opt, mapvm);
-            }
-
         }
 
         static Location LocationFromIPoint(IPoint p)
