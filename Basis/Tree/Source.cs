@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 
 using Abnaki.Windows;
 using Abnaki.Albiruni.Tree.InputOutput;
+using Abnaki.Albiruni.Providers;
 
 namespace Abnaki.Albiruni.Tree
 {
@@ -44,7 +46,7 @@ namespace Abnaki.Albiruni.Tree
 
         public Providers.PointReader PointProvider { get; private set; }
 
-        Providers.IFile IFile { get; set; }
+        IFile IFile { get; set; }
 
         public Providers.IFile RefreshIFileFromSource(DirectoryInfo dibase)
         {
@@ -54,9 +56,25 @@ namespace Abnaki.Albiruni.Tree
                 Providers.FileReader filer = Providers.FileReader.SelectFileReader(fi);
                 this.PointProvider = filer;
                 this.IFile = filer.Deserialize(fi);
+
+                IEnumerable<IPoint> points = this.IFile.WayPoints.Concat(
+                    this.IFile.Tracks.SelectMany(t => t.Points)).Concat(
+                    this.IFile.Routes.SelectMany(t => t.Points));
+
+                IPoint[] couple = points.Take(2).ToArray();
+                if (couple.Length == 1)
+                {
+                    this.SolePoint = new PurePoint(couple[0]);
+                }
             }
             return this.IFile;
         }
+
+        /// <summary>
+        /// Non-null if there is one single point.
+        /// Null if 0 or muliple points exist.
+        /// </summary>
+        public PurePoint SolePoint { get; private set; }
 
         public override string ToString()
         {
@@ -68,13 +86,19 @@ namespace Abnaki.Albiruni.Tree
             return this.Path.CompareTo(other.Path);
         }
 
-        const int filever = 2;
+        const int filever = 3;
 
         public void Write(IBinaryWrite ibw)
         {
             ibw.Writer.Write(filever);
             ibw.Writer.Write(this.SerialNumber);
             ibw.Writer.Write(this.Path);
+
+            ibw.Writer.Write(SolePoint != null);
+            if (SolePoint != null)
+            {
+                SolePoint.Write(ibw.Writer);
+            }
         }
 
         public void Read(BinaryReader br)
@@ -91,7 +115,16 @@ namespace Abnaki.Albiruni.Tree
                 m_serialNumbers = Math.Max(this.SerialNumber, m_serialNumbers);
             }
 
-            // leaving GpxFile uninitialized; not desired.
+            if (v >= 3)
+            {
+                bool solePointExist = br.ReadBoolean();
+                if (solePointExist)
+                {
+                    var p = new PurePoint();
+                    p.Read(br);
+                    SolePoint = p;
+                }
+            }
         }
     }
 }
