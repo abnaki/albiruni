@@ -82,7 +82,7 @@ namespace Abnaki.Albiruni.Menu
 
         class OpenTreeState
         {
-            public Message.RootNodeMessage Message { get; set; }
+            public Message.RootNodeMessage RootMessage { get; set; }
             public DirectoryInfo RootDirectory { get; set; }
             public Nursery.Guidance Guidance { get; set; }
             public string FinalError { get; set; }
@@ -141,12 +141,13 @@ namespace Abnaki.Albiruni.Menu
 
             var root = Abnaki.Albiruni.Tree.Node.NewGlobalRoot();
 
+            state.RootMessage = new Message.RootNodeMessage(root, state.RootDirectory);
+            state.Guidance.SourceCounted += (source, count) => state.RootMessage.Sources.Add(source);
+
             Nursery.GrowTree(root, state.RootDirectory, ditarget, state.Guidance);
 
             Node.Statistic rootStat = root.GetStatistic();
             Debug.WriteLine("Tree of data in " + state.RootDirectory.FullName + "  " + rootStat.ContentSummary.FinalSummary());
-
-            state.Message = new Message.RootNodeMessage(root, state.RootDirectory);
         }
 
         void thread_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -158,7 +159,7 @@ namespace Abnaki.Albiruni.Menu
         {
             OpenTreeCompletion();
 
-            MessageTube.Publish(state.Message);
+            MessageTube.Publish(state.RootMessage);
 
             StringBuilder sbErr = new StringBuilder();
 
