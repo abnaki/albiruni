@@ -21,5 +21,7 @@ namespace Abnaki.Albiruni.Message
         public Node Root { get; private set; }
 
         public DirectoryInfo SourceDirectory { get; private set; }
+
+        public readonly List<Source> Sources = new List<Source>();
     }
 }
