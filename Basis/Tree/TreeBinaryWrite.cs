@@ -8,7 +8,7 @@ namespace Abnaki.Albiruni.Tree
 {
     class TreeBinaryWrite : IBinaryWrite
     {
-        internal const int FileVersion = 4;
+        internal const int FileVersion = 6;
 
         public System.IO.BinaryWriter Writer
         {
@@ -24,7 +24,8 @@ namespace Abnaki.Albiruni.Tree
         {
             // FileVersion and signifcant progress:
             // 4 = Basis/Providers/Geo/Gpx/PointDuck.cs will not use a time lacking gps elevation.
-            return version < 4;
+            // 6 = Source has SolePoint
+            return version < 6;
         }
 
         public void WriteSources(Node root)
