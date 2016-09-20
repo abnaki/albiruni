@@ -54,6 +54,11 @@ namespace Abnaki.Albiruni.Menu
         [Label("Graticule", Detail="lines of latitude and longitude")]
         MapGraticule,
 
+        [Label("Sole Points", Detail=
+            "When checked, show a symbol for every file having one single point.\n"
+            + "For example, photos.")]
+        MapDrawSolePoint,
+
         Detail,
 
         [Label("Time",
