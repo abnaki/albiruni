@@ -4,6 +4,7 @@ using System.Linq;
 using System.IO;
 
 using Abnaki.Albiruni.Providers;
+using Abnaki.Windows;
 
 namespace Abnaki.Albiruni.Tree
 {
@@ -64,10 +65,11 @@ namespace Abnaki.Albiruni.Tree
                 bw.Write(MaxLongitude.Value);
             }
 
-            WriteNullable(MinTime, bw);
-            WriteNullable(MaxTime, bw);
-            WriteNullable(MinElevation, bw);
-            WriteNullable(MaxElevation, bw);
+            AbnakiFile.WriteNullable(MinTime, bw);
+            AbnakiFile.WriteNullable(MaxTime, bw);
+            AbnakiFile.WriteNullable(MinElevation, bw);
+            AbnakiFile.WriteNullable(MaxElevation, bw);
+
         }
 
         public void Read(BinaryReader br)
@@ -83,10 +85,10 @@ namespace Abnaki.Albiruni.Tree
                 MaxLongitude = br.ReadDecimal();
             }
 
-            MinTime = ReadNullableDateTime(br);
-            MaxTime = ReadNullableDateTime(br);
-            MinElevation = ReadNullableDecimal(br);
-            MaxElevation = ReadNullableDecimal(br);
+            MinTime = AbnakiFile.ReadNullableDateTime(br);
+            MaxTime = AbnakiFile.ReadNullableDateTime(br);
+            MinElevation = AbnakiFile.ReadNullableDecimal(br);
+            MaxElevation = AbnakiFile.ReadNullableDecimal(br);
         }
 
         public void AggregateWith(PointSummary subset)
@@ -130,37 +132,19 @@ namespace Abnaki.Albiruni.Tree
             return Numerical.MaxNullableTime(dt, ptime);
         }
 
-        static void WriteNullable(DateTime? d, BinaryWriter bw)
-        {
-            bw.Write(d.HasValue);
-            if (d.HasValue)
-                bw.Write((Int64)d.Value.ToBinary());
-        }
 
-        static void WriteNullable(decimal? d, BinaryWriter bw)
-        {
-            bw.Write(d.HasValue);
-            if (d.HasValue)
-                bw.Write(d.Value);
-        }
+        //public PurePoint SolePoint()
+        //{
+        //    if (Points != 1)
+        //        throw new InvalidOperationException(GetType().FullName + " SolePoint expects 1");
 
-        static DateTime? ReadNullableDateTime(BinaryReader br)
-        {
-            bool exist = br.ReadBoolean();
-            if (exist)
-                return DateTime.FromBinary(br.ReadInt64());
-
-            return null;
-        }
-
-
-        static decimal? ReadNullableDecimal(BinaryReader br)
-        {
-            bool exist = br.ReadBoolean();
-            if (exist)
-                return br.ReadDecimal();
-            return null;
-        }
+        //    return new PurePoint(this.MaxLatitude.Value, this.MaxLongitude.Value)
+        //    {
+        //        Time = this.MaxTime,
+        //        Elevation = this.MaxElevation
+        //        // TimeReliable not supported
+        //    };
+        //}
 
         public override string ToString()
         {
