@@ -133,10 +133,10 @@ namespace Abnaki.Albiruni.Tree
                         Node.FathomResult fathom = firoot.Fathom(guidance.MinimumMesh.Delta);
                         needWrite = (fathom != Node.FathomResult.None);
 
-                        // by design, Node file has single source
+                        // by design, Node file has single source if any.  but empty original data implies empty sources.
                         SortedSet<Source> sources = new SortedSet<Source>();
                         firoot.GetSources(sources);
-                        source = sources.Single();
+                        source = sources.FirstOrDefault();
                     }
                 }
 
