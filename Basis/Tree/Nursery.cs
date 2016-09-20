@@ -45,17 +45,20 @@ namespace Abnaki.Albiruni.Tree
                 }
             }
 
-            internal void CountSourceFile()
+            internal void CountSourceFile(Source source)
             {
+                if (source == null)
+                    return;
+
                 SourceFileCount++;
-                var h = SourceFileCounted;
+                var h = SourceCounted;
                 if ( h != null )
-                    h(SourceFileCount);
+                    h(source, SourceFileCount);
             }
 
             int SourceFileCount { get; set; }
 
-            public event Action<int> SourceFileCounted;
+            public event Action<Source,int> SourceCounted;
 
             public bool StillAbleToWrite = true;
 
@@ -109,6 +112,7 @@ namespace Abnaki.Albiruni.Tree
         static void GrowByFile(Node root, FileInfo fi, DirectoryInfo disource, FileInfo outfile, Guidance guidance)
         {
             Node firoot = null;
+            Source source = null;
 
             try
             {
@@ -122,12 +126,17 @@ namespace Abnaki.Albiruni.Tree
                         firoot = ReadNodeFile(outfile, guidance);
                     }
 
-                    // firoot tree having excess detail (smaller minimum delta than guidance) should be fathomed and rewritten
-                    // to avoid perpetual unwanted memory/CPU usage.
                     if (firoot != null)
                     {
+                        // firoot tree having excess detail (smaller minimum delta than guidance) should be fathomed and rewritten
+                        // to avoid perpetual unwanted memory/CPU usage.
                         Node.FathomResult fathom = firoot.Fathom(guidance.MinimumMesh.Delta);
                         needWrite = (fathom != Node.FathomResult.None);
+
+                        // by design, Node file has single source
+                        SortedSet<Source> sources = new SortedSet<Source>();
+                        firoot.GetSources(sources);
+                        source = sources.Single();
                     }
                 }
 
@@ -139,7 +148,6 @@ namespace Abnaki.Albiruni.Tree
 
                     try
                     {
-                        Source source;
                         using (var fileTimer = new DiagnosticTimer(fi, "reading"))
                         {
                             source = new Source(fi, disource);
@@ -195,7 +203,7 @@ namespace Abnaki.Albiruni.Tree
             }
             finally
             {
-                guidance.CountSourceFile();
+                guidance.CountSourceFile(source);
             }
 
             if (firoot != null)
