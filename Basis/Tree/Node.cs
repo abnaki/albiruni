@@ -279,6 +279,22 @@ namespace Abnaki.Albiruni.Tree
             }
         }
 
+        public void GetSources(SortedSet<Source> sources)
+        {
+            if (mapSourceSummaries.IsValueCreated)
+            {
+                foreach (Source key in mapSourceSummaries.Value.Keys)
+                {
+                    sources.Add(key);
+                }
+            }
+            if ( Children != null )
+            {
+                Children.Item1.GetSources(sources);
+                Children.Item2.GetSources(sources);
+            }
+        }
+
         public void DebugPrint()
         {
             // not interested in dead-end nodes in entire tree
