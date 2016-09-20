@@ -122,21 +122,30 @@ namespace Abnaki.Albiruni
             return stat.ContentSummary.FinalSummary();
         }
 
-        Node RootNode { get; set; }
+        Message.RootNodeMessage RootNodeMessage { get; set; }
+        
+        Node RootNode
+        {
+            get
+            {
+                return (this.RootNodeMessage == null) ? null : this.RootNodeMessage.Root;
+            }
+        }
 
         public void HandleTree(Message.RootNodeMessage msg)
         {
             //root.DebugPrint();
 
-            sourceMapper.SourceDirectory = msg.SourceDirectory;
-
             ClearTreeDependentObjects();
             ClearLastNodesFound();
 
+            sourceMapper.SourceDirectory = msg.SourceDirectory;
+
             bool newRoot = msg.Root != RootNode;
-            RootNode = msg.Root;
+            this.RootNodeMessage = msg;
 
             UpdateRectangles(newRoot);
+            UpdateSolePoints();
         }
 
         /// <summary>
@@ -549,6 +558,10 @@ namespace Abnaki.Albiruni
                     GraticuleEnabled = msg.Checked == true;
                     MessageTube.Publish(new Message.InvalidateMessage());
                     break;
+
+                case Menu.OptionMenuKey.MapDrawSolePoint:
+                    UpdateSolePoints(msg.Checked == true);
+                    break;
             }
 
             if (true == msg.Checked )
@@ -572,16 +585,43 @@ namespace Abnaki.Albiruni
 
         private void HandleDrawSource(DrawSourceMessage msg)
         {
+            SubDrawSources(new[] { msg.SourceRecord.Source });
+        }
+
+        void SubDrawSources(IEnumerable<Source> sources)
+        {
             // sometimes very costly
-            Dispatcher.CurrentDispatcher.InvokeAsync( () =>
+            Dispatcher.CurrentDispatcher.InvokeAsync(() =>
             {
                 using (WaitCursor.InProgress())
                 {
-                    sourceMapper.UpdateSource(msg.SourceRecord, this);
+                    sourceMapper.UpdateSources(sources, this);
                 }
-            }, 
+            },
             DispatcherPriority.Background);
-            
+        }
+
+        bool EnableSolePoints { get; set; }
+
+        void UpdateSolePoints(bool enable)
+        {
+            EnableSolePoints = enable;
+            UpdateSolePoints();
+        }
+
+        void UpdateSolePoints()
+        {
+            if (RootNodeMessage == null)
+                return;
+
+            IEnumerable<Source> solePointSources = this.RootNodeMessage.Sources.Where(s => s.SolePoint != null).ToArray();
+
+            foreach (Source source in solePointSources )
+            {
+                source.Draw = EnableSolePoints;
+            }
+
+            SubDrawSources(solePointSources);
         }
 
         public void Testing()
