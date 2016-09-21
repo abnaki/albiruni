@@ -61,7 +61,11 @@ namespace Abnaki.Albiruni
         public bool GraticuleEnabled { get; set; }
 
         public List<MapRectangle> Rectangles { get; private set; }
-        
+
+        internal System.Windows.Media.Brush DefaultFillBrush { get; private set; }
+        const int cellHueLevel = 255;
+        const int cellAlpha = 48;
+
         // may want to use BulkObservableCollection or similar...no luck.
 
         /// <summary>such as waypoints</summary>
@@ -74,6 +78,8 @@ namespace Abnaki.Albiruni
         /// </summary>
         MapRectangle ViewPortRect { get; set; }
 
+        public Matrix ViewportMatrixSettled { get; set; }
+
         /// <summary>1 by 1 display units translated onto map</summary>
         MapRectangle DisplayUnitRect { get; set; }
 
@@ -81,6 +87,7 @@ namespace Abnaki.Albiruni
 
         public void SetViewPort(MapRectangle viewRect, MapRectangle unitRect)
         {
+            //effectiveChange = false;
             DisplayUnitRect = unitRect;
 
             if (this.ViewPortRect.EqualCoordinates(viewRect))
@@ -89,10 +96,11 @@ namespace Abnaki.Albiruni
             }
             else
             {
-                using (new WaitCursor())
+                //using (new WaitCursor())
                 {
                     this.ViewPortRect = viewRect;
                     UpdateAdornments();
+                    //effectiveChange = true;
                 }
             }
         }
@@ -106,9 +114,12 @@ namespace Abnaki.Albiruni
             }
         }
 
-        void UpdateAdornments()
+        void UpdateAdornments() // want to eliminate...
         {
-            UpdateRectangles(newRoot: false);
+            using (new WaitCursor())
+            {
+                UpdateRectangles(newRoot: false);
+            }
         }
 
         public PointSummary GetRootPointSummary()
@@ -353,7 +364,7 @@ namespace Abnaki.Albiruni
 
         void CompleteRectangle(MapRectangle r)
         {
-            r.Fill = m_defaultFillBrush;
+            r.Fill = DefaultFillBrush;
 
             // events unused because MapNodeLayer does not put MapRectangles in a control.
             ////r.MouseLeftButtonUp += MapRectangle_MouseLeftButtonUp; // never gets  e.ClickCount == 2
@@ -531,13 +542,9 @@ namespace Abnaki.Albiruni
             }
         }
 
-        System.Windows.Media.Brush m_defaultFillBrush;
-        const int cellHueLevel = 255;
-        const int cellAlpha = 48;
-
         void SetCellBrush(int red, int green, int blue)
         {
-            m_defaultFillBrush = new SolidColorBrush(Color.FromArgb((byte)cellAlpha, (byte)red, (byte)green, (byte)blue));
+            DefaultFillBrush = new SolidColorBrush(Color.FromArgb((byte)cellAlpha, (byte)red, (byte)green, (byte)blue));
             UpdateRectangles(newRoot: false);
         }
 
@@ -547,16 +554,16 @@ namespace Abnaki.Albiruni
             {
                 case Menu.OptionMenuKey.MapScaleMetric:
                     ScaleMetric = msg.Checked == true;
-                    MessageTube.Publish(new Message.InvalidateMessage());
+                    MessageTube.Publish(new Message.InvalidateMessage(nodeLayerAffected: false));
                     break;
                 case Menu.OptionMenuKey.MapScaleImperial:
                     ScaleMetric = msg.Checked != true;
-                    MessageTube.Publish(new Message.InvalidateMessage());
+                    MessageTube.Publish(new Message.InvalidateMessage(nodeLayerAffected: false));
                     break;
 
                 case Menu.OptionMenuKey.MapGraticule:
                     GraticuleEnabled = msg.Checked == true;
-                    MessageTube.Publish(new Message.InvalidateMessage());
+                    MessageTube.Publish(new Message.InvalidateMessage(nodeLayerAffected: false));
                     break;
 
                 case Menu.OptionMenuKey.MapDrawSolePoint:
@@ -633,7 +640,7 @@ namespace Abnaki.Albiruni
             r.West = MapCenter.Longitude;
             r.North = r.South + 0.1;
             r.East = r.West + 0.1;
-            r.Fill = m_defaultFillBrush;
+            r.Fill = DefaultFillBrush;
             Rectangles.Add(r);
 
             //var diamond = new Abnaki.Albiruni.Graphic.Symbol.Diamond(MapCenter, 0.01, 0.015);
