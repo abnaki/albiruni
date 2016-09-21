@@ -121,7 +121,7 @@ namespace Abnaki.Albiruni.Menu
             WaitCursor.Progressing();
             thread.RunWorkerAsync(state);
 
-            MessageTube.Publish(new Message.InvalidateMessage()); // now dialog is out of the map's way.
+            MessageTube.Publish(new Message.InvalidateMessage(nodeLayerAffected: false)); // now dialog is out of the map's way.
 
             //    Notifier.Error("Failed to completely read " + di.FullName + " within " + tsLimit);
         }
@@ -180,7 +180,7 @@ namespace Abnaki.Albiruni.Menu
             if (sbErr.Length > 0)
             {
                 Abnaki.Windows.Software.Wpf.Diplomat.Notifier.Error(sbErr.ToString());
-                MessageTube.Publish(new Message.InvalidateMessage()); // now dialog is out of the map's way.
+                MessageTube.Publish(new Message.InvalidateMessage(nodeLayerAffected: false)); // now dialog is out of the map's way.
             }
         }
 
@@ -196,6 +196,7 @@ namespace Abnaki.Albiruni.Menu
             Menu.OptionMenuBus.GetMeshFromOption(msg.Key, p => minimumMesh = new Mesh(p));
 
         }
+
 
 
     }
