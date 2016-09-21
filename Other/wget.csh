@@ -19,7 +19,8 @@ $WG https://github.com/LZorglub/TimeZone/raw/master/LICENSE
 
 $WG https://github.com/mj1856/GeoTimeZone/raw/master/LICENSE
 
+$WG http://writeablebitmapex.codeplex.com/license
+
 # Forks:
 
 $WG https://github.com/abnaki/photo/raw/master/LICENSE
-
