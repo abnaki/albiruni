@@ -6,5 +6,12 @@ namespace Abnaki.Albiruni.Message
 {
     class InvalidateMessage
     {
+        public InvalidateMessage(bool nodeLayerAffected)
+        {
+            this.NodeLayerAffected = nodeLayerAffected;
+        }
+
+        public bool NodeLayerAffected { get; private set; }
+
     }
 }
