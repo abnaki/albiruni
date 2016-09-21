@@ -37,14 +37,19 @@ namespace Abnaki.Albiruni
 
             // Helps delay logic after interactive panning/zooming has stopped briefly.
             this.map.ViewportChanged += vptimer.OnChanged;
-
+            //Location vpStartLocation = null; //
             MapNodeLayer layer = GetMapNodeLayer();
-            vptimer.Changed += (s, e) => layer.InvalidateVisual();
+            vptimer.Changed += (s, e) =>
+            {
+                layer.InvalidateVisual();
+            };
             vptimer.Settled += (s, e) =>
             {
                 CompleteZoom();
                 ViewportChangeSettled();
-                layer.InvalidateVisual();
+                InvalidateMapPanels(nodeLayerAffected: true);
+                //InvalidateVisual();
+                //vpStartLocation = null;
             };
 
             // delay costly logic
@@ -88,7 +93,7 @@ namespace Abnaki.Albiruni
             }
         }
 
-        internal void ViewportChangeSettled()
+        void ViewportChangeSettled()
         {
             if (DataContext == null)
                 return;
@@ -117,6 +122,7 @@ namespace Abnaki.Albiruni
             };
 
             this.DataContext.SetViewPort(viewRect, unitRect);
+            this.DataContext.ViewportMatrixSettled = map.ViewportTransform.Matrix; // struct
         }
 
         protected override void OnMouseEnter(MouseEventArgs e)
@@ -265,22 +271,23 @@ namespace Abnaki.Albiruni
         LagTimer<RoutedPropertyChangedEventArgs<double>> slprecTimer = new LagTimer<RoutedPropertyChangedEventArgs<double>>();
 
         bool syncingZoomPrecision = false;
-        bool outdatedMesh = false;
+        //bool outdatedMesh = false;
         double? precisionMinusZoomSynced;
         bool flexibleSync = false;
 
-        protected override void OnRender(DrawingContext drawingContext)
-        {
-            base.OnRender(drawingContext);
+        //protected override void OnRender(DrawingContext drawingContext)
+        //{
+        //    base.OnRender(drawingContext);
 
-            if ( outdatedMesh )
-            {
-                if (this.DataContext != null)
-                    this.DataContext.UpdateMesh();
+        //    if ( outdatedMesh )
+        //    {
+        //        outdatedMesh = false;
+        //        if (this.DataContext != null)
+        //            this.DataContext.UpdateMesh();
 
-                InvalidateMapPanels();
-            }
-        }
+        //        InvalidateMapPanels(nodeLayerAffected: true);
+        //    }
+        //}
 
         void slprecTimer_Settled(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -288,13 +295,16 @@ namespace Abnaki.Albiruni
             double deltaPrecision = e.NewValue - e.OldValue;
             ChangeBoundedBySlider(slzoom, vptimer, e, slzoom.Value + deltaPrecision, z => map.ZoomLevel = z);
 
+            //outdatedMesh = true;
             PostZoomInvalidate();
         }
 
         void PostZoomInvalidate()
         {
-            outdatedMesh = true;
-            InvalidateVisual();
+            //outdatedMesh = true;
+            this.DataContext.UpdateMesh();
+            InvalidateMapPanels(nodeLayerAffected: true);
+            //InvalidateVisual();
         }
 
         private void slzoom_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -412,12 +422,17 @@ namespace Abnaki.Albiruni
             }
         }
 
-        void InvalidateMapPanels()
+        void InvalidateMapPanels(bool nodeLayerAffected)
         {
             foreach (PanelBase mp in ChildMapPanels())
             {
+                if (mp is MapNodeLayer)
+                    ((MapNodeLayer)mp).RectanglesValid &= !nodeLayerAffected;
+
                 mp.InvalidateVisual();
             }
+
+            this.map.InvalidateVisual();
         }
 
         IEnumerable<PanelBase> ChildMapPanels()
@@ -465,8 +480,7 @@ namespace Abnaki.Albiruni
 
         private void HandleInvalidate(Message.InvalidateMessage msg)
         {
-            this.map.InvalidateVisual();
-            InvalidateMapPanels();
+            InvalidateMapPanels(msg.NodeLayerAffected);
         }
 
         #region Tiles
