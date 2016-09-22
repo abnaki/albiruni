@@ -132,21 +132,27 @@ namespace Abnaki.Albiruni
 
         void ApplySelection(TiRecord cur)
         {
+            LocatorTemplate loctemp = null;
             if (cur.Select)
             {
                 if (cur.LocatorTemplate.Valid)
                 {
-                    TileHostMessage msg = new TileHostMessage(cur.LocatorTemplate);
-                    
-                    Dispatcher.InvokeAsync(() => MessageTube.Publish(msg), // want grid checkbox to take priority
-                        System.Windows.Threading.DispatcherPriority.Background);
+                    loctemp = cur.LocatorTemplate;
                 }
                 else
                 {
                     Abnaki.Windows.AbnakiLog.Comment("Selected invalid or underspecified server", cur.LocatorTemplate);
                 }
             }
+            else
+            {
+                Debug.WriteLine("Unselecting map server.  Expect map to be blank.");
+            }
 
+            TileHostMessage msg = new TileHostMessage(loctemp); // whether null or not.
+
+            Dispatcher.InvokeAsync(() => MessageTube.Publish(msg), // want grid checkbox to take priority
+                System.Windows.Threading.DispatcherPriority.Background);
         }
 
         LocatorTemplate defaultLocatorTemplate;
