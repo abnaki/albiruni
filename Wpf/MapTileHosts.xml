@@ -9,6 +9,7 @@
         <string>c</string>
         <string>d</string>
       </Subdomains>
+      <!-- you may replace undefined with your access token -->
       <UserKey>undefined</UserKey>
       <FileKey>mapbox</FileKey>
     </Organization>
@@ -20,7 +21,8 @@
         <string>3</string>
         <string>4</string>
       </Subdomains>
-      <!-- you may replace undefined with proper substitutions of app_id=YOURID&amp;app_code=YOURCODE -->
+      <!-- you may replace undefined with proper substitutions of YOURID and YOURCODE in -->
+      <!-- <UserKey>app_id=YOURID&amp;app_code=YOURCODE</UserKey> -->
       <UserKey>undefined</UserKey>
       <FileKey>here.com</FileKey>
     </Organization>
