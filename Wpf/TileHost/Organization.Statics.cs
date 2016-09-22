@@ -44,7 +44,7 @@ namespace Abnaki.Albiruni.TileHost
         public static readonly Organization Mapbox = new Organization("https://tiles.mapbox.com", "abcd")
         {
             Copyright = "[Mapbox](https://www.mapbox.com/about/maps/), " + citeosm,
-            FileKey = "mapbox",
+            FileKey = "mapbox.com",
             AllowMultiUserCache = false, // terms of service
             UserKey = UndefinedKey,
             UriDelimitUserKey = "?access_token="
