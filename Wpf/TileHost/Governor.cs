@@ -114,57 +114,68 @@ namespace Abnaki.Albiruni.TileHost
         {
             CurrentLocator = loctemp;
 
-            if (loctemp.Org.Public)
+            if (loctemp == null)
             {
-                // Server usage is far more critical than timeliness, hence large timespan.
-                // openstreetmaps.org requires 7 days at least.
-                TileImageLoader.MinimumCacheExpiration = TimeSpan.FromDays(60);
-                TileImageLoader.DefaultCacheExpiration = TimeSpan.FromDays(60);
+                TileImageLoader.Cache = this.defaultMemCache;
+                TileImageLoader.HttpUserAgent = "";
             }
             else
             {
-                TileImageLoader.MinimumCacheExpiration = TimeSpan.FromDays(15);
-                TileImageLoader.DefaultCacheExpiration = TimeSpan.FromDays(30);
-                // depends on commerical provider.  here.com said 30 days max.
-            }
-
-            if (TileImageLoader.Cache is MemoryCache)
-            {
-                defaultMemCache = (MemoryCache)TileImageLoader.Cache;
-            }
-            else if (TileImageLoader.Cache is MapCache.AlbiruniFileCache)
-            {
-                ((MapCache.AlbiruniFileCache)TileImageLoader.Cache).Enable = false;
-            }
-
-            MapCache mc = new MapCache(loctemp, testing);
-
-            if (mc.Cache == null)
-            {  
-                // unexpected.  restore a default.
-                if (defaultMemCache != null)
-                    TileImageLoader.Cache = defaultMemCache;
-
-                TileImageLoader.HttpUserAgent = mapCountAgent.Values.LastOrDefault(); // worst case
-            }
-            else
-            {
-                mc.Cache.Enable = true;
-                TileImageLoader.Cache = mc.Cache;
-
-                Debug.WriteLine("TileImageLoader uses " + mc.Cache);
-
                 if (loctemp.Org.Public)
                 {
-                    mc.Cache.CountTriggers = mapCountAgent.Keys;
-                    mc.Cache.CountAchieved += Cache_CountAchieved;
-                    mc.Cache.Complete();
+                    // Server usage is far more critical than timeliness, hence large timespan.
+                    // openstreetmaps.org requires 7 days at least.
+                    TileImageLoader.MinimumCacheExpiration = TimeSpan.FromDays(60);
+                    TileImageLoader.DefaultCacheExpiration = TimeSpan.FromDays(60);
                 }
                 else
-                {   // user has relationship with host
-                    TileImageLoader.HttpUserAgent = WellBehavedAgent();
+                {
+                    TileImageLoader.MinimumCacheExpiration = TimeSpan.FromDays(15);
+                    TileImageLoader.DefaultCacheExpiration = TimeSpan.FromDays(30);
+                    // depends on commerical provider.  here.com said 30 days max.
+                }
+
+                if (TileImageLoader.Cache is MemoryCache)
+                {
+                    defaultMemCache = (MemoryCache)TileImageLoader.Cache;
+                }
+                else if (TileImageLoader.Cache is MapCache.AlbiruniFileCache)
+                {
+                    ((MapCache.AlbiruniFileCache)TileImageLoader.Cache).Enable = false;
+                }
+
+                MapCache mc = new MapCache(loctemp, testing);
+
+                if (mc.Cache == null)
+                {
+                    // unexpected.  restore a default.
+                    if (defaultMemCache != null)
+                        TileImageLoader.Cache = defaultMemCache;
+
+                    TileImageLoader.HttpUserAgent = mapCountAgent.Values.LastOrDefault(); // worst case
+                }
+                else
+                {
+                    mc.Cache.Enable = true;
+                    TileImageLoader.Cache = mc.Cache;
+
+                    Debug.WriteLine("TileImageLoader uses " + mc.Cache);
+
+                    if (loctemp.Org.Public)
+                    {
+                        mc.Cache.CountTriggers = mapCountAgent.Keys;
+                        mc.Cache.CountAchieved += Cache_CountAchieved;
+                        mc.Cache.Complete();
+                    }
+                    else
+                    {   // user has relationship with host
+                        TileImageLoader.HttpUserAgent = WellBehavedAgent();
+                    }
                 }
             }
+
+            TileLoaderMessage msg = new TileLoaderMessage(loctemp);
+            MessageTube.Publish(msg);
         }
 
         void Cache_CountAchieved(long count)
