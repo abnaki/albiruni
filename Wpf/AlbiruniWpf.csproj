@@ -134,6 +134,7 @@
     <Compile Include="Message\RootNodeMessage.cs" />
     <Compile Include="Message\SourceRecordMessage.cs" />
     <Compile Include="Message\TileHostMessage.cs" />
+    <Compile Include="Message\TileLoaderMessage.cs" />
     <Compile Include="ProcessLauncher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
