@@ -11,6 +11,14 @@ namespace Abnaki.Albiruni
     /// </summary>
     class MapTiLayer : TileLayer
     {
+        /// <summary>
+        /// Empty
+        /// </summary>
+        public MapTiLayer()
+        {
+
+        }
+
         public MapTiLayer(Abnaki.Albiruni.TileHost.LocatorTemplate loctemp)
         {
             this.SourceName = loctemp.Org.Domain.Uri.Host + "/" + loctemp.Subdirectory;
