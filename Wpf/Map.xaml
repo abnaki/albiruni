@@ -157,8 +157,7 @@
                         Text="Zoom"
                         Margin="0,0,0,2"
                         HorizontalAlignment="Center"
-                        Foreground="Black"
-                        FontSize="10" />
+                        Foreground="Black" />
                     <Slider
                         Name="slzoom"
                         ToolTip="Up is closer; smaller area (+ key)&#10;Down is farther; larger area (- key)"
@@ -166,6 +165,7 @@
                         HorizontalAlignment="Center"
                         SmallChange="0.01"
                         Orientation="Vertical"
+                        Foreground="Black"
                         Maximum="15"
                         Minimum="{Binding MinZoomLevel, ElementName=map}"
                         Value="{Binding TargetZoomLevel, ElementName=map}"
@@ -194,6 +194,7 @@
                         HorizontalAlignment="Center"
                         ToolTip="Cell size. &#10;Changes by factor of 2. &#10;Up for smaller cells."
                         Height="70"
+                        Foreground="Black"
                         Maximum="{Binding MeshMaximumPower}"
                         Minimum="8"
                         Value="{Binding DisplayMeshPower}"
