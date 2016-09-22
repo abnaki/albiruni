@@ -33,7 +33,7 @@ namespace Abnaki.Albiruni.Menu
 
             menu.AddCommandChild<OptionMenuKey>(OptionMenuKey.Map, OptionMenuKey.MapGraticule, defaultCheck: true);
 
-            menu.AddCommandChild<OptionMenuKey>(OptionMenuKey.Map, OptionMenuKey.MapDrawSolePoint, defaultCheck: true);
+            menu.AddCommandChild<OptionMenuKey>(OptionMenuKey.Map, OptionMenuKey.MapDrawSolePoint, defaultCheck: false);
 
             AddExclusiveCommands(menu, OptionMenuKey.MapCellColor, 
                 new[]{OptionMenuKey.MapCellColorRed, OptionMenuKey.MapCellColorGreen, OptionMenuKey.MapCellColorBlue});
