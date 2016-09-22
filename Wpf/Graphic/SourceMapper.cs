@@ -63,7 +63,7 @@ namespace Abnaki.Albiruni.Graphic
                         item.Visibility = source.Draw ? Visibility.Visible : Visibility.Hidden;
                     }
                 }
-                else
+                else if ( source.Draw )
                 {
                     LayerOption opt = new LayerOption();
 
