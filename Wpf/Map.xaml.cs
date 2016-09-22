@@ -53,7 +53,7 @@ namespace Abnaki.Albiruni
             
             MessageTube.Subscribe<FarewellMessage>(Farewell);
             MessageTube.Subscribe<InvalidateMessage>(HandleInvalidate);
-            MessageTube.Subscribe<TileHostMessage>(HandleTileHost);
+            MessageTube.Subscribe<TileLoaderMessage>(HandleTileHost);
 
             Clear();
         }
@@ -471,7 +471,7 @@ namespace Abnaki.Albiruni
 
         #region Tiles
 
-        void HandleTileHost(TileHostMessage msg)
+        void HandleTileHost(TileLoaderMessage msg)
         {
             Debug.WriteLine(GetType().Name + " handles " + msg.LocatorTemplate);
 
@@ -479,20 +479,28 @@ namespace Abnaki.Albiruni
         }
 
         Dictionary<LocatorTemplate, MapTiLayer> mapTileLayers = new Dictionary<LocatorTemplate, MapTiLayer>();
+        MapTiLayer emptyMapTileLayer = new MapTiLayer();
 
         void ChangeTileLayer(LocatorTemplate loctemp)
         {
-            MapTiLayer layer;
-            if ( mapTileLayers.ContainsKey(loctemp))
+            MapTiLayer layer = null;
+            if (loctemp == null)
             {
-                layer = mapTileLayers[loctemp];
+                layer = emptyMapTileLayer;
             }
             else
             {
-                layer = new MapTiLayer(loctemp);
-            }
+                if (mapTileLayers.ContainsKey(loctemp))
+                {
+                    layer = mapTileLayers[loctemp];
+                }
+                else
+                {
+                    layer = new MapTiLayer(loctemp);
+                }
 
-            slzoom.Maximum = map.MaxZoomLevel = layer.MaxZoomLevel;
+                slzoom.Maximum = map.MaxZoomLevel = layer.MaxZoomLevel;
+            }
 
             if (layer != map.TileLayer)
             {
