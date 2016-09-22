@@ -98,7 +98,7 @@ namespace Abnaki.Albiruni.TileHost
         {
             get
             {
-                return this.Org + "/" + Subdirectory;
+                return this.Org.ToString().Trim('/') + "/" + Subdirectory;
             }
         }
 
