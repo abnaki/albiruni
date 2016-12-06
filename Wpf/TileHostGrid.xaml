@@ -44,6 +44,7 @@
         </ScrollViewer>
         <Grid:GridControl
             Name="Griddy"
-            Grid.Row="1" />
+            Grid.Row="1"
+            EnableOptionalGridControls="False" />
     </Grid>
 </UserControl>

@@ -11,5 +11,6 @@
     <!-- if a StackPanel is here, what is necessary to stretch is child GridControl ? -->
     <Grid:GridControl
         Name="grid"
-        VerticalAlignment="Stretch" />
+        VerticalAlignment="Stretch"
+        EnableOptionalGridControls="False" />
 </UserControl>
