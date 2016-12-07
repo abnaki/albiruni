@@ -169,12 +169,12 @@ namespace Abnaki.Albiruni
             }
         }
 
-        void SafeChangeZoom(double delta, KeyEventArgs e)
+        void SafeChangeZoom(int sign, KeyEventArgs e)
         {
-            map.ZoomLevel = MapExtensions.Bounded(slzoom.Minimum, map.ZoomLevel + delta, slzoom.Maximum);
+            map.ZoomLevel = MapExtensions.Bounded(slzoom.Minimum, map.ZoomLevel + sign * slzoom.LargeChange, slzoom.Maximum);
             e.Handled = true;
             PostZoomInvalidate();
-            Debug.WriteLine("Zoomed " + delta);
+            Debug.WriteLine("Zoomed " + sign);
         }
 
         #region Originally from xamlmapcontrol/SampleApps/WpfApplication/MainWindow.xaml.cs
