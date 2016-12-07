@@ -161,12 +161,24 @@ namespace Abnaki.Albiruni
                 case Key.Subtract:
                     sign = -1;
                     break;
+
+                case Key.F: // finer precision
+                    if (slprecision.Value <= slprecision.Maximum - slprecision.LargeChange)
+                        slprecision.Value += slprecision.LargeChange;
+                    break;
+
+                case Key.J: // larger precision
+                    if (slprecision.Value >= slprecision.Minimum + slprecision.LargeChange)
+                        slprecision.Value -= slprecision.LargeChange;
+                    break;
+
             }
 
             if (sign != 0)
             {
                 SafeChangeZoom(sign, e);
             }
+
         }
 
         void SafeChangeZoom(int sign, KeyEventArgs e)
