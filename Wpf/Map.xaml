@@ -163,7 +163,8 @@
                         ToolTip="Up is closer; smaller area (+ key)&#10;Down is farther; larger area (- key)"
                         Height="100"
                         HorizontalAlignment="Center"
-                        SmallChange="0.01"
+                        LargeChange="1"
+                        SmallChange="1"
                         Orientation="Vertical"
                         Foreground="Black"
                         Maximum="15"
@@ -198,6 +199,7 @@
                         Maximum="{Binding MeshMaximumPower}"
                         Minimum="8"
                         Value="{Binding DisplayMeshPower}"
+                        LargeChange="1"
                         SmallChange="1"
                         TickPlacement="BottomRight">
                         <!--maybe want Tick properties -->
