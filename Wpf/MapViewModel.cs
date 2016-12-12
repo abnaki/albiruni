@@ -464,6 +464,18 @@ namespace Abnaki.Albiruni
             }
         }
 
+        public void CenterAroundEmphasis()
+        {
+            IEnumerable<MapPolyline> figures = EmphasizedPaths.OfType<MapPolyline>();
+
+            if (figures.Any())
+            {
+                double midLat = (figures.Min(p => p.MinLatitude()) + figures.Max(p => p.MaxLatitude())) / 2;
+                double midLon = (figures.Min(p => p.MinLongitude()) + figures.Max(p => p.MaxLongitude())) / 2;
+                MapCenter = new Location(midLat, midLon);
+            }
+        }
+
         /// <summary>
         /// </summary>
         /// <returns>non null only if Nodes exist at location
