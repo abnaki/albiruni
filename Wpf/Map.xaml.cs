@@ -162,6 +162,10 @@ namespace Abnaki.Albiruni
                     sign = -1;
                     break;
 
+                case Key.C:
+                    this.DataContext.CenterAroundEmphasis();
+                    break;
+
                 case Key.F: // finer precision
                     if (slprecision.Value <= slprecision.Maximum - slprecision.LargeChange)
                         slprecision.Value += slprecision.LargeChange;
