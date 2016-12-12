@@ -62,5 +62,25 @@ namespace Abnaki.Albiruni.Graphic
 
             return EqualDouble(loc.Latitude, other.Latitude) && EqualDouble(loc.Longitude, other.Longitude);
         }
+
+        public static double MinLatitude(this MapPolyline figure)
+        {
+            return figure.Locations.Min(p => p.Latitude);
+        }
+
+        public static double MaxLatitude(this MapPolyline figure)
+        {
+            return figure.Locations.Max(p => p.Latitude);
+        }
+
+        public static double MinLongitude(this MapPolyline figure)
+        {
+            return figure.Locations.Min(p => p.Longitude);
+        }
+
+        public static double MaxLongitude(this MapPolyline figure)
+        {
+            return figure.Locations.Max(p => p.Longitude);
+        }
     }
 }
