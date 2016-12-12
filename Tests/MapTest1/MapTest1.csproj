@@ -36,10 +36,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ImageFileCache.WPF">
-      <HintPath>..\..\packages\XAML.MapControl.2.12.0\lib\net45\ImageFileCache.WPF.dll</HintPath>
+      <HintPath>..\..\packages\XAML.MapControl.2.13.0\lib\net45\ImageFileCache.WPF.dll</HintPath>
     </Reference>
     <Reference Include="MapControl.WPF">
-      <HintPath>..\..\packages\XAML.MapControl.2.12.0\lib\net45\MapControl.WPF.dll</HintPath>
+      <HintPath>..\..\packages\XAML.MapControl.2.13.0\lib\net45\MapControl.WPF.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
