@@ -46,17 +46,14 @@
       <HintPath>..\packages\AutoDependencyProperty.Fody.1.2.2.0\lib\net40\AutoDependencyPropertyMarker.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="ImageFileCache.WPF, Version=2.12.0.0, Culture=neutral, PublicKeyToken=f26fcf0059638459, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\XAML.MapControl.2.12.0\lib\net45\ImageFileCache.WPF.dll</HintPath>
+    <Reference Include="ImageFileCache.WPF">
+      <HintPath>..\packages\XAML.MapControl.2.13.0\lib\net45\ImageFileCache.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="MapControl.WPF, Version=2.12.0.0, Culture=neutral, PublicKeyToken=f26fcf0059638459, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\XAML.MapControl.2.12.0\lib\net45\MapControl.WPF.dll</HintPath>
+    <Reference Include="MapControl.WPF">
+      <HintPath>..\packages\XAML.MapControl.2.13.0\lib\net45\MapControl.WPF.dll</HintPath>
     </Reference>
     <Reference Include="PropertyChanged">
-      <HintPath>..\packages\PropertyChanged.Fody.1.51.0\Lib\portable-net4+sl4+wp8+win8+wpa81+MonoAndroid16+MonoTouch40\PropertyChanged.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\packages\PropertyChanged.Fody.1.52.1\lib\netstandard10\PropertyChanged.dll</HintPath>
     </Reference>
     <Reference Include="SerializableDictionary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -241,8 +238,9 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Fody.1.29.2\build\portable-net+sl+win+wpa+wp\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.29.2\build\portable-net+sl+win+wpa+wp\Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\Fody.1.29.4\build\dotnet\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.29.4\build\dotnet\Fody.targets'))" />
   </Target>
+  <Import Project="..\packages\Fody.1.29.4\build\dotnet\Fody.targets" Condition="Exists('..\packages\Fody.1.29.4\build\dotnet\Fody.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
