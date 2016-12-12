@@ -1,5 +1,12 @@
 Most valuable changes:
-
+	
+### 1.0.15
+	
+* New keys in map include:
+** C to center on highlighted cell
+** F for finer precision
+** J for larger precision
+	
 ### 1.0.13
 
 * Details contains Draw feature to show tracks, routes, and points in a whole file. 
